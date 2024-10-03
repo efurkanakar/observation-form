@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Observation Form</title>
+</head>
+<body>
+  <h2>Observation Form</h2>
+  <form id="observation-form">
+    <label for="observer">Observer Name:</label><br>
+    <input type="text" id="observer" name="observer"><br><br>
+
+    <label for="observed-stars">Observed Stars:</label><br>
+    <input type="text" id="observed-stars" name="observed_stars"><br><br>
+
+    <label for="filter">Filter:</label><br>
+    <input type="text" id="filter" name="filter"><br><br>
+
+    <label for="exposure-time">Exposure Time:</label><br>
+    <input type="text" id="exposure-time" name="exposure_time"><br><br>
+
+    <label for="binning">Binning:</label><br>
+    <input type="text" id="binning" name="binning"><br><br>
+
+    <input type="submit" value="Submit">
+  </form>
+
+  <p id="message"></p>
+
+  <script>
+    document.getElementById('observation-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var observer = document.getElementById('observer').value;
+      var observedStars = document.getElementById('observed-stars').value;
+      var filter = document.getElementById('filter').value;
+      var exposureTime = document.getElementById('exposure-time').value;
+      var binning = document.getElementById('binning').value;
+
+      var message = Observer: ${observer}\nObserved Stars: ${observedStars}\nFilter: ${filter}\nExposure Time: ${exposureTime}\nBinning: ${binning};
+      
+      alert('Form Submitted!\n' + message);
+      
+      // Here you would handle the form submission, like sending to a server
+    });
+  </script>
+</body>
+</html>
