@@ -6,7 +6,9 @@
     <title>Observation Form</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Gill Sans", sans-serif;
+;
+
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
@@ -15,7 +17,7 @@
         /* Container'ı ortalamak için gerekli stil */
         .container {
             width: 90%;
-            max-width: 800px; /* Max genişlik */
+            max-width: 1000px; /* Max genişlik */
             min-width: 300px;  /* Min genişlik */
             margin: 0 auto; /* Ortalamak için */
             padding: 20px;
@@ -32,7 +34,7 @@
 
         /* Bölge 1 ve Bölge 2 için stil */
         .section {
-            padding: 40px;
+            padding: 30px;
             margin: 20px 0;
             background-color: #fff;
             border-radius: 10px;
@@ -44,14 +46,16 @@
             font-weight: bold;
             display: block;
             margin-bottom: 5px;
+            font-size: 13px;
         }
 
         input, select, textarea {
-            width: 100%; /* Genişlik formun içinde kalacak */
-            padding: 10px;
-            margin-bottom: 20px;
+            width: 70%; 
+            padding: 8px;  
+            margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            font-size: 12px; 
         }
 
         .button {
@@ -61,7 +65,9 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 16px; 
             width: 100%;
+            max-width: 200px; 
         }
 
         .button:hover {
@@ -71,9 +77,9 @@
         /* Date ve Gözlem Yapıldı mı? bölgesi */
         .date-observation-row {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 5px;
+            justify-content: flex;
+            align-items: flex;
+            gap: 50px;
         }
 
         .date-column, .observation-column {
@@ -92,6 +98,7 @@
             gap: 5px;
             font-weight: normal;
             margin-top: 10px;
+            font-size: 14px;
         }
 
         /* Dinamik alanlar */
@@ -103,11 +110,78 @@
             display: flex;
             justify-content: center;
             gap: 10px;
+            margin-top: 10px;
         }
 
         .column {
             display: flex;
-            flex-direction: column;
+            flex-direction: flex;
+            align-items: center;
+        }
+
+        /* Input alanlarındaki boşluklar ve hizalama */
+        .row {
+            display: flex;
+            gap: 20px; /* Alanlar arasındaki boşluğu eşitledik */
+            align-items: center;
+        }
+
+        .input-container {
+            flex: 1;
+            margin-bottom: 20px; /* Daha düzenli bir boşluk için ayar */
+        }
+
+        /* Küçük butonlar için stil */
+        .button.small-button {
+            padding: 5px 10px;
+            font-size: 12px;
+            width: auto;
+        }
+
+        .remove-button {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px; 
+            font-size: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .remove-button.hidden {
+            display: none;
+        }
+
+        /* Submit butonunu ortalamak için stil */
+        .submit-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        /* H3 ve paragrafın font size'ını değiştirmek için */
+        h3 {
+            font-size: 18px;
+        }
+
+        p {
+            font-size: 14px;
+        }
+
+        /* Input boyutlarını ayarlama */
+        .small-input {
+            width: 100%; 
+        }
+
+        .large-input {
+            width: 100%; 
+        }
+
+        .required-star {
+            color: red; 
         }
     </style>
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
@@ -167,17 +241,22 @@
                 <h3>Observed stars and first results</h3>
                 <p>Please upload the preliminary reduction results.</p>
 
+                <!-- Observer name kısmı eklendi -->
+                <label for="observer_name">Observer Name <span class="required-star">*</span></label>
+                <input type="text" id="observer_name" name="observer_name" required placeholder="Enter observer name">
+
                 <!-- Stars fields container -->
                 <div id="stars_container">
-                    <div class="row star-field" style="display: flex; gap: 20px; align-items: flex-start;">
-                        <div class="column" style="flex: 1;">
-                            <label for="observed_stars">Observed Stars</label>
-                            <input type="text" name="observed_stars[]" placeholder="Enter star">
+                    <div class="row">
+                        <div class="input-container">
+                            <label for="observed_stars">Observed Stars <span class="required-star">*</span></label>
+                            <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star" required>
                         </div>
 
-                        <div class="column" style="flex: 1;">
-                            <label for="filter">Filter</label>
-                            <select name="filter[]">
+                        <div class="input-container">
+                            <label for="filter">Filter <span class="required-star">*</span></label>
+                            <select name="filter[]" class="small-input" required>
+                                <option value="">Select filter</option>
                                 <option value="SDSS-u'">SDSS-u'</option>
                                 <option value="SDSS-g'">SDSS-g'</option>
                                 <option value="SDSS-r'">SDSS-r'</option>
@@ -191,14 +270,15 @@
                             </select>
                         </div>
 
-                        <div class="column" style="flex: 1;">
-                            <label for="exposure_time">Exposure Time</label>
-                            <input type="text" name="exposure_time[]" placeholder="Enter exposure time">
+                        <div class="input-container">
+                            <label for="exposure_time">Exposure Time <span class="required-star">*</span></label>
+                            <input type="text" name="exposure_time[]" class="small-input" placeholder="Enter exposure time" required>
                         </div>
 
-                        <div class="column" style="flex: 1;">
-                            <label for="binning">Binning</label>
-                            <select name="binning[]">
+                        <div class="input-container">
+                            <label for="binning">Binning <span class="required-star">*</span></label>
+                            <select name="binning[]" class="small-input" required>
+                                <option value="">Select binning</option>
                                 <option value="1x1">1x1</option>
                                 <option value="2x2">2x2</option>
                                 <option value="3x3">3x3</option>
@@ -206,19 +286,18 @@
                             </select>
                         </div>
 
-                        <div class="column" style="flex: 1;">
+                        <div class="input-container">
                             <label for="file_link">Preliminary Result</label>
-                            <input type="text" name="file_link[]" placeholder="Paste file link here">
+                            <input type="text" name="file_link[]" class="small-input" placeholder="Paste file link here">
                         </div>
                     </div>
                 </div>
 
                 <!-- Add Star and Remove Star Buttons -->
-                <div class="button-row" style="margin-top: 20px; text-align: center;">
+                <div class="button-row">
                     <button type="button" class="button small-button" onclick="addStarField()">Add Star</button>
                     <button type="button" class="button small-button remove-button hidden" id="remove_button" onclick="removeLastStarField()">Remove Star</button>
                 </div>
-
             </div>
 
             <!-- No fields (Reason for not doing the observation) -->
@@ -238,7 +317,10 @@
             </div>
         </div>
 
-        <button type="submit" class="button" onclick="sendMail(); return false;">Submit</button>
+        <!-- Submit butonu ortalandı -->
+        <div class="submit-container">
+            <button type="submit" class="button" onclick="sendMail(); return false;">Submit</button>
+        </div>
     </div>
 
     <script type="text/javascript">
@@ -246,20 +328,17 @@
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
             const newStarField = document.createElement('div');
-            newStarField.classList.add('row', 'star-field');
-            newStarField.style.display = 'flex';
-            newStarField.style.gap = '20px';
-            newStarField.style.alignItems = 'flex-start';
-
+            newStarField.classList.add('row');
             newStarField.innerHTML = `
-                <div class="column" style="flex: 1;">
-                    <label for="observed_stars">Observed Stars</label>
-                    <input type="text" name="observed_stars[]" placeholder="Enter star">
+                <div class="input-container">
+                    <label for="observed_stars">Observed Stars <span class="required-star">*</span></label>
+                    <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star" required>
                 </div>
 
-                <div class="column" style="flex: 1;">
-                    <label for="filter">Filter</label>
-                    <select name="filter[]">
+                <div class="input-container">
+                    <label for="filter">Filter <span class="required-star">*</span></label>
+                    <select name="filter[]" class="small-input" required>
+                        <option value="">Select filter</option>
                         <option value="SDSS-u'">SDSS-u'</option>
                         <option value="SDSS-g'">SDSS-g'</option>
                         <option value="SDSS-r'">SDSS-r'</option>
@@ -273,14 +352,15 @@
                     </select>
                 </div>
 
-                <div class="column" style="flex: 1;">
-                    <label for="exposure_time">Exposure Time</label>
-                    <input type="text" name="exposure_time[]" placeholder="Enter exposure time">
+                <div class="input-container">
+                    <label for="exposure_time">Exposure Time <span class="required-star">*</span></label>
+                    <input type="text" name="exposure_time[]" class="small-input" placeholder="Enter exposure time" required>
                 </div>
 
-                <div class="column" style="flex: 1;">
-                    <label for="binning">Binning</label>
-                    <select name="binning[]">
+                <div class="input-container">
+                    <label for="binning">Binning <span class="required-star">*</span></label>
+                    <select name="binning[]" class="small-input" required>
+                        <option value="">Select binning</option>
                         <option value="1x1">1x1</option>
                         <option value="2x2">2x2</option>
                         <option value="3x3">3x3</option>
@@ -288,12 +368,11 @@
                     </select>
                 </div>
 
-                <div class="column" style="flex: 1;">
+                <div class="input-container">
                     <label for="file_link">Preliminary Result</label>
-                    <input type="text" name="file_link[]" placeholder="Paste file link here">
+                    <input type="text" name="file_link[]" class="small-input" placeholder="Paste file link here">
                 </div>
             `;
-
             starContainer.appendChild(newStarField);
 
             // Show remove button if a new star is added
@@ -304,7 +383,7 @@
         // Remove last added star field
         function removeLastStarField() {
             const starContainer = document.getElementById('stars_container');
-            const starFields = starContainer.getElementsByClassName('star-field');
+            const starFields = starContainer.getElementsByClassName('row');
 
             if (starFields.length > 1) {
                 starFields[starFields.length - 1].remove();
