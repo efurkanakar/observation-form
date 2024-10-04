@@ -34,6 +34,10 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+        .inline {
+            display: inline-block;
+            width: 24%;
+        }
         button {
             background-color: #28a745;
             color: #fff;
@@ -57,11 +61,10 @@
         })();
 
         window.onload = function() {
-            // Bugünün tarihini alıp 12 saat çıkararak tarih alanına otomatik ekleme
+            // Bugünün tarihini alıp sadece tarih kısmını gösterme
             var dateInput = document.getElementById('observation_date');
             var now = new Date();
-            now.setHours(now.getHours() - 12);
-            var formattedDate = now.toISOString().slice(0, 16); // YYYY-MM-DDTHH:MM formatı
+            var formattedDate = now.toISOString().slice(0, 10); // YYYY-MM-DD formatı
             dateInput.value = formattedDate;
 
             // Gözlem yapıldı mı sorusuna göre alanların gösterilmesi
@@ -74,6 +77,16 @@
                 document.getElementById('no_fields').classList.remove('hidden');
             });
         };
+
+        // Gözlemci isimleri için dinamik alan ekleme
+        function addObserver() {
+            var observerDiv = document.getElementById('observers');
+            var newObserver = document.createElement('input');
+            newObserver.type = 'text';
+            newObserver.name = 'observer_name';
+            newObserver.placeholder = 'Observer Name';
+            observerDiv.appendChild(newObserver);
+        }
     </script>
 </head>
 <body>
@@ -83,7 +96,7 @@
     <form id="observation-form" enctype="multipart/form-data">
         <!-- Tarih alanı -->
         <label for="observation_date">Observation Date:</label>
-        <input type="datetime-local" id="observation_date" name="observation_date" required>
+        <input type="date" id="observation_date" name="observation_date" required>
 
         <!-- Gözlem yapıldı mı sorusu -->
         <label>Was the observation done?</label>
@@ -92,38 +105,74 @@
 
         <!-- Gözlem yapılmadıysa neden yapılmadığını soran checkbox'lar -->
         <div id="no_fields" class="hidden">
-            <label>Why was the observation not done? (Select all that apply)</label>
-            <input type="checkbox" name="reason_weather" value="weather"> Bad Weather<br>
-            <input type="checkbox" name="reason_equipment" value="equipment"> Equipment Failure<br>
-            <input type="checkbox" name="reason_technical" value="technical"> Technical Issues<br>
-            <input type="checkbox" name="reason_other" value="other"> Other
+            <label for="observer_name">Observer Name(s):</label>
+            <div id="observers">
+                <input type="text" name="observer_name" placeholder="Observer Name">
+            </div>
+            <button type="button" onclick="addObserver()">Add Another Observer</button><br><br>
+
+            <label>Please select the reason for not doing the observation:</label>
+            <input type="checkbox" name="reason_weather" value="cloudy weather"> Cloudy weather<br>
+            <input type="checkbox" name="reason_wind" value="strong wind"> Strong wind<br>
+            <input type="checkbox" name="reason_humidity" value="high humidity"> High humidity<br>
+            <input type="checkbox" name="reason_technical" value="technical issue"> Technical issue<br>
+            <input type="text" name="reason_other" placeholder="Other reason"><br>
+
+            <label for="additional_info_no">Additional Info:</label>
+            <textarea id="additional_info_no" name="additional_info_no"></textarea><br>
         </div>
 
-        <!-- Gözlem yapıldıysa gözlenen yıldız, filtre, poz süresi alanları -->
+        <!-- Gözlem yapıldıysa gözlenen yıldız, filtre, poz süresi ve binning alanları -->
         <div id="yes_fields" class="hidden">
-            <label for="observed_stars">Observed Stars:</label>
-            <input type="text" id="observed_stars" name="observed_stars" required>
+            <label for="observer_name">Observer Name(s):</label>
+            <div id="observers">
+                <input type="text" name="observer_name" placeholder="Observer Name">
+            </div>
+            <button type="button" onclick="addObserver()">Add Another Observer</button><br><br>
 
-            <label for="filter">Filter:</label>
-            <input type="text" id="filter" name="filter">
+            <div class="inline">
+                <label for="observed_stars">Observed Stars:</label>
+                <input type="text" id="observed_stars" name="observed_stars">
+            </div>
 
-            <label for="exposure_time">Exposure Time (seconds):</label>
-            <input type="number" id="exposure_time" name="exposure_time" required>
+            <div class="inline">
+                <label for="filter">Filter:</label>
+                <select id="filter" name="filter">
+                    <option value="SDSS-u'">SDSS-u'</option>
+                    <option value="SDSS-g'">SDSS-g'</option>
+                    <option value="SDSS-r'">SDSS-r'</option>
+                    <option value="SDSS-i'">SDSS-i'</option>
+                    <option value="SDSS-z'">SDSS-z'</option>
+                    <option value="Clear">Clear</option>
+                    <option value="Bessel-B">Bessel-B</option>
+                    <option value="Bessel-V">Bessel-V</option>
+                    <option value="Bessel-R">Bessel-R</option>
+                    <option value="Bessel-I">Bessel-I</option>
+                </select>
+            </div>
 
-            <label for="binning">Binning:</label>
-            <select id="binning" name="binning">
-                <option value="1x1">1x1</option>
-                <option value="2x2">2x2</option>
-            </select>
+            <div class="inline">
+                <label for="exposure_time">Exposure Time (seconds):</label>
+                <input type="number" id="exposure_time" name="exposure_time">
+            </div>
+
+            <div class="inline">
+                <label for="binning">Binning:</label>
+                <select id="binning" name="binning">
+                    <option value="1x1">1x1</option>
+                    <option value="2x2">2x2</option>
+                    <option value="3x3">3x3</option>
+                    <option value="4x4">4x4</option>
+                </select>
+            </div>
+
+            <!-- Preliminary Result Dosya Yükleme -->
+            <label for="file_upload">Preliminary Result (PNG, JPEG, JPG):</label>
+            <input type="file" id="file_upload" name="file_upload" accept=".png,.jpeg,.jpg"><br>
+
+            <label for="additional_info">Additional Info:</label>
+            <textarea id="additional_info" name="message"></textarea><br>
         </div>
-
-        <!-- Dosya yükleme alanı -->
-        <label for="file_upload">Upload File (PNG or ZIP):</label>
-        <input type="file" id="file_upload" name="file_upload" accept=".png,.zip" required>
-
-        <!-- Ek bilgi alanı -->
-        <label for="additional_info">Additional Info:</label>
-        <textarea id="additional_info" name="message"></textarea><br>
 
         <button type="submit" onclick="sendMail(); return false;">Submit</button>
     </form>
