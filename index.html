@@ -7,19 +7,16 @@
     <style>
         body {
             font-family: "Gill Sans", sans-serif;
-;
-
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
         }
 
-        /* Container'ı ortalamak için gerekli stil */
         .container {
             width: 90%;
-            max-width: 1000px; /* Max genişlik */
-            min-width: 300px;  /* Min genişlik */
-            margin: 0 auto; /* Ortalamak için */
+            max-width: 1000px;
+            min-width: 300px;
+            margin: 0 auto;
             padding: 20px;
         }
 
@@ -32,7 +29,6 @@
             border-bottom: 1px solid #ccc;
         }
 
-        /* Bölge 1 ve Bölge 2 için stil */
         .section {
             padding: 30px;
             margin: 20px 0;
@@ -41,7 +37,6 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Genel stil */
         label {
             font-weight: bold;
             display: block;
@@ -50,139 +45,99 @@
         }
 
         input, select, textarea {
-            width: 70%; 
-            padding: 8px;  
+            width: 100%;
+            padding: 8px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            font-size: 12px; 
+            font-size: 12px;
         }
 
-        .button {
-            background-color: #28a745;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px; 
-            width: 100%;
-            max-width: 200px; 
-        }
+.button.small-button {
+    background-color: #28a745;
+    color: white;
+    padding: 12px 12px;
+    font-size: 12px;
+    font-weight: normal;
+    width: 80px;
+    max-width: 80px;
+    border-radius: 5px;
+    border: 0px solid #28a745;
+    transition: background-color 0.2s ease;
+}
+
+.button.small-button:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
 
         .button:hover {
             background-color: #218838;
         }
 
-        /* Date ve Gözlem Yapıldı mı? bölgesi */
         .date-observation-row {
             display: flex;
-            justify-content: flex;
-            align-items: flex;
+            justify-content: space-between;
             gap: 50px;
         }
 
-        .date-column, .observation-column {
-            flex: 1;
-        }
-
-        /* Radyo butonları ve etiketler için hizalama */
-        .radio-group {
-            display: inline-flex;
-            gap: 50px;
-        }
-
-        .radio-group label {
-            display: inline-flex;
-            align-items: inline-flex;
-            gap: 5px;
-            font-weight: normal;
-            margin-top: 10px;
-            font-size: 14px;
-        }
-
-        /* Dinamik alanlar */
-        .hidden {
-            display: none;
-        }
-
-        .button-row {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .column {
-            display: flex;
-            flex-direction: flex;
-            align-items: center;
-        }
-
-        /* Input alanlarındaki boşluklar ve hizalama */
         .row {
             display: flex;
-            gap: 20px; /* Alanlar arasındaki boşluğu eşitledik */
+            gap: 20px;
             align-items: center;
         }
 
         .input-container {
             flex: 1;
-            margin-bottom: 20px; /* Daha düzenli bir boşluk için ayar */
         }
 
-        /* Küçük butonlar için stil */
-        .button.small-button {
-            padding: 5px 10px;
-            font-size: 12px;
-            width: auto;
-        }
+.button-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 0px;
+}
 
-        .remove-button {
-            background-color: #dc3545;
-            color: white;
-            padding: 5px 10px; 
-            font-size: 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
-            display: inline-block;
-            vertical-align: top;
-        }
-
-        .remove-button.hidden {
-            display: none;
-        }
-
-        /* Submit butonunu ortalamak için stil */
-        .submit-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        /* H3 ve paragrafın font size'ını değiştirmek için */
-        h3 {
-            font-size: 18px;
-        }
-
-        p {
-            font-size: 14px;
-        }
-
-        /* Input boyutlarını ayarlama */
         .small-input {
-            width: 100%; 
-        }
-
-        .large-input {
-            width: 100%; 
+            width: 100%;
         }
 
         .required-star {
-            color: red; 
+            color: red;
         }
+
+.remove-button {
+    background-color: #dc3545 !important;
+    color: white !important;
+    padding: 12px 12px;
+    font-size: 12px;
+    font-weight: normal;
+    width: 80px;
+    max-width: 80px;
+    border-radius: 5px;
+    border: 0px solid #dc3545 !important;
+    transition: background-color 0.2s ease;
+}
+
+.remove-button:hover {
+    background-color: #c82333 !important;
+    border-color: #c82333 !important;
+}
+
+        .input-container-special {
+            flex: 1 1 25%;
+            margin-bottom: 20px;
+        }
+
+        .input-container-large {
+            flex: 1 1 50%;
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
     </style>
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
@@ -195,6 +150,7 @@
             var formattedDate = now.toISOString().slice(0, 10); 
             document.getElementById('observation_date').value = formattedDate;
 
+            // Event listeners to show/hide sections based on radio button selection
             document.getElementById('observation_done_yes').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
@@ -205,6 +161,83 @@
                 document.getElementById('no_fields').classList.remove('hidden');
             });
         };
+
+        // Add new star fields
+        function addStarField() {
+            const starContainer = document.getElementById('stars_container');
+            const newStarField = document.createElement('div');
+            newStarField.classList.add('row');
+            newStarField.innerHTML = `
+                <div class="input-container-large">
+                    <label for="observed_stars">Observed Stars <span class="required-star">*</span></label>
+                    <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star" required>
+                </div>
+
+                <div class="input-container-special">
+                    <label for="filter">Filter <span class="required-star">*</span></label>
+                    <input list="filters" name="filter" required>
+                    <datalist id="filters">
+                        <option value="SDSS-u'">
+                        <option value="SDSS-g'">
+                        <option value="SDSS-r'">
+                        <option value="SDSS-i'">
+                        <option value="SDSS-z'">
+                        <option value="Clear">
+                        <option value="Bessel-B">
+                        <option value="Bessel-V">
+                        <option value="Bessel-R">
+                        <option value="Bessel-I">
+                    </datalist>
+                </div>
+
+                <div class="input-container-special">
+                    <label for="exposure_time">Exposure Time <span class="required-star">*</span></label>
+                    <input list="exposure_times" name="exposure_time" required>
+                    <datalist id="exposure_times">
+                        <option value="5s">
+                        <option value="10s">
+                        <option value="20s">
+                        <option value="30s">
+                        <option value="60s">
+                    </datalist>
+                </div>
+
+                <div class="input-container-special">
+                    <label for="binning">Binning <span class="required-star">*</span></label>
+                    <input list="binnings" name="binning" required>
+                    <datalist id="binnings">
+                        <option value="1x1">
+                        <option value="2x2">
+                        <option value="3x3">
+                        <option value="4x4">
+                    </datalist>
+                </div>
+
+                <div class="input-container-large">
+                    <label for="file_link">Preliminary Result</label>
+                    <input type="text" name="file_link[]" class="small-input" placeholder="Paste file link here">
+                </div>
+            `;
+            starContainer.appendChild(newStarField);
+
+            const removeButton = document.getElementById('remove_button');
+            removeButton.classList.remove('hidden');
+        }
+
+        // Remove last added star field
+        function removeLastStarField() {
+            const starContainer = document.getElementById('stars_container');
+            const starFields = starContainer.getElementsByClassName('row');
+
+            if (starFields.length > 1) {
+                starFields[starFields.length - 1].remove();
+            }
+
+            if (starFields.length === 1) {
+                const removeButton = document.getElementById('remove_button');
+                removeButton.classList.add('hidden');
+            }
+        }
     </script>
 </head>
 <body>
@@ -212,7 +245,6 @@
     <div class="container">
         <h1>Observation Info</h1>
 
-        <!-- Birinci Bölge: Tarih ve "Was the observation done?" -->
         <div class="section">
             <div class="date-observation-row">
                 <div class="date-column">
@@ -234,182 +266,113 @@
             </div>
         </div>
 
-        <!-- İkinci Bölge: Gözlem Yapıldı mı sorusuna göre dinamik içerik -->
-        <div class="section">
-            <!-- Yes fields (Details of the observation) -->
-            <div id="yes_fields" class="hidden">
-                <h3>Observed stars and first results</h3>
-                <p>Please upload the preliminary reduction results.</p>
-
-                <!-- Observer name kısmı eklendi -->
+        <!-- Yes fields (Hidden by default, will be shown when 'Yes' is selected) -->
+        <div id="yes_fields" class="hidden">
+            <div class="section">
                 <label for="observer_name">Observer Name <span class="required-star">*</span></label>
                 <input type="text" id="observer_name" name="observer_name" required placeholder="Enter observer name">
 
-                <!-- Stars fields container -->
                 <div id="stars_container">
                     <div class="row">
-                        <div class="input-container">
+                        <div class="input-container-large">
                             <label for="observed_stars">Observed Stars <span class="required-star">*</span></label>
                             <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star" required>
                         </div>
 
-                        <div class="input-container">
+                        <div class="input-container-special">
                             <label for="filter">Filter <span class="required-star">*</span></label>
-                            <select name="filter[]" class="small-input" required>
-                                <option value="">Select filter</option>
-                                <option value="SDSS-u'">SDSS-u'</option>
-                                <option value="SDSS-g'">SDSS-g'</option>
-                                <option value="SDSS-r'">SDSS-r'</option>
-                                <option value="SDSS-i'">SDSS-i'</option>
-                                <option value="SDSS-z'">SDSS-z'</option>
-                                <option value="Clear">Clear</option>
-                                <option value="Bessel-B">Bessel-B</option>
-                                <option value="Bessel-V">Bessel-V</option>
-                                <option value="Bessel-R">Bessel-R</option>
-                                <option value="Bessel-I">Bessel-I</option>
-                            </select>
+                            <input list="filters" name="filter" required>
+                            <datalist id="filters">
+                                <option value="SDSS-u'">
+                                <option value="SDSS-g'">
+                                <option value="SDSS-r'">
+                                <option value="SDSS-i'">
+                                <option value="SDSS-z'">
+                                <option value="Clear">
+                                <option value="Bessel-B">
+                                <option value="Bessel-V">
+                                <option value="Bessel-R">
+                                <option value="Bessel-I">
+                            </datalist>
                         </div>
 
-                        <div class="input-container">
+                        <div class="input-container-special">
                             <label for="exposure_time">Exposure Time <span class="required-star">*</span></label>
-                            <input type="text" name="exposure_time[]" class="small-input" placeholder="Enter exposure time" required>
+                            <input list="exposure_times" name="exposure_time" required>
+                            <datalist id="exposure_times">
+                                <option value="5s">
+                                <option value="10s">
+                                <option value="20s">
+                                <option value="30s">
+                                <option value="60s">
+                            </datalist>
                         </div>
 
-                        <div class="input-container">
+                        <div class="input-container-special">
                             <label for="binning">Binning <span class="required-star">*</span></label>
-                            <select name="binning[]" class="small-input" required>
-                                <option value="">Select binning</option>
-                                <option value="1x1">1x1</option>
-                                <option value="2x2">2x2</option>
-                                <option value="3x3">3x3</option>
-                                <option value="4x4">4x4</option>
-                            </select>
+                            <input list="binnings" name="binning" required>
+                            <datalist id="binnings">
+                                <option value="1x1">
+                                <option value="2x2">
+                                <option value="3x3">
+                                <option value="4x4">
+                            </datalist>
                         </div>
 
-                        <div class="input-container">
+                        <div class="input-container-large">
                             <label for="file_link">Preliminary Result</label>
                             <input type="text" name="file_link[]" class="small-input" placeholder="Paste file link here">
                         </div>
                     </div>
                 </div>
 
-                <!-- Add Star and Remove Star Buttons -->
                 <div class="button-row">
-                    <button type="button" class="button small-button" onclick="addStarField()">Add Star</button>
-                    <button type="button" class="button small-button remove-button hidden" id="remove_button" onclick="removeLastStarField()">Remove Star</button>
+                    <button type="button" class="button small-button" onclick="addStarField()">Add</button>
+                    <button type="button" class="button small-button remove-button hidden" id="remove_button" onclick="removeLastStarField()">Remove</button>
+                </div>
+
+                <div class="input-container">
+                    <label for="additional_info">Additional Info</label>
+                    <input type="text" id="additional_info" name="additional_info" placeholder="If there is any additional information, please write it here." required>
                 </div>
             </div>
+        </div>
 
-            <!-- No fields (Reason for not doing the observation) -->
-            <div id="no_fields" class="hidden">
-                <label for="observer_name_no">Observer(s)</label>
-                <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
+        <!-- No fields (Hidden by default, will be shown when 'No' is selected) -->
+        <div id="no_fields" class="hidden">
+            <div class="section">
+                <label for="observer_name_no">Observer Name <span class="required-star">*</span></label>
+                <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)" required>
+                <label style="margin-bottom: 15px;">Please select the reason for not doing the observation <span class="required-star">*</span></label>
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; width: 100%;">
+                    <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
+                        <input type="checkbox" name="reason_weather" value="Cloudy weather" style="width: auto; margin: 0;">
+                        <span>Cloudy Weather</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
+                        <input type="checkbox" name="reason_wind" value="Strong wind" style="width: auto; margin: 0;">
+                        <span>Strong wind</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
+                        <input type="checkbox" name="reason_humidity" value="High humidity" style="width: auto; margin: 0;">
+                        <span>High humidity</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
+                        <input type="checkbox" name="reason_technical" value="Technical issue" style="width: auto; margin: 0;">
+                        <span>Technical issue</span>
+                    </label>
+                </div>
+                <!-- Only the input field for "Other reason" -->
+                <input type="text" name="other_reason_text" placeholder="Other reason" style="margin-top: 10px;">
 
-                <label>Please select the reason for not doing the observation</label>
-                <input type="checkbox" name="reason_weather" value="Cloudy weather"> Cloudy weather<br>
-                <input type="checkbox" name="reason_wind" value="Strong wind"> Strong wind<br>
-                <input type="checkbox" name="reason_humidity" value="High humidity"> High humidity<br>
-                <input type="checkbox" name="reason_technical" value="Technical issue"> Technical issue<br>
-                <input type="text" name="reason_other" placeholder="Other reason"><br>
-
-                <label for="additional_info_no">Additional Info</label>
-                <textarea id="additional_info_no" name="additional_info_no" placeholder="If there is any information you would like to add, please write it."></textarea>
+                <div class="input-container">
+                    <label for="additional_info">Additional Info</label>
+                    <input type="text" id="additional_info" name="additional_info" placeholder="If there is any additional information, please write it here." required>
+                </div>
             </div>
         </div>
 
-        <!-- Submit butonu ortalandı -->
-        <div class="submit-container">
-            <button type="submit" class="button" onclick="sendMail(); return false;">Submit</button>
-        </div>
     </div>
 
-    <script type="text/javascript">
-        // Add new star fields
-        function addStarField() {
-            const starContainer = document.getElementById('stars_container');
-            const newStarField = document.createElement('div');
-            newStarField.classList.add('row');
-            newStarField.innerHTML = `
-                <div class="input-container">
-                    <label for="observed_stars">Observed Stars <span class="required-star">*</span></label>
-                    <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star" required>
-                </div>
-
-                <div class="input-container">
-                    <label for="filter">Filter <span class="required-star">*</span></label>
-                    <select name="filter[]" class="small-input" required>
-                        <option value="">Select filter</option>
-                        <option value="SDSS-u'">SDSS-u'</option>
-                        <option value="SDSS-g'">SDSS-g'</option>
-                        <option value="SDSS-r'">SDSS-r'</option>
-                        <option value="SDSS-i'">SDSS-i'</option>
-                        <option value="SDSS-z'">SDSS-z'</option>
-                        <option value="Clear">Clear</option>
-                        <option value="Bessel-B">Bessel-B</option>
-                        <option value="Bessel-V">Bessel-V</option>
-                        <option value="Bessel-R">Bessel-R</option>
-                        <option value="Bessel-I">Bessel-I</option>
-                    </select>
-                </div>
-
-                <div class="input-container">
-                    <label for="exposure_time">Exposure Time <span class="required-star">*</span></label>
-                    <input type="text" name="exposure_time[]" class="small-input" placeholder="Enter exposure time" required>
-                </div>
-
-                <div class="input-container">
-                    <label for="binning">Binning <span class="required-star">*</span></label>
-                    <select name="binning[]" class="small-input" required>
-                        <option value="">Select binning</option>
-                        <option value="1x1">1x1</option>
-                        <option value="2x2">2x2</option>
-                        <option value="3x3">3x3</option>
-                        <option value="4x4">4x4</option>
-                    </select>
-                </div>
-
-                <div class="input-container">
-                    <label for="file_link">Preliminary Result</label>
-                    <input type="text" name="file_link[]" class="small-input" placeholder="Paste file link here">
-                </div>
-            `;
-            starContainer.appendChild(newStarField);
-
-            // Show remove button if a new star is added
-            const removeButton = document.getElementById('remove_button');
-            removeButton.classList.remove('hidden');
-        }
-
-        // Remove last added star field
-        function removeLastStarField() {
-            const starContainer = document.getElementById('stars_container');
-            const starFields = starContainer.getElementsByClassName('row');
-
-            if (starFields.length > 1) {
-                starFields[starFields.length - 1].remove();
-            }
-
-            // Hide remove button if only one star field remains
-            if (starFields.length === 1) {
-                const removeButton = document.getElementById('remove_button');
-                removeButton.classList.add('hidden');
-            }
-        }
-
-        function sendMail() {
-            var form = document.getElementById('observation-form');
-
-            // Form verilerini EmailJS ile gönder
-            emailjs.sendForm('service_r7cv4z9', 'template_iu5c178', form)
-                .then(function(response) {
-                    console.log('SUCCESS!', response.status, response.text);
-                    alert("Form successfully submitted!");
-                    form.reset(); // Formu temizle
-                }, function(error) {
-                    console.log('FAILED...', error);
-                    alert("Failed to send the form. Please try again.");
-                });
-        }
-    </script>
 </body>
 </html>
