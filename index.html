@@ -18,19 +18,22 @@
 
     <form id="observation-form">
         <label for="observer_name">Observer Name:</label>
-        <input type="text" id="observer_name" name="observer_name" required><br><br>
+        <input type="text" id="observer_name" name="from_name" required><br><br> <!-- 'from_name' olmalı -->
 
         <label for="observed_stars">Observed Stars:</label>
-        <input type="text" id="observed_stars" name="observed_stars" required><br><br>
+        <input type="text" id="observed_stars" name="observed_stars" required><br><br> <!-- 'observed_stars' -->
 
         <label for="filter">Filter:</label>
-        <input type="text" id="filter" name="filter"><br><br>
+        <input type="text" id="filter" name="filter"><br><br> <!-- 'filter' -->
 
         <label for="exposure_time">Exposure Time:</label>
-        <input type="text" id="exposure_time" name="exposure_time"><br><br>
+        <input type="text" id="exposure_time" name="exposure_time"><br><br> <!-- 'exposure_time' -->
 
         <label for="binning">Binning:</label>
-        <input type="text" id="binning" name="binning"><br><br>
+        <input type="text" id="binning" name="binning"><br><br> <!-- 'binning' -->
+
+        <label for="additional_info">Additional Info:</label>
+        <textarea id="additional_info" name="message"></textarea><br><br> <!-- 'message' -->
 
         <button type="submit" onclick="sendMail(); return false;">Submit</button>
     </form>
