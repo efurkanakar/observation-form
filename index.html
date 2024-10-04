@@ -1,48 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Observation Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observation Form</title>
+    <!-- EmailJS kütüphanesini ekliyoruz -->
+    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init("YOUR_USER_ID"); // EmailJS dashboard'dan aldığınız USER_ID'yi buraya ekleyin
+        })();
+    </script>
 </head>
 <body>
-  <h2>Observation Form</h2>
-  <form id="observation-form">
-    <label for="observer">Observer Name:</label><br>
-    <input type="text" id="observer" name="observer"><br><br>
 
-    <label for="observed-stars">Observed Stars:</label><br>
-    <input type="text" id="observed-stars" name="observed_stars"><br><br>
+    <h1>Observation Form</h1>
 
-    <label for="filter">Filter:</label><br>
-    <input type="text" id="filter" name="filter"><br><br>
+    <form id="observation-form">
+        <label for="observer_name">Observer Name:</label>
+        <input type="text" id="observer_name" name="observer_name" required><br><br>
 
-    <label for="exposure-time">Exposure Time:</label><br>
-    <input type="text" id="exposure-time" name="exposure_time"><br><br>
+        <label for="observed_stars">Observed Stars:</label>
+        <input type="text" id="observed_stars" name="observed_stars" required><br><br>
 
-    <label for="binning">Binning:</label><br>
-    <input type="text" id="binning" name="binning"><br><br>
+        <label for="filter">Filter:</label>
+        <input type="text" id="filter" name="filter"><br><br>
 
-    <input type="submit" value="Submit">
-  </form>
+        <label for="exposure_time">Exposure Time:</label>
+        <input type="text" id="exposure_time" name="exposure_time"><br><br>
 
-  <p id="message"></p>
+        <label for="binning">Binning:</label>
+        <input type="text" id="binning" name="binning"><br><br>
 
-  <script>
-    document.getElementById('observation-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      var observer = document.getElementById('observer').value;
-      var observedStars = document.getElementById('observed-stars').value;
-      var filter = document.getElementById('filter').value;
-      var exposureTime = document.getElementById('exposure-time').value;
-      var binning = document.getElementById('binning').value;
+        <button type="submit" onclick="sendMail(); return false;">Submit</button>
+    </form>
 
-      var message = Observer: ${observer}\nObserved Stars: ${observedStars}\nFilter: ${filter}\nExposure Time: ${exposureTime}\nBinning: ${binning};
-      
-      alert('Form Submitted!\n' + message);
-      
-      // Here you would handle the form submission, like sending to a server
-    });
-  </script>
+    <script type="text/javascript">
+        function sendMail() {
+            var form = document.getElementById('observation-form');
+
+            // Form verilerini EmailJS ile gönder
+            emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', form)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    alert("Form successfully submitted!");
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    alert("Failed to send the form. Please try again.");
+                });
+        }
+    </script>
+
 </body>
 </html>
