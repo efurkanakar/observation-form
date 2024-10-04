@@ -8,7 +8,7 @@
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
         (function(){
-            emailjs.init("SPZ4gMRCG9sHemlE7"); // EmailJS dashboard'dan aldığınız USER_ID'yi buraya ekleyin
+            emailjs.init("SPZ4gMRCG9sHemlE7"); // API Public Key'i buraya ekliyoruz
         })();
     </script>
 </head>
@@ -39,7 +39,7 @@
         function sendMail() {
             var form = document.getElementById('observation-form');
 
-            // Form verilerini EmailJS ile gönder
+            // Form verilerini EmailJS ile gönderiyoruz
             emailjs.sendForm('service_r7cv4z9', 'template_iu5c178', form)
                 .then(function(response) {
                     console.log('SUCCESS!', response.status, response.text);
