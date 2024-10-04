@@ -5,46 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Observation Form</title>
     <style>
-        /* Genel stil ayarları */
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 10px;
+            margin: 0;
+            padding: 0;
             background-color: #f4f4f4;
         }
         h1 {
             color: #333;
-        }
-        form {
-            background-color: #fff;
+            margin: 0;
             padding: 20px;
-            border-radius: 5px;
+            text-align: center;
+            background-color: #e9ecef;
+            border-bottom: 1px solid #ccc;
+        }
+
+        /* Bölge 1 ve Bölge 2 için stil */
+        .section {
+            padding: 40px;
+            margin: 20px;
+            background-color: #fff;
+            border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
+        /* Genel stil */
         label {
-            display: block;
-            margin-top: 10px;
             font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
         }
+
         input, select, textarea {
-            width: 100%;
+            width: 50%;
             padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        .inline-block {
-            display: inline-block;
-            vertical-align: top;
-            margin-right: 10px;
-        }
-        .row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+
         .button {
             background-color: #28a745;
             color: white;
@@ -52,22 +51,52 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-right: 10px;
+            width: 100%;
         }
+
         .button:hover {
             background-color: #218838;
         }
-        .remove-button {
-            background-color: #dc3545;
+
+        /* Date ve Gözlem Yapıldı mı? bölgesi */
+        .date-observation-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px; /* Aradaki boşluğu kontrol etmek için gap kullanıyoruz */
         }
-        .remove-button:hover {
-            background-color: #c82333;
+
+        .date-column {
+            flex: 1;
+            max-width: 40%;
         }
+
+        .observation-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex: 1;
+            max-width: 20%;
+        }
+
+        /* Radyo butonları ve etiketler için hizalama */
+        .radio-group {
+            display: inline-flex;
+            gap: 50px;
+        }
+        .radio-group label {
+            display: inline-flex;
+            align-items: inline-flex;
+            gap: 5px;
+            font-weight: normal;
+            margin-top: 10px;
+        }
+        /* Dinamik alanlar */
         .hidden {
             display: none;
         }
+
     </style>
-    <!-- EmailJS kütüphanesini ekliyoruz -->
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
         (function(){
@@ -75,147 +104,131 @@
         })();
 
         window.onload = function() {
-            // Bugünün tarihini alıp sadece tarih kısmını gösterme
-            var dateInput = document.getElementById('observation_date');
             var now = new Date();
-            var formattedDate = now.toISOString().slice(0, 10); // YYYY-MM-DD formatı
-            dateInput.value = formattedDate;
+            var formattedDate = now.toISOString().slice(0, 10); 
+            document.getElementById('observation_date').value = formattedDate;
 
-            // Gözlem yapıldı mı sorusuna göre alanların gösterilmesi
             document.getElementById('observation_done_yes').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
             });
+
             document.getElementById('observation_done_no').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
             });
         };
-
-        // Gözlemci isimleri için dinamik alan ekleme ve çıkarma
-        function addObserver() {
-            var observerDiv = document.getElementById('observers');
-            var newObserverDiv = document.createElement('div');
-            newObserverDiv.classList.add('observer-entry');
-
-            var newObserver = document.createElement('input');
-            newObserver.type = 'text';
-            newObserver.name = 'observer_name';
-            newObserver.placeholder = 'Observer Name';
-
-            var removeButton = document.createElement('button');
-            removeButton.classList.add('button', 'remove-button');
-            removeButton.innerHTML = 'Remove';
-            removeButton.onclick = function() {
-                observerDiv.removeChild(newObserverDiv);
-            };
-
-            newObserverDiv.appendChild(newObserver);
-            newObserverDiv.appendChild(removeButton);
-            observerDiv.appendChild(newObserverDiv);
-        }
     </script>
 </head>
 <body>
 
-    <h1>Observation Form</h1>
+    <h1>Observation Info</h1>
 
-    <form id="observation-form">
-        <!-- Tarih ve gözlem yapıldı mı sorusu -->
-        <div class="row">
-            <div class="inline-block">
-                <label for="observation_date">Observation Date:</label>
+    <!-- Birinci Bölge: Tarih ve "Was the observation done?" -->
+    <div class="section">
+        <div class="date-observation-row">
+            <div class="date-column">
+                <label for="observation_date">Date</label>
                 <input type="date" id="observation_date" name="observation_date" required>
             </div>
 
-            <div class="inline-block">
-                <label>Was the observation done?</label>
-                <input type="radio" id="observation_done_yes" name="observation_done" value="yes" required> Yes
-                <input type="radio" id="observation_done_no" name="observation_done" value="no" required> No
+            <div class="observation-column">
+                <label for="observation_done">Was the observation done?</label>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" id="observation_done_yes" name="observation_done" value="yes" required> Yes
+                    </label>
+                    <label>
+                        <input type="radio" id="observation_done_no" name="observation_done" value="no" required> No
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- İkinci Bölge: Gözlem Yapıldı mı sorusuna göre dinamik içerik -->
+<div class="section">
+    <!-- Yes fields (Details of the observation) -->
+    <div id="yes_fields" class="hidden">
+        <h3>Observed stars and first results</h3>
+        <p>Please upload the preliminary reduction results.</p>
+
+        <!-- Observed Stars, Filter, Exposure Time, Binning ve Preliminary Result yan yana hizalanıyor -->
+        <div class="row" style="display: flex; gap: 20px; align-items: flex-start;">
+            <div class="column" style="flex: 1;">
+                <label for="observed_stars">Observed Stars</label>
+                <input type="text" id="observed_stars" name="observed_stars" placeholder="Enter star">
+            </div>
+
+            <div class="column" style="flex: 1;">
+                <label for="filter">Filter</label>
+                <select id="filter" name="filter">
+                    <option value="SDSS-u'">SDSS-u'</option>
+                    <option value="SDSS-g'">SDSS-g'</option>
+                    <option value="SDSS-r'">SDSS-r'</option>
+                    <option value="SDSS-i'">SDSS-i'</option>
+                    <option value="SDSS-z'">SDSS-z'</option>
+                    <option value="Clear">Clear</option>
+                    <option value="Bessel-B">Bessel-B</option>
+                    <option value="Bessel-V">Bessel-V</option>
+                    <option value="Bessel-R">Bessel-R</option>
+                    <option value="Bessel-I">Bessel-I</option>
+                </select>
+            </div>
+
+            <div class="column" style="flex: 1;">
+                <label for="exposure_time">Exposure Time</label>
+                <input type="text" id="exposure_time" name="exposure_time" placeholder="Enter exposure time">
+            </div>
+
+            <div class="column" style="flex: 1;">
+                <label for="binning">Binning</label>
+                <select id="binning" name="binning">
+                    <option value="1x1">1x1</option>
+                    <option value="2x2">2x2</option>
+                    <option value="3x3">3x3</option>
+                    <option value="4x4">4x4</option>
+                </select>
+            </div>
+
+            <div class="column" style="flex: 1;">
+                <label for="file_link">Preliminary Result</label>
+                <input type="text" id="file_link" name="file_link" placeholder="Paste file link here">
             </div>
         </div>
 
-        <!-- Gözlem yapılmadıysa neden yapılmadığını soran checkbox'lar -->
-        <div id="no_fields" class="hidden">
-            <label for="observer_name">Observer Name(s):</label>
-            <div id="observers">
-                <input type="text" name="observer_name" placeholder="Observer Name">
-            </div>
-            <button type="button" class="button" onclick="addObserver()">Add Another Observer</button><br><br>
-
-            <label>Please select the reason for not doing the observation:</label>
-            <input type="checkbox" name="reason_weather" value="cloudy weather"> Cloudy weather<br>
-            <input type="checkbox" name="reason_wind" value="strong wind"> Strong wind<br>
-            <input type="checkbox" name="reason_humidity" value="high humidity"> High humidity<br>
-            <input type="checkbox" name="reason_technical" value="technical issue"> Technical issue<br>
-            <input type="text" name="reason_other" placeholder="Other reason"><br>
-
-            <label for="additional_info_no">Additional Info:</label>
-            <textarea id="additional_info_no" name="additional_info_no"></textarea><br>
+        <div class="row">
+            <label for="additional_info">Additional Info</label>
+            <textarea id="additional_info" name="additional_info" placeholder="If there is any information you would like to add, please write it."></textarea>
         </div>
+    </div>
 
-        <!-- Gözlem yapıldıysa gözlenen yıldız, filtre, poz süresi ve binning alanları -->
-        <div id="yes_fields" class="hidden">
-            <label for="observer_name">Observer Name(s):</label>
-            <div id="observers">
-                <input type="text" name="observer_name" placeholder="Observer Name">
-            </div>
-            <button type="button" class="button" onclick="addObserver()">Add Another Observer</button><br><br>
+    <!-- No fields (Reason for not doing the observation) -->
+    <div id="no_fields" class="hidden">
+        <label for="observer_name_no">Observer(s)</label>
+        <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
 
-            <div class="row">
-                <div class="inline-block">
-                    <label for="observed_stars">Observed Stars:</label>
-                    <input type="text" id="observed_stars" name="observed_stars">
-                </div>
+        <label>Please select the reason for not doing the observation</label>
+        <input type="checkbox" name="reason_weather" value="Cloudy weather"> Cloudy weather<br>
+        <input type="checkbox" name="reason_wind" value="Strong wind"> Strong wind<br>
+        <input type="checkbox" name="reason_humidity" value="High humidity"> High humidity<br>
+        <input type="checkbox" name="reason_technical" value="Technical issue"> Technical issue<br>
+        <input type="text" name="reason_other" placeholder="Other reason"><br>
 
-                <div class="inline-block">
-                    <label for="filter">Filter:</label>
-                    <select id="filter" name="filter">
-                        <option value="SDSS-u'">SDSS-u'</option>
-                        <option value="SDSS-g'">SDSS-g'</option>
-                        <option value="SDSS-r'">SDSS-r'</option>
-                        <option value="SDSS-i'">SDSS-i'</option>
-                        <option value="SDSS-z'">SDSS-z'</option>
-                        <option value="Clear">Clear</option>
-                        <option value="Bessel-B">Bessel-B</option>
-                        <option value="Bessel-V">Bessel-V</option>
-                        <option value="Bessel-R">Bessel-R</option>
-                        <option value="Bessel-I">Bessel-I</option>
-                    </select>
-                </div>
+        <label for="additional_info_no">Additional Info</label>
+        <textarea id="additional_info_no" name="additional_info_no" placeholder="If there is any information you would like to add, please write it."></textarea>
+    </div>
+</div>
 
-                <div class="inline-block">
-                    <label for="exposure_time">Exposure Time (seconds):</label>
-                    <input type="number" id="exposure_time" name="exposure_time">
-                </div>
 
-                <div class="inline-block">
-                    <label for="binning">Binning:</label>
-                    <select id="binning" name="binning">
-                        <option value="1x1">1x1</option>
-                        <option value="2x2">2x2</option>
-                        <option value="3x3">3x3</option>
-                        <option value="4x4">4x4</option>
-                    </select>
-                </div>
-            </div>
 
-            <!-- Preliminary Result Link -->
-            <label for="file_link">Preliminary Result File Link (Google Drive, Dropbox, etc.):</label>
-            <input type="text" id="file_link" name="file_link" placeholder="Paste file link here"><br>
-
-            <label for="additional_info">Additional Info:</label>
-            <textarea id="additional_info" name="message"></textarea><br>
-        </div>
-
-        <button type="submit" class="button" onclick="sendMail(); return false;">Submit</button>
-    </form>
+    <button type="submit" class="button" onclick="sendMail(); return false;">Submit</button>
 
     <script type="text/javascript">
         function sendMail() {
             var form = document.getElementById('observation-form');
 
-            // Form verilerini EmailJS ile gönderiyoruz
+            // Form verilerini EmailJS ile gönder
             emailjs.sendForm('service_r7cv4z9', 'template_iu5c178', form)
                 .then(function(response) {
                     console.log('SUCCESS!', response.status, response.text);
