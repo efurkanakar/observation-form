@@ -20,10 +20,16 @@
             border-bottom: 1px solid #ccc;
         }
 
+        /* Gövdeyi daraltmak için container */
+        .container {
+            width: 80%; /* Genişliği daralttık */
+            margin: 0 auto; /* Ortalamak için margin ayarı */
+        }
+
         /* Bölge 1 ve Bölge 2 için stil */
         .section {
             padding: 40px;
-            margin: 20px;
+            margin: 20px 0;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -37,7 +43,7 @@
         }
 
         input, select, textarea {
-            width: 50%;
+            width: 100%; /* Genişliği yüzde bazında ayarladık */
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ccc;
@@ -124,103 +130,223 @@
 
     <h1>Observation Info</h1>
 
-    <!-- Birinci Bölge: Tarih ve "Was the observation done?" -->
-    <div class="section">
-        <div class="date-observation-row">
-            <div class="date-column">
-                <label for="observation_date">Date</label>
-                <input type="date" id="observation_date" name="observation_date" required>
-            </div>
+    <!-- Container gövdeyi daraltır ve ortalar -->
+    <div class="container">
 
-            <div class="observation-column">
-                <label for="observation_done">Was the observation done?</label>
-                <div class="radio-group">
-                    <label>
-                        <input type="radio" id="observation_done_yes" name="observation_done" value="yes" required> Yes
-                    </label>
-                    <label>
-                        <input type="radio" id="observation_done_no" name="observation_done" value="no" required> No
-                    </label>
+        <!-- Birinci Bölge: Tarih ve "Was the observation done?" -->
+        <div class="section">
+            <div class="date-observation-row">
+                <div class="date-column">
+                    <label for="observation_date">Date</label>
+                    <input type="date" id="observation_date" name="observation_date" required>
+                </div>
+
+                <div class="observation-column">
+                    <label for="observation_done">Was the observation done?</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" id="observation_done_yes" name="observation_done" value="yes" required> Yes
+                        </label>
+                        <label>
+                            <input type="radio" id="observation_done_no" name="observation_done" value="no" required> No
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-<!-- İkinci Bölge: Gözlem Yapıldı mı sorusuna göre dinamik içerik -->
-<div class="section">
-    <!-- Yes fields (Details of the observation) -->
-    <div id="yes_fields" class="hidden">
-        <h3>Observed stars and first results</h3>
-        <p>Please upload the preliminary reduction results.</p>
+    <!-- İkinci Bölge: Gözlem Yapıldı mı sorusuna göre dinamik içerik -->
+    <div class="section">
+        <!-- Yes fields (Details of the observation) -->
+        <div id="yes_fields" class="hidden">
+            <h3>Observed stars and first results</h3>
+            <p>Please upload the preliminary reduction results.</p>
 
-        <!-- Observed Stars, Filter, Exposure Time, Binning ve Preliminary Result yan yana hizalanıyor -->
-        <div class="row" style="display: flex; gap: 20px; align-items: flex-start;">
-            <div class="column" style="flex: 1;">
-                <label for="observed_stars">Observed Stars</label>
-                <input type="text" id="observed_stars" name="observed_stars" placeholder="Enter star">
+            <!-- Stars fields container -->
+            <div id="stars_container">
+                <div class="row star-field" style="display: flex; gap: 20px; align-items: flex-start;">
+                    <div class="column" style="flex: 1;">
+                        <label for="observed_stars">Observed Stars</label>
+                        <input type="text" name="observed_stars[]" placeholder="Enter star">
+                    </div>
+
+                    <div class="column" style="flex: 1;">
+                        <label for="filter">Filter</label>
+                        <select name="filter[]">
+                            <option value="SDSS-u'">SDSS-u'</option>
+                            <option value="SDSS-g'">SDSS-g'</option>
+                            <option value="SDSS-r'">SDSS-r'</option>
+                            <option value="SDSS-i'">SDSS-i'</option>
+                            <option value="SDSS-z'">SDSS-z'</option>
+                            <option value="Clear">Clear</option>
+                            <option value="Bessel-B">Bessel-B</option>
+                            <option value="Bessel-V">Bessel-V</option>
+                            <option value="Bessel-R">Bessel-R</option>
+                            <option value="Bessel-I">Bessel-I</option>
+                        </select>
+                    </div>
+
+                    <div class="column" style="flex: 1;">
+                        <label for="exposure_time">Exposure Time</label>
+                        <input type="text" name="exposure_time[]" placeholder="Enter exposure time">
+                    </div>
+
+                    <div class="column" style="flex: 1;">
+                        <label for="binning">Binning</label>
+                        <select name="binning[]">
+                            <option value="1x1">1x1</option>
+                            <option value="2x2">2x2</option>
+                            <option value="3x3">3x3</option>
+                            <option value="4x4">4x4</option>
+                        </select>
+                    </div>
+
+                    <div class="column" style="flex: 1;">
+                        <label for="file_link">Preliminary Result</label>
+                        <input type="text" name="file_link[]" placeholder="Paste file link here">
+                    </div>
+                </div>
             </div>
 
-            <div class="column" style="flex: 1;">
-                <label for="filter">Filter</label>
-                <select id="filter" name="filter">
-                    <option value="SDSS-u'">SDSS-u'</option>
-                    <option value="SDSS-g'">SDSS-g'</option>
-                    <option value="SDSS-r'">SDSS-r'</option>
-                    <option value="SDSS-i'">SDSS-i'</option>
-                    <option value="SDSS-z'">SDSS-z'</option>
-                    <option value="Clear">Clear</option>
-                    <option value="Bessel-B">Bessel-B</option>
-                    <option value="Bessel-V">Bessel-V</option>
-                    <option value="Bessel-R">Bessel-R</option>
-                    <option value="Bessel-I">Bessel-I</option>
-                </select>
+            <!-- Add Star and Remove Star Buttons -->
+            <div class="button-row" style="margin-top: 20px; text-align: center;">
+                <button type="button" class="button small-button" onclick="addStarField()">Add Star</button>
+                <button type="button" class="button small-button remove-button hidden" id="remove_button" onclick="removeLastStarField()">Remove Star</button>
             </div>
 
-            <div class="column" style="flex: 1;">
-                <label for="exposure_time">Exposure Time</label>
-                <input type="text" id="exposure_time" name="exposure_time" placeholder="Enter exposure time">
-            </div>
-
-            <div class="column" style="flex: 1;">
-                <label for="binning">Binning</label>
-                <select id="binning" name="binning">
-                    <option value="1x1">1x1</option>
-                    <option value="2x2">2x2</option>
-                    <option value="3x3">3x3</option>
-                    <option value="4x4">4x4</option>
-                </select>
-            </div>
-
-            <div class="column" style="flex: 1;">
-                <label for="file_link">Preliminary Result</label>
-                <input type="text" id="file_link" name="file_link" placeholder="Paste file link here">
-            </div>
         </div>
 
-        <div class="row">
-            <label for="additional_info">Additional Info</label>
-            <textarea id="additional_info" name="additional_info" placeholder="If there is any information you would like to add, please write it."></textarea>
+        <!-- No fields (Reason for not doing the observation) -->
+        <div id="no_fields" class="hidden">
+            <label for="observer_name_no">Observer(s)</label>
+            <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
+
+            <label>Please select the reason for not doing the observation</label>
+            <input type="checkbox" name="reason_weather" value="Cloudy weather"> Cloudy weather<br>
+            <input type="checkbox" name="reason_wind" value="Strong wind"> Strong wind<br>
+            <input type="checkbox" name="reason_humidity" value="High humidity"> High humidity<br>
+            <input type="checkbox" name="reason_technical" value="Technical issue"> Technical issue<br>
+            <input type="text" name="reason_other" placeholder="Other reason"><br>
+
+            <label for="additional_info_no">Additional Info</label>
+            <textarea id="additional_info_no" name="additional_info_no" placeholder="If there is any information you would like to add, please write it."></textarea>
         </div>
     </div>
 
-    <!-- No fields (Reason for not doing the observation) -->
-    <div id="no_fields" class="hidden">
-        <label for="observer_name_no">Observer(s)</label>
-        <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
+    </div> <!-- Container Bitişi -->
 
-        <label>Please select the reason for not doing the observation</label>
-        <input type="checkbox" name="reason_weather" value="Cloudy weather"> Cloudy weather<br>
-        <input type="checkbox" name="reason_wind" value="Strong wind"> Strong wind<br>
-        <input type="checkbox" name="reason_humidity" value="High humidity"> High humidity<br>
-        <input type="checkbox" name="reason_technical" value="Technical issue"> Technical issue<br>
-        <input type="text" name="reason_other" placeholder="Other reason"><br>
+    <script type="text/javascript">
+        // Add new star fields
+        function addStarField() {
+            const starContainer = document.getElementById('stars_container');
+            const newStarField = document.createElement('div');
+            newStarField.classList.add('row', 'star-field');
+            newStarField.style.display = 'flex';
+            newStarField.style.gap = '20px';
+            newStarField.style.alignItems = 'flex-start';
 
-        <label for="additional_info_no">Additional Info</label>
-        <textarea id="additional_info_no" name="additional_info_no" placeholder="If there is any information you would like to add, please write it."></textarea>
-    </div>
-</div>
+            newStarField.innerHTML = `
+                <div class="column" style="flex: 1;">
+                    <label for="observed_stars">Observed Stars</label>
+                    <input type="text" name="observed_stars[]" placeholder="Enter star">
+                </div>
 
+                <div class="column" style="flex: 1;">
+                    <label for="filter">Filter</label>
+                    <select name="filter[]">
+                        <option value="SDSS-u'">SDSS-u'</option>
+                        <option value="SDSS-g'">SDSS-g'</option>
+                        <option value="SDSS-r'">SDSS-r'</option>
+                        <option value="SDSS-i'">SDSS-i'</option>
+                        <option value="SDSS-z'">SDSS-z'</option>
+                        <option value="Clear">Clear</option>
+                        <option value="Bessel-B">Bessel-B</option>
+                        <option value="Bessel-V">Bessel-V</option>
+                        <option value="Bessel-R">Bessel-R</option>
+                        <option value="Bessel-I">Bessel-I</option>
+                    </select>
+                </div>
 
+                <div class="column" style="flex: 1;">
+                    <label for="exposure_time">Exposure Time</label>
+                    <input type="text" name="exposure_time[]" placeholder="Enter exposure time">
+                </div>
+
+                <div class="column" style="flex: 1;">
+                    <label for="binning">Binning</label>
+                    <select name="binning[]">
+                        <option value="1x1">1x1</option>
+                        <option value="2x2">2x2</option>
+                        <option value="3x3">3x3</option>
+                        <option value="4x4">4x4</option>
+                    </select>
+                </div>
+
+                <div class="column" style="flex: 1;">
+                    <label for="file_link">Preliminary Result</label>
+                    <input type="text" name="file_link[]" placeholder="Paste file link here">
+                </div>
+            `;
+
+            starContainer.appendChild(newStarField);
+
+            // Show remove button if a new star is added
+            const removeButton = document.getElementById('remove_button');
+            removeButton.classList.remove('hidden');
+        }
+
+        // Remove last added star field
+        function removeLastStarField() {
+            const starContainer = document.getElementById('stars_container');
+            const starFields = starContainer.getElementsByClassName('star-field');
+
+            if (starFields.length > 1) {
+                starFields[starFields.length - 1].remove();
+            }
+
+            // Hide remove button if only one star field remains
+            if (starFields.length === 1) {
+                const removeButton = document.getElementById('remove_button');
+                removeButton.classList.add('hidden');
+            }
+        }
+    </script>
+
+    <style>
+        .button.small-button {
+            padding: 5px 10px;
+            font-size: 12px;
+            width: auto;
+        }
+
+        .remove-button {
+            padding: 5px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .remove-button.hidden {
+            display: none;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+    </style>
 
     <button type="submit" class="button" onclick="sendMail(); return false;">Submit</button>
 
