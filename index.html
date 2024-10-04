@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Observation Form</title>
     <style>
-        /* Basit stil ayarları */
+        /* Genel stil ayarları */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -34,20 +34,34 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        .inline {
+        .inline-block {
             display: inline-block;
-            width: 23%;
+            vertical-align: top;
+            margin-right: 10px;
         }
-        button {
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .button {
             background-color: #28a745;
-            color: #fff;
-            padding: 10px 15px;
+            color: white;
+            padding: 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-right: 10px;
         }
-        button:hover {
+        .button:hover {
             background-color: #218838;
+        }
+        .remove-button {
+            background-color: #dc3545;
+        }
+        .remove-button:hover {
+            background-color: #c82333;
         }
         .hidden {
             display: none;
@@ -78,14 +92,27 @@
             });
         };
 
-        // Gözlemci isimleri için dinamik alan ekleme
+        // Gözlemci isimleri için dinamik alan ekleme ve çıkarma
         function addObserver() {
             var observerDiv = document.getElementById('observers');
+            var newObserverDiv = document.createElement('div');
+            newObserverDiv.classList.add('observer-entry');
+
             var newObserver = document.createElement('input');
             newObserver.type = 'text';
             newObserver.name = 'observer_name';
             newObserver.placeholder = 'Observer Name';
-            observerDiv.appendChild(newObserver);
+
+            var removeButton = document.createElement('button');
+            removeButton.classList.add('button', 'remove-button');
+            removeButton.innerHTML = 'Remove';
+            removeButton.onclick = function() {
+                observerDiv.removeChild(newObserverDiv);
+            };
+
+            newObserverDiv.appendChild(newObserver);
+            newObserverDiv.appendChild(removeButton);
+            observerDiv.appendChild(newObserverDiv);
         }
     </script>
 </head>
@@ -94,14 +121,19 @@
     <h1>Observation Form</h1>
 
     <form id="observation-form" enctype="multipart/form-data">
-        <!-- Tarih alanı -->
-        <label for="observation_date">Observation Date:</label>
-        <input type="date" id="observation_date" name="observation_date" required>
+        <!-- Tarih ve gözlem yapıldı mı sorusu -->
+        <div class="row">
+            <div class="inline-block">
+                <label for="observation_date">Observation Date:</label>
+                <input type="date" id="observation_date" name="observation_date" required>
+            </div>
 
-        <!-- Gözlem yapıldı mı sorusu -->
-        <label>Was the observation done?</label>
-        <input type="radio" id="observation_done_yes" name="observation_done" value="yes" required> Yes
-        <input type="radio" id="observation_done_no" name="observation_done" value="no" required> No
+            <div class="inline-block">
+                <label>Was the observation done?</label>
+                <input type="radio" id="observation_done_yes" name="observation_done" value="yes" required> Yes
+                <input type="radio" id="observation_done_no" name="observation_done" value="no" required> No
+            </div>
+        </div>
 
         <!-- Gözlem yapılmadıysa neden yapılmadığını soran checkbox'lar -->
         <div id="no_fields" class="hidden">
@@ -109,7 +141,7 @@
             <div id="observers">
                 <input type="text" name="observer_name" placeholder="Observer Name">
             </div>
-            <button type="button" onclick="addObserver()">Add Another Observer</button><br><br>
+            <button type="button" class="button" onclick="addObserver()">Add Another Observer</button><br><br>
 
             <label>Please select the reason for not doing the observation:</label>
             <input type="checkbox" name="reason_weather" value="cloudy weather"> Cloudy weather<br>
@@ -128,53 +160,55 @@
             <div id="observers">
                 <input type="text" name="observer_name" placeholder="Observer Name">
             </div>
-            <button type="button" onclick="addObserver()">Add Another Observer</button><br><br>
+            <button type="button" class="button" onclick="addObserver()">Add Another Observer</button><br><br>
 
-            <div class="inline">
-                <label for="observed_stars">Observed Stars:</label>
-                <input type="text" id="observed_stars" name="observed_stars">
+            <div class="row">
+                <div class="inline-block">
+                    <label for="observed_stars">Observed Stars:</label>
+                    <input type="text" id="observed_stars" name="observed_stars">
+                </div>
+
+                <div class="inline-block">
+                    <label for="filter">Filter:</label>
+                    <select id="filter" name="filter">
+                        <option value="SDSS-u'">SDSS-u'</option>
+                        <option value="SDSS-g'">SDSS-g'</option>
+                        <option value="SDSS-r'">SDSS-r'</option>
+                        <option value="SDSS-i'">SDSS-i'</option>
+                        <option value="SDSS-z'">SDSS-z'</option>
+                        <option value="Clear">Clear</option>
+                        <option value="Bessel-B">Bessel-B</option>
+                        <option value="Bessel-V">Bessel-V</option>
+                        <option value="Bessel-R">Bessel-R</option>
+                        <option value="Bessel-I">Bessel-I</option>
+                    </select>
+                </div>
+
+                <div class="inline-block">
+                    <label for="exposure_time">Exposure Time (seconds):</label>
+                    <input type="number" id="exposure_time" name="exposure_time">
+                </div>
+
+                <div class="inline-block">
+                    <label for="binning">Binning:</label>
+                    <select id="binning" name="binning">
+                        <option value="1x1">1x1</option>
+                        <option value="2x2">2x2</option>
+                        <option value="3x3">3x3</option>
+                        <option value="4x4">4x4</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="inline">
-                <label for="filter">Filter:</label>
-                <select id="filter" name="filter">
-                    <option value="SDSS-u'">SDSS-u'</option>
-                    <option value="SDSS-g'">SDSS-g'</option>
-                    <option value="SDSS-r'">SDSS-r'</option>
-                    <option value="SDSS-i'">SDSS-i'</option>
-                    <option value="SDSS-z'">SDSS-z'</option>
-                    <option value="Clear">Clear</option>
-                    <option value="Bessel-B">Bessel-B</option>
-                    <option value="Bessel-V">Bessel-V</option>
-                    <option value="Bessel-R">Bessel-R</option>
-                    <option value="Bessel-I">Bessel-I</option>
-                </select>
-            </div>
-
-            <div class="inline">
-                <label for="exposure_time">Exposure Time (seconds):</label>
-                <input type="number" id="exposure_time" name="exposure_time">
-            </div>
-
-            <div class="inline">
-                <label for="binning">Binning:</label>
-                <select id="binning" name="binning">
-                    <option value="1x1">1x1</option>
-                    <option value="2x2">2x2</option>
-                    <option value="3x3">3x3</option>
-                    <option value="4x4">4x4</option>
-                </select>
-            </div>
-
-            <!-- Preliminary Result Dosya Yükleme -->
-            <label for="file_upload">Preliminary Result (PNG, JPEG, JPG):</label>
-            <input type="file" id="file_upload" name="file_upload" accept=".png,.jpeg,.jpg"><br>
+            <!-- Preliminary Result Link -->
+            <label for="file_link">Preliminary Result File Link (Google Drive, Dropbox, etc.):</label>
+            <input type="text" id="file_link" name="file_link" placeholder="Paste file link here"><br>
 
             <label for="additional_info">Additional Info:</label>
             <textarea id="additional_info" name="message"></textarea><br>
         </div>
 
-        <button type="submit" onclick="sendMail(); return false;">Submit</button>
+        <button type="submit" class="button" onclick="sendMail(); return false;">Submit</button>
     </form>
 
     <script type="text/javascript">
