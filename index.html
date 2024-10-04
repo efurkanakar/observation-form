@@ -4,36 +4,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Observation Form</title>
+    <style>
+        /* Basit stil ayarları */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 10px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
     <!-- EmailJS kütüphanesini ekliyoruz -->
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
         (function(){
-            emailjs.init("SPZ4gMRCG9sHemlE7"); // API Public Key'i buraya ekliyoruz
+            emailjs.init("SPZ4gMRCG9sHemlE7"); // API Public Key
         })();
+
+        window.onload = function() {
+            // Bugünün tarihini alıp 12 saat çıkararak tarih alanına otomatik ekleme
+            var dateInput = document.getElementById('observation_date');
+            var now = new Date();
+            now.setHours(now.getHours() - 12);
+            var formattedDate = now.toISOString().slice(0, 16); // YYYY-MM-DDTHH:MM formatı
+            dateInput.value = formattedDate;
+
+            // Gözlem yapıldı mı sorusuna göre alanların gösterilmesi
+            document.getElementById('observation_done_yes').addEventListener('change', function() {
+                document.getElementById('yes_fields').classList.remove('hidden');
+                document.getElementById('no_fields').classList.add('hidden');
+            });
+            document.getElementById('observation_done_no').addEventListener('change', function() {
+                document.getElementById('yes_fields').classList.add('hidden');
+                document.getElementById('no_fields').classList.remove('hidden');
+            });
+        };
     </script>
 </head>
 <body>
 
     <h1>Observation Form</h1>
 
-    <form id="observation-form">
-        <label for="observer_name">Observer Name:</label>
-        <input type="text" id="observer_name" name="from_name" required><br><br> <!-- 'from_name' olmalı -->
+    <form id="observation-form" enctype="multipart/form-data">
+        <!-- Tarih alanı -->
+        <label for="observation_date">Observation Date:</label>
+        <input type="datetime-local" id="observation_date" name="observation_date" required>
 
-        <label for="observed_stars">Observed Stars:</label>
-        <input type="text" id="observed_stars" name="observed_stars" required><br><br> <!-- 'observed_stars' -->
+        <!-- Gözlem yapıldı mı sorusu -->
+        <label>Was the observation done?</label>
+        <input type="radio" id="observation_done_yes" name="observation_done" value="yes" required> Yes
+        <input type="radio" id="observation_done_no" name="observation_done" value="no" required> No
 
-        <label for="filter">Filter:</label>
-        <input type="text" id="filter" name="filter"><br><br> <!-- 'filter' -->
+        <!-- Gözlem yapılmadıysa neden yapılmadığını soran checkbox'lar -->
+        <div id="no_fields" class="hidden">
+            <label>Why was the observation not done? (Select all that apply)</label>
+            <input type="checkbox" name="reason_weather" value="weather"> Bad Weather<br>
+            <input type="checkbox" name="reason_equipment" value="equipment"> Equipment Failure<br>
+            <input type="checkbox" name="reason_technical" value="technical"> Technical Issues<br>
+            <input type="checkbox" name="reason_other" value="other"> Other
+        </div>
 
-        <label for="exposure_time">Exposure Time:</label>
-        <input type="text" id="exposure_time" name="exposure_time"><br><br> <!-- 'exposure_time' -->
+        <!-- Gözlem yapıldıysa gözlenen yıldız, filtre, poz süresi alanları -->
+        <div id="yes_fields" class="hidden">
+            <label for="observed_stars">Observed Stars:</label>
+            <input type="text" id="observed_stars" name="observed_stars" required>
 
-        <label for="binning">Binning:</label>
-        <input type="text" id="binning" name="binning"><br><br> <!-- 'binning' -->
+            <label for="filter">Filter:</label>
+            <input type="text" id="filter" name="filter">
 
+            <label for="exposure_time">Exposure Time (seconds):</label>
+            <input type="number" id="exposure_time" name="exposure_time" required>
+
+            <label for="binning">Binning:</label>
+            <select id="binning" name="binning">
+                <option value="1x1">1x1</option>
+                <option value="2x2">2x2</option>
+            </select>
+        </div>
+
+        <!-- Dosya yükleme alanı -->
+        <label for="file_upload">Upload File (PNG or ZIP):</label>
+        <input type="file" id="file_upload" name="file_upload" accept=".png,.zip" required>
+
+        <!-- Ek bilgi alanı -->
         <label for="additional_info">Additional Info:</label>
-        <textarea id="additional_info" name="message"></textarea><br><br> <!-- 'message' -->
+        <textarea id="additional_info" name="message"></textarea><br>
 
         <button type="submit" onclick="sendMail(); return false;">Submit</button>
     </form>
@@ -47,6 +137,7 @@
                 .then(function(response) {
                     console.log('SUCCESS!', response.status, response.text);
                     alert("Form successfully submitted!");
+                    form.reset(); // Formu temizle
                 }, function(error) {
                     console.log('FAILED...', error);
                     alert("Failed to send the form. Please try again.");
