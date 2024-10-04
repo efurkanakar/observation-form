@@ -11,6 +11,16 @@
             padding: 0;
             background-color: #f4f4f4;
         }
+
+        /* Container'ı ortalamak için gerekli stil */
+        .container {
+            width: 90%;
+            max-width: 800px; /* Max genişlik */
+            min-width: 300px;  /* Min genişlik */
+            margin: 0 auto; /* Ortalamak için */
+            padding: 20px;
+        }
+
         h1 {
             color: #333;
             margin: 0;
@@ -18,15 +28,6 @@
             text-align: center;
             background-color: #e9ecef;
             border-bottom: 1px solid #ccc;
-        }
-
-        /* Container stilini belirliyoruz ve genişliği sabitliyoruz */
-        .container {
-            width: 90%;
-            max-width: 800px; /* Max genişlik */
-            min-width: 320px;  /* Min genişlik */
-            margin: 0 auto;
-            padding: 20px;
         }
 
         /* Bölge 1 ve Bölge 2 için stil */
@@ -46,7 +47,7 @@
         }
 
         input, select, textarea {
-            width: 100%; /* Container genişliğine göre %100 genişlik */
+            width: 100%; /* Genişlik formun içinde kalacak */
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ccc;
@@ -72,7 +73,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 20px;
+            gap: 5px;
         }
 
         .date-column, .observation-column {
@@ -82,26 +83,15 @@
         /* Radyo butonları ve etiketler için hizalama */
         .radio-group {
             display: inline-flex;
-            gap: 30px;
+            gap: 50px;
         }
+
         .radio-group label {
             display: inline-flex;
-            align-items: center;
+            align-items: inline-flex;
             gap: 5px;
             font-weight: normal;
             margin-top: 10px;
-        }
-        
-        /* Media Queries ile daha küçük ekranlarda duyarlı düzenleme */
-        @media (max-width: 768px) {
-            .date-observation-row {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .button {
-                width: 100%;
-            }
         }
 
         /* Dinamik alanlar */
@@ -109,6 +99,16 @@
             display: none;
         }
 
+        .button-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+        }
     </style>
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
@@ -135,10 +135,9 @@
 </head>
 <body>
 
-    <h1>Observation Info</h1>
-
-    <!-- Container tüm sayfayı ortalar ve genişliği sınırlandırır -->
     <div class="container">
+        <h1>Observation Info</h1>
+
         <!-- Birinci Bölge: Tarih ve "Was the observation done?" -->
         <div class="section">
             <div class="date-observation-row">
@@ -226,3 +225,112 @@
             <div id="no_fields" class="hidden">
                 <label for="observer_name_no">Observer(s)</label>
                 <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
+
+                <label>Please select the reason for not doing the observation</label>
+                <input type="checkbox" name="reason_weather" value="Cloudy weather"> Cloudy weather<br>
+                <input type="checkbox" name="reason_wind" value="Strong wind"> Strong wind<br>
+                <input type="checkbox" name="reason_humidity" value="High humidity"> High humidity<br>
+                <input type="checkbox" name="reason_technical" value="Technical issue"> Technical issue<br>
+                <input type="text" name="reason_other" placeholder="Other reason"><br>
+
+                <label for="additional_info_no">Additional Info</label>
+                <textarea id="additional_info_no" name="additional_info_no" placeholder="If there is any information you would like to add, please write it."></textarea>
+            </div>
+        </div>
+
+        <button type="submit" class="button" onclick="sendMail(); return false;">Submit</button>
+    </div>
+
+    <script type="text/javascript">
+        // Add new star fields
+        function addStarField() {
+            const starContainer = document.getElementById('stars_container');
+            const newStarField = document.createElement('div');
+            newStarField.classList.add('row', 'star-field');
+            newStarField.style.display = 'flex';
+            newStarField.style.gap = '20px';
+            newStarField.style.alignItems = 'flex-start';
+
+            newStarField.innerHTML = `
+                <div class="column" style="flex: 1;">
+                    <label for="observed_stars">Observed Stars</label>
+                    <input type="text" name="observed_stars[]" placeholder="Enter star">
+                </div>
+
+                <div class="column" style="flex: 1;">
+                    <label for="filter">Filter</label>
+                    <select name="filter[]">
+                        <option value="SDSS-u'">SDSS-u'</option>
+                        <option value="SDSS-g'">SDSS-g'</option>
+                        <option value="SDSS-r'">SDSS-r'</option>
+                        <option value="SDSS-i'">SDSS-i'</option>
+                        <option value="SDSS-z'">SDSS-z'</option>
+                        <option value="Clear">Clear</option>
+                        <option value="Bessel-B">Bessel-B</option>
+                        <option value="Bessel-V">Bessel-V</option>
+                        <option value="Bessel-R">Bessel-R</option>
+                        <option value="Bessel-I">Bessel-I</option>
+                    </select>
+                </div>
+
+                <div class="column" style="flex: 1;">
+                    <label for="exposure_time">Exposure Time</label>
+                    <input type="text" name="exposure_time[]" placeholder="Enter exposure time">
+                </div>
+
+                <div class="column" style="flex: 1;">
+                    <label for="binning">Binning</label>
+                    <select name="binning[]">
+                        <option value="1x1">1x1</option>
+                        <option value="2x2">2x2</option>
+                        <option value="3x3">3x3</option>
+                        <option value="4x4">4x4</option>
+                    </select>
+                </div>
+
+                <div class="column" style="flex: 1;">
+                    <label for="file_link">Preliminary Result</label>
+                    <input type="text" name="file_link[]" placeholder="Paste file link here">
+                </div>
+            `;
+
+            starContainer.appendChild(newStarField);
+
+            // Show remove button if a new star is added
+            const removeButton = document.getElementById('remove_button');
+            removeButton.classList.remove('hidden');
+        }
+
+        // Remove last added star field
+        function removeLastStarField() {
+            const starContainer = document.getElementById('stars_container');
+            const starFields = starContainer.getElementsByClassName('star-field');
+
+            if (starFields.length > 1) {
+                starFields[starFields.length - 1].remove();
+            }
+
+            // Hide remove button if only one star field remains
+            if (starFields.length === 1) {
+                const removeButton = document.getElementById('remove_button');
+                removeButton.classList.add('hidden');
+            }
+        }
+
+        function sendMail() {
+            var form = document.getElementById('observation-form');
+
+            // Form verilerini EmailJS ile gönder
+            emailjs.sendForm('service_r7cv4z9', 'template_iu5c178', form)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    alert("Form successfully submitted!");
+                    form.reset(); // Formu temizle
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    alert("Failed to send the form. Please try again.");
+                });
+        }
+    </script>
+</body>
+</html>
