@@ -147,6 +147,9 @@
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
                 document.getElementById('submit_button').classList.remove('hidden'); // Submit butonunu göster
+                setYesFieldsValidation();  // Yes alanlarını required yap
+                resetNoFieldsValidation(); // No alanlarının required özelliğini kaldır
+
                 if (!firstTimeYesClicked) {
                     addStarField();  // Otomatik olarak bir yıldız bilgi alanı eklenir
                     firstTimeYesClicked = true;
@@ -157,6 +160,8 @@
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
                 document.getElementById('submit_button').classList.remove('hidden'); // Submit butonunu göster
+                setNoFieldsValidation();  // No alanlarını required yap
+                resetYesFieldsValidation(); // Yes alanlarının required özelliğini kaldır
             });
 
             // Form submit işlemi için event listener
@@ -166,53 +171,45 @@
                 // Gerekli alanların kontrolü
                 let isValid = true;
                 const observationDone = document.querySelector('input[name="observation_done"]:checked');
-                const observerName = document.getElementById('observer_name').value;
-                const filter = document.querySelector('input[name="filter"]').value;
-                const exposureTime = document.querySelector('input[name="exposure_time"]').value;
-                const binning = document.querySelector('input[name="binning"]').value;
-                const skyCondition = document.querySelector('input[name="sky_condition"]').value;
-                const observerNameNo = document.getElementById('observer_name_no').value;
 
                 if (!observationDone) {
                     alert('Please select if the observation was done.');
                     isValid = false;
-                } else if (observationDone.value === 'yes') {
-                    if (!observerName || !filter || !exposureTime || !binning || !skyCondition) {
-                        alert('Please fill in all required fields for the observation.');
-                        isValid = false;
-                    }
-                } else if (observationDone.value === 'no') {
-                    if (!observerNameNo) {
-                        alert('Please provide the observer name and the reason for not observing.');
-                        isValid = false;
-                    }
                 }
 
-                // Eğer tüm alanlar doğruysa submit işlemi gerçekleşir
                 if (isValid) {
-                    sendEmail(); // Email gönderim fonksiyonu
+                    alert('Form successfully submitted!');
+                    document.getElementById('observationForm').submit();
                 }
             });
         };
 
-        function sendEmail() {
-            emailjs.send("service_r7cv4z9", "template_ah4hbac", {
-                observer_name: document.getElementById('observer_name').value,
-                observation_date: document.getElementById('observation_date').value,
-                telescope_used: document.querySelector('select[name="telescope_used"]').value,
-                filter: document.querySelector('input[name="filter"]').value,
-                exposure_time: document.querySelector('input[name="exposure_time"]').value,
-                binning: document.querySelector('input[name="binning"]').value,
-                sky_condition: document.querySelector('input[name="sky_condition"]').value,
-                additional_info: document.getElementById('additional_info').value
-            }, "SPZ4gMRCG9sHemlE7")
-            .then(function(response) {
-                alert('Email successfully sent!');
-                console.log('SUCCESS!', response.status, response.text);
-            }, function(error) {
-                alert('Failed to send email. Please try again later.');
-                console.log('FAILED...', error);
-            });
+        // Yes alanlarını zorunlu yapar
+        function setYesFieldsValidation() {
+            document.getElementById('observer_name').setAttribute('required', 'required');
+            document.querySelector('input[name="filter"]').setAttribute('required', 'required');
+            document.querySelector('input[name="exposure_time"]').setAttribute('required', 'required');
+            document.querySelector('input[name="binning"]').setAttribute('required', 'required');
+            document.querySelector('input[name="sky_condition"]').setAttribute('required', 'required');
+        }
+
+        // No alanlarını zorunlu yapar
+        function setNoFieldsValidation() {
+            document.getElementById('observer_name_no').setAttribute('required', 'required');
+        }
+
+        // Yes alanlarındaki required özelliğini kaldırır
+        function resetYesFieldsValidation() {
+            document.getElementById('observer_name').removeAttribute('required');
+            document.querySelector('input[name="filter"]').removeAttribute('required');
+            document.querySelector('input[name="exposure_time"]').removeAttribute('required');
+            document.querySelector('input[name="binning"]').removeAttribute('required');
+            document.querySelector('input[name="sky_condition"]').removeAttribute('required');
+        }
+
+        // No alanlarındaki required özelliğini kaldırır
+        function resetNoFieldsValidation() {
+            document.getElementById('observer_name_no').removeAttribute('required');
         }
 
         function addStarField() {
@@ -322,14 +319,6 @@
             }
         }
 
-    </script>
-
-    <!-- EmailJS Script -->
-    <script type="text/javascript" src="https://cdn.emailjs.com/sdk/3.2/email.min.js"></script>
-    <script type="text/javascript">
-        (function(){
-            emailjs.init("SPZ4gMRCG9sHemlE7");
-        })();
     </script>
 </head>
 <body>
