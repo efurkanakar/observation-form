@@ -147,12 +147,20 @@
                     firstTimeYesClicked = true;
                 }
                 document.getElementById('submit_button').classList.remove('hidden');
+
+                // "No" seçeneği için gerekli input'lardan required'ı kaldır
+                document.getElementById('observer_name_no').removeAttribute('required');
+                document.getElementById('additional_info').removeAttribute('required');
             });
 
             document.getElementById('observation_done_no').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
+
+                // "No" seçeneği seçildiğinde gerekli input'lara required ekle
+                document.getElementById('observer_name_no').setAttribute('required', 'true');
+                document.getElementById('additional_info').setAttribute('required', 'true');
             });
         };
 
@@ -352,19 +360,13 @@
                         <button type="button" class="button small-button remove-button hidden" id="remove_button" onclick="removeLastStarField()">Remove</button>
                     </div>
 
-                    <!-- General Observation Info -->
-                    <div id="general_info_container"></div>
-
-                    <script>
-                        addGeneralObservationInfo();
-                    </script>
                 </div>
             </div>
 
             <div id="no_fields" class="hidden">
                 <div class="section">
                     <label for="observer_name_no">Observer Name <span class="required-star">*</span></label>
-                    <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)" required>
+                    <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
                     <label style="margin-bottom: 15px;">Please select the reason for not doing the observation <span class="required-star">*</span></label>
                     <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; width: 100%;">
                         <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
@@ -388,7 +390,7 @@
 
                     <div class="input-container">
                         <label for="additional_info">Additional Info</label>
-                        <input type="text" id="additional_info" name="additional_info" placeholder="If there is any additional information, please write it here." required>
+                        <input type="text" id="additional_info" name="additional_info" placeholder="If there is any additional information, please write it here.">
                     </div>
                 </div>
             </div>
