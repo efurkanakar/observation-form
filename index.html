@@ -136,44 +136,51 @@
 
     </style>
     <script type="text/javascript">
+        let firstTimeYesClicked = false;
+
         window.onload = function() {
             var now = new Date();
             var formattedDate = now.toISOString().slice(0, 10); 
             document.getElementById('observation_date').value = formattedDate;
 
-            // "Yes" seçeneği seçilirse ilgili alanları göster ve "No" alanlarını gizle
+            // Yes seçildiğinde Yes alanlarını zorunlu yap ve No alanlarını zorunlu olmaktan çıkar
             document.getElementById('observation_done_yes').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
                 document.getElementById('submit_button').classList.remove('hidden'); // Submit butonunu göster
-                resetNoFieldsValidation(); // No alanlarının required özelliğini kaldır
-                setYesFieldsValidation(); // Yes alanlarını required yap
-                if (document.getElementById('stars_container').children.length === 0) {
-                    addStarField(); // İlk açıldığında bir yıldız alanı ekle
+                setRequiredFieldsForYes();
+                resetRequiredFieldsForNo();
+                if (!firstTimeYesClicked) {
+                    addStarField();
+                    firstTimeYesClicked = true;
                 }
             });
 
-            // "No" seçeneği seçilirse ilgili alanları göster ve "Yes" alanlarını gizle
+            // No seçildiğinde No alanlarını zorunlu yap ve Yes alanlarını zorunlu olmaktan çıkar
             document.getElementById('observation_done_no').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
                 document.getElementById('submit_button').classList.remove('hidden'); // Submit butonunu göster
-                resetYesFieldsValidation(); // Yes alanlarının required özelliğini kaldır
-                setNoFieldsValidation(); // No alanlarını required yap
+                setRequiredFieldsForNo();
+                resetRequiredFieldsForYes();
             });
 
             // Form submit işlemi için event listener
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault(); // Otomatik form submit'i durduruluyor
 
-                // Eğer tüm alanlar doğruysa submit işlemi gerçekleşir
-                alert('Form successfully submitted!');
-                document.getElementById('observationForm').submit();
+                let isValid = true;
+
+                // Tüm zorunlu alanların dolu olup olmadığını kontrol et
+                if (isValid) {
+                    alert('Form successfully submitted!');
+                    document.getElementById('observationForm').submit();
+                }
             });
         };
 
-        // "Yes" alanlarını required yapar
-        function setYesFieldsValidation() {
+        // Yes alanlarını zorunlu yapar
+        function setRequiredFieldsForYes() {
             document.getElementById('observer_name').setAttribute('required', 'required');
             document.querySelector('input[name="filter"]').setAttribute('required', 'required');
             document.querySelector('input[name="exposure_time"]').setAttribute('required', 'required');
@@ -181,13 +188,13 @@
             document.querySelector('input[name="sky_condition"]').setAttribute('required', 'required');
         }
 
-        // "No" alanlarını required yapar
-        function setNoFieldsValidation() {
+        // No alanlarını zorunlu yapar
+        function setRequiredFieldsForNo() {
             document.getElementById('observer_name_no').setAttribute('required', 'required');
         }
 
-        // "Yes" alanlarındaki required özelliğini kaldırır
-        function resetYesFieldsValidation() {
+        // Yes alanlarındaki zorunlu işaretini kaldırır
+        function resetRequiredFieldsForYes() {
             document.getElementById('observer_name').removeAttribute('required');
             document.querySelector('input[name="filter"]').removeAttribute('required');
             document.querySelector('input[name="exposure_time"]').removeAttribute('required');
@@ -195,12 +202,11 @@
             document.querySelector('input[name="sky_condition"]').removeAttribute('required');
         }
 
-        // "No" alanlarındaki required özelliğini kaldırır
-        function resetNoFieldsValidation() {
+        // No alanlarındaki zorunlu işaretini kaldırır
+        function resetRequiredFieldsForNo() {
             document.getElementById('observer_name_no').removeAttribute('required');
         }
 
-        // Yıldız alanı eklemek için fonksiyon
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
             const newStarField = document.createElement('div');
@@ -269,6 +275,7 @@
             `;
             starContainer.appendChild(newStarField);
         }
+
     </script>
 </head>
 <body>
