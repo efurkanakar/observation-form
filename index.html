@@ -184,37 +184,52 @@
                 document.getElementById('general_info_section').classList.remove('hidden');
             });
 
+            // Form submit edildiğinde emaili gönder
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault(); // Formun otomatik olarak submit edilmesini durdur
                 sendEmail();
             });
         };
 
-emailjs.send("service_r7cv4z9", "template_ah4hbac", {
-    observation_date: document.getElementById("observation_date").value,
-    telescope_used: document.getElementById("telescope_used").value,
-    observation_done: document.querySelector('input[name="observation_done"]:checked').value,
-    observer_name: document.getElementById("observer_name").value,
-    observed_stars: [], // yıldızları bir array olarak topla
-    filter: document.getElementsByName("filter").value,
-    exposure_time: document.getElementsByName("exposure_time").value,
-    binning: document.getElementsByName("binning").value,
-    sky_condition: document.getElementsByName("sky_condition").value,
-    file_link: document.getElementsByName("file_link").value,
-    extra_info: document.getElementsByName("extra_info").value,
-    observer_name_no: document.getElementById("observer_name_no").value,
-    reason_weather: document.querySelector('input[name="reason_weather"]:checked') ? "Cloudy Weather" : "",
-    reason_wind: document.querySelector('input[name="reason_wind"]:checked') ? "Strong Wind" : "",
-    reason_humidity: document.querySelector('input[name="reason_humidity"]:checked') ? "High Humidity" : "",
-    reason_technical: document.querySelector('input[name="reason_technical"]:checked') ? "Technical Issue" : "",
-    other_reason_text: document.getElementsByName("other_reason_text").value,
-    general_info: document.getElementById("general_info").value
-}, "SPZ4gMRCG9sHemlE7")
-.then(function(response) {
-   console.log("SUCCESS!", response.status, response.text);
-}, function(error) {
-   console.log("FAILED...", error);
-});
+        function sendEmail() {
+            // Form verilerini topla
+            const templateParams = {
+                observation_date: document.getElementById("observation_date").value,
+                telescope_used: document.getElementById("telescope_used").value,
+                observation_done: document.querySelector('input[name="observation_done"]:checked').value,
+                observer_name: document.getElementById("observer_name").value,
+                observed_stars: collectStars(),
+                filter: document.getElementsByName("filter")[0]?.value || "",
+                exposure_time: document.getElementsByName("exposure_time")[0]?.value || "",
+                binning: document.getElementsByName("binning")[0]?.value || "",
+                sky_condition: document.getElementsByName("sky_condition")[0]?.value || "",
+                file_link: document.getElementsByName("file_link")[0]?.value || "",
+                extra_info: document.getElementsByName("extra_info")[0]?.value || "",
+                observer_name_no: document.getElementById("observer_name_no").value || "",
+                reason_weather: document.querySelector('input[name="reason_weather"]:checked') ? "Cloudy Weather" : "",
+                reason_wind: document.querySelector('input[name="reason_wind"]:checked') ? "Strong Wind" : "",
+                reason_humidity: document.querySelector('input[name="reason_humidity"]:checked') ? "High Humidity" : "",
+                reason_technical: document.querySelector('input[name="reason_technical"]:checked') ? "Technical Issue" : "",
+                other_reason_text: document.getElementsByName("other_reason_text")[0]?.value || "",
+                general_info: document.getElementById("general_info").value
+            };
+
+            // Email gönderme
+            emailjs.send("service_r7cv4z9", "template_ah4hbac", templateParams)
+            .then(function(response) {
+               console.log("SUCCESS!", response.status, response.text);
+               alert("Email Sent Successfully!");
+            }, function(error) {
+               console.log("FAILED...", error);
+               alert("Failed to send email. Please try again.");
+            });
+        }
+
+        // Yıldız bilgilerini toplamak için fonksiyon
+        function collectStars() {
+            const stars = document.querySelectorAll('input[name="observed_stars[]"]');
+            return Array.from(stars).map(star => star.value).filter(star => star !== '');
+        }
 
         // Yıldız bilgilerini eklemek için fonksiyon
         function addStarField() {
