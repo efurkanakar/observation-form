@@ -135,12 +135,7 @@
         }
 
     </style>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@2.6.4/dist/email.min.js"></script>
     <script type="text/javascript">
-        (function(){
-            emailjs.init("SPZ4gMRCG9sHemlE7"); // Public Key
-        })();
-
         let firstTimeYesClicked = false;
 
         window.onload = function() {
@@ -148,104 +143,103 @@
             var formattedDate = now.toISOString().slice(0, 10); 
             document.getElementById('observation_date').value = formattedDate;
 
+            // "Yes" seçeneği seçilirse ilgili alanları göster ve "No" alanlarını gizle
             document.getElementById('observation_done_yes').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
-
+                document.getElementById('submit_button').classList.remove('hidden');
+                document.getElementById('general_info_section').classList.remove('hidden');
                 if (!firstTimeYesClicked) {
-                    addStarField();  // Otomatik olarak bir yıldız bilgi alanı eklenir
+                    addStarField(); // Otomatik olarak bir yıldız bilgi alanı eklenir
                     firstTimeYesClicked = true;
                 }
             });
 
+            // "No" seçeneği seçilirse ilgili alanları göster ve "Yes" alanlarını gizle
             document.getElementById('observation_done_no').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
-            });
-
-            // Form submit işlemi için event listener
-            document.getElementById('observationForm').addEventListener('submit', function(event) {
-                event.preventDefault(); // Otomatik form submit'i durduruluyor
-
-                // EmailJS kullanarak formu gönderiyoruz
-                emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', this)
-                    .then(function() {
-                        alert('Form successfully submitted!');
-                    }, function(error) {
-                        console.error('FAILED...', error);
-                        alert('There was an error sending the form.');
-                    });
+                document.getElementById('submit_button').classList.remove('hidden');
+                document.getElementById('general_info_section').classList.remove('hidden');
             });
         };
 
+        // Yıldız bilgilerini eklemek için fonksiyon
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
             const newStarField = document.createElement('div');
-            newStarField.classList.add('row');
+            newStarField.classList.add('section');
             newStarField.innerHTML = `
-                <div class="input-container-wide">
-                    <label for="observed_stars">Object Name</label>
-                    <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star">
-                </div>
+                <div class="row">
+                    <div class="input-container-wide">
+                        <label for="observed_stars">Object Name</label>
+                        <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star">
+                    </div>
 
-                <div class="input-container-special">
-                    <label for="filter">Filter</label>
-                    <input list="filters" name="filter" placeholder="Enter filter">
-                    <datalist id="filters">
-                        <option value="SDSS-u'">
-                        <option value="SDSS-g'">
-                        <option value="SDSS-r'">
-                        <option value="SDSS-i'">
-                        <option value="SDSS-z'">
-                        <option value="Clear">
-                        <option value="Bessel-B">
-                        <option value="Bessel-V">
-                        <option value="Bessel-R">
-                        <option value="Bessel-I">
-                    </datalist>
-                </div>
+                    <div class="input-container-special">
+                        <label for="filter">Filter</label>
+                        <input list="filters" name="filter" placeholder="Enter filter">
+                        <datalist id="filters">
+                            <option value="SDSS-u'">
+                            <option value="SDSS-g'">
+                            <option value="SDSS-r'">
+                            <option value="SDSS-i'">
+                            <option value="SDSS-z'">
+                            <option value="Clear">
+                            <option value="Bessel-B">
+                            <option value="Bessel-V">
+                            <option value="Bessel-R">
+                            <option value="Bessel-I">
+                        </datalist>
+                    </div>
 
-                <div class="input-container-special">
-                    <label for="exposure_time">Exposure Time</label>
-                    <input list="exposure_times" name="exposure_time" placeholder="Enter exposure time">
-                    <datalist id="exposure_times">
-                        <option value="5s">
-                        <option value="10s">
-                        <option value="20s">
-                        <option value="30s">
-                        <option value="60s">
-                    </datalist>
-                </div>
+                    <div class="input-container-special">
+                        <label for="exposure_time">Exposure Time</label>
+                        <input list="exposure_times" name="exposure_time" placeholder="Enter exposure time">
+                        <datalist id="exposure_times">
+                            <option value="5s">
+                            <option value="10s">
+                            <option value="20s">
+                            <option value="30s">
+                            <option value="60s">
+                        </datalist>
+                    </div>
 
-                <div class="input-container-special">
-                    <label for="binning">Binning</label>
-                    <input list="binnings" name="binning" placeholder="Enter binning">
-                    <datalist id="binnings">
-                        <option value="1x1">
-                        <option value="2x2">
-                        <option value="3x3">
-                        <option value="4x4">
-                    </datalist>
-                </div>
+                    <div class="input-container-special">
+                        <label for="binning">Binning</label>
+                        <input list="binnings" name="binning" placeholder="Enter binning">
+                        <datalist id="binnings">
+                            <option value="1x1">
+                            <option value="2x2">
+                            <option value="3x3">
+                            <option value="4x4">
+                        </datalist>
+                    </div>
 
-                <div class="input-container-special">
-                    <label for="sky_condition">Sky Condition</label>
-                    <input list="sky_conditions" name="sky_condition" placeholder="Enter sky condition">
-                    <datalist id="sky_conditions">
-                        <option value="Cloudy">
-                        <option value="Partly Cloudy">
-                        <option value="Clear">
-                        <option value="Transparent">
-                    </datalist>
-                </div>
+                    <div class="input-container-special">
+                        <label for="sky_condition">Sky Condition</label>
+                        <input list="sky_conditions" name="sky_condition" placeholder="Enter sky condition">
+                        <datalist id="sky_conditions">
+                            <option value="Cloudy">
+                            <option value="Partly Cloudy">
+                            <option value="Clear">
+                            <option value="Transparent">
+                        </datalist>
+                    </div>
 
-                <div class="input-container-wide"> 
-                    <label for="file_link">Preliminary Result</label>
-                    <input type="text" name="file_link[]" class="small-input" placeholder="Paste file link here">
+                    <div class="input-container-wide"> 
+                        <label for="file_link">Preliminary Result</label>
+                        <input type="text" name="file_link[]" class="small-input" placeholder="Paste file link here">
+                    </div>
+                </div>
+                <div class="input-container-large">
+                    <label for="extra_info">Additional Info</label>
+                    <input type="text" name="extra_info[]" class="small-input" placeholder="Enter any issues encountered during the observation (if any)">
                 </div>
             `;
             starContainer.appendChild(newStarField);
         }
+
     </script>
 </head>
 <body>
@@ -284,6 +278,7 @@
                 </div>
             </div>
 
+            <!-- Yes seçilirse görüntülenecek alanlar -->
             <div id="yes_fields" class="hidden">
                 <div class="section">
                     <label for="observer_name">Observer Name</label>
@@ -297,6 +292,7 @@
                 </div>
             </div>
 
+            <!-- No seçilirse görüntülenecek alanlar -->
             <div id="no_fields" class="hidden">
                 <div class="section">
                     <label for="observer_name_no">Observer Name</label>
@@ -321,17 +317,18 @@
                         </label>
                     </div>
                     <input type="text" name="other_reason_text" placeholder="Other reason" style="margin-top: 10px;">
-
-                    <div class="input-container">
-                        <label for="additional_info">Additional Info</label>
-                        <input type="text" id="additional_info" name="additional_info" placeholder="If there is any additional information, please write it here.">
-                    </div>
                 </div>
+            </div>
+
+            <!-- General Info -->
+            <div id="general_info_section" class="hidden section">
+                <label for="general_info">General Info</label>
+                <input type="text" id="general_info" name="general_info" placeholder="Enter any general observation information">
             </div>
 
             <!-- Submit Butonu -->
             <div class="button-row">
-                <input type="submit" class="button small-button" id="submit_button" value="Submit">
+                <input type="submit" class="button small-button hidden" id="submit_button" value="Submit">
             </div>
         </form>
     </div>
