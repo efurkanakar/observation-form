@@ -135,7 +135,12 @@
         }
 
     </style>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@2.6.4/dist/email.min.js"></script>
     <script type="text/javascript">
+        (function(){
+            emailjs.init("SPZ4gMRCG9sHemlE7"); // Public Key
+        })();
+
         let firstTimeYesClicked = false;
 
         window.onload = function() {
@@ -146,9 +151,6 @@
             document.getElementById('observation_done_yes').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
-                document.getElementById('submit_button').classList.remove('hidden'); // Submit butonunu göster
-                setYesFieldsValidation();  // Yes alanlarını required yap
-                resetNoFieldsValidation(); // No alanlarının required özelliğini kaldır
 
                 if (!firstTimeYesClicked) {
                     addStarField();  // Otomatik olarak bir yıldız bilgi alanı eklenir
@@ -159,58 +161,22 @@
             document.getElementById('observation_done_no').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
-                document.getElementById('submit_button').classList.remove('hidden'); // Submit butonunu göster
-                setNoFieldsValidation();  // No alanlarını required yap
-                resetYesFieldsValidation(); // Yes alanlarının required özelliğini kaldır
             });
 
             // Form submit işlemi için event listener
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault(); // Otomatik form submit'i durduruluyor
 
-                // Gerekli alanların kontrolü
-                let isValid = true;
-                const observationDone = document.querySelector('input[name="observation_done"]:checked');
-
-                if (!observationDone) {
-                    alert('Please select if the observation was done.');
-                    isValid = false;
-                }
-
-                if (isValid) {
-                    alert('Form successfully submitted!');
-                    document.getElementById('observationForm').submit();
-                }
+                // EmailJS kullanarak formu gönderiyoruz
+                emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', this)
+                    .then(function() {
+                        alert('Form successfully submitted!');
+                    }, function(error) {
+                        console.error('FAILED...', error);
+                        alert('There was an error sending the form.');
+                    });
             });
         };
-
-        // Yes alanlarını zorunlu yapar
-        function setYesFieldsValidation() {
-            document.getElementById('observer_name').setAttribute('required', 'required');
-            document.querySelector('input[name="filter"]').setAttribute('required', 'required');
-            document.querySelector('input[name="exposure_time"]').setAttribute('required', 'required');
-            document.querySelector('input[name="binning"]').setAttribute('required', 'required');
-            document.querySelector('input[name="sky_condition"]').setAttribute('required', 'required');
-        }
-
-        // No alanlarını zorunlu yapar
-        function setNoFieldsValidation() {
-            document.getElementById('observer_name_no').setAttribute('required', 'required');
-        }
-
-        // Yes alanlarındaki required özelliğini kaldırır
-        function resetYesFieldsValidation() {
-            document.getElementById('observer_name').removeAttribute('required');
-            document.querySelector('input[name="filter"]').removeAttribute('required');
-            document.querySelector('input[name="exposure_time"]').removeAttribute('required');
-            document.querySelector('input[name="binning"]').removeAttribute('required');
-            document.querySelector('input[name="sky_condition"]').removeAttribute('required');
-        }
-
-        // No alanlarındaki required özelliğini kaldırır
-        function resetNoFieldsValidation() {
-            document.getElementById('observer_name_no').removeAttribute('required');
-        }
 
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
@@ -218,13 +184,13 @@
             newStarField.classList.add('row');
             newStarField.innerHTML = `
                 <div class="input-container-wide">
-                    <label for="observed_stars">Object Name <span class="required-star">*</span></label>
-                    <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star" required>
+                    <label for="observed_stars">Object Name</label>
+                    <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star">
                 </div>
 
                 <div class="input-container-special">
-                    <label for="filter">Filter <span class="required-star">*</span></label>
-                    <input list="filters" name="filter" placeholder="Enter filter" required>
+                    <label for="filter">Filter</label>
+                    <input list="filters" name="filter" placeholder="Enter filter">
                     <datalist id="filters">
                         <option value="SDSS-u'">
                         <option value="SDSS-g'">
@@ -240,8 +206,8 @@
                 </div>
 
                 <div class="input-container-special">
-                    <label for="exposure_time">Exposure Time <span class="required-star">*</span></label>
-                    <input list="exposure_times" name="exposure_time" placeholder="Enter exposure time" required>
+                    <label for="exposure_time">Exposure Time</label>
+                    <input list="exposure_times" name="exposure_time" placeholder="Enter exposure time">
                     <datalist id="exposure_times">
                         <option value="5s">
                         <option value="10s">
@@ -252,8 +218,8 @@
                 </div>
 
                 <div class="input-container-special">
-                    <label for="binning">Binning <span class="required-star">*</span></label>
-                    <input list="binnings" name="binning" placeholder="Enter binning" required>
+                    <label for="binning">Binning</label>
+                    <input list="binnings" name="binning" placeholder="Enter binning">
                     <datalist id="binnings">
                         <option value="1x1">
                         <option value="2x2">
@@ -263,8 +229,8 @@
                 </div>
 
                 <div class="input-container-special">
-                    <label for="sky_condition">Sky Condition <span class="required-star">*</span></label>
-                    <input list="sky_conditions" name="sky_condition" placeholder="Enter sky condition" required>
+                    <label for="sky_condition">Sky Condition</label>
+                    <input list="sky_conditions" name="sky_condition" placeholder="Enter sky condition">
                     <datalist id="sky_conditions">
                         <option value="Cloudy">
                         <option value="Partly Cloudy">
@@ -279,46 +245,7 @@
                 </div>
             `;
             starContainer.appendChild(newStarField);
-
-            const additionalInfo = document.createElement('div');
-            additionalInfo.classList.add('input-container-large');
-            additionalInfo.innerHTML = `
-                <label for="extra_info">Additional Info</label>
-                <input type="text" name="extra_info[]" class="small-input" placeholder="Enter any issues encountered during the observation (if any)">
-            `;
-            starContainer.appendChild(additionalInfo);
-
-            toggleRemoveButton();
         }
-
-        function removeLastStarField() {
-            const starContainer = document.getElementById('stars_container');
-            const starFields = starContainer.querySelectorAll('.row');
-
-            if (starFields.length > 1) {
-                starContainer.removeChild(starFields[starFields.length - 1]);
-            }
-
-            const additionalInfos = starContainer.querySelectorAll('.input-container-large');
-            if (additionalInfos.length > 1) {
-                starContainer.removeChild(additionalInfos[additionalInfos.length - 1]);
-            }
-
-            toggleRemoveButton();
-        }
-
-        function toggleRemoveButton() {
-            const starContainer = document.getElementById('stars_container');
-            const removeButton = document.getElementById('remove_button');
-            const starFields = starContainer.querySelectorAll('.row');
-
-            if (starFields.length > 1) {
-                removeButton.classList.remove('hidden');
-            } else {
-                removeButton.classList.add('hidden');
-            }
-        }
-
     </script>
 </head>
 <body>
@@ -331,12 +258,12 @@
                 <div class="date-observation-row">
                     <div class="date-column">
                         <label for="observation_date">Date</label>
-                        <input type="date" id="observation_date" name="observation_date" required>
+                        <input type="date" id="observation_date" name="observation_date">
                     </div>
 
                     <div class="telescope-column">
                         <label for="telescope_used">Telescope Used</label>
-                        <select name="telescope_used" required>
+                        <select name="telescope_used">
                             <option value="T35">T35</option>
                             <option value="T80">T80</option>
                             <option value="T100">T100</option>
@@ -347,10 +274,10 @@
                         <label for="observation_done">Was the observation done?</label>
                         <div class="radio-group">
                             <label>
-                                <input type="radio" id="observation_done_yes" name="observation_done" value="yes" required> Yes
+                                <input type="radio" id="observation_done_yes" name="observation_done" value="yes"> Yes
                             </label>
                             <label>
-                                <input type="radio" id="observation_done_no" name="observation_done" value="no" required> No
+                                <input type="radio" id="observation_done_no" name="observation_done" value="no"> No
                             </label>
                         </div>
                     </div>
@@ -359,23 +286,22 @@
 
             <div id="yes_fields" class="hidden">
                 <div class="section">
-                    <label for="observer_name">Observer Name <span class="required-star">*</span></label>
-                    <input type="text" id="observer_name" name="observer_name" required placeholder="Enter observer name">
+                    <label for="observer_name">Observer Name</label>
+                    <input type="text" id="observer_name" name="observer_name" placeholder="Enter observer name">
 
                     <div id="stars_container"></div>
 
                     <div class="button-row">
                         <button type="button" class="button small-button" onclick="addStarField()">Add</button>
-                        <button type="button" class="button small-button remove-button hidden" id="remove_button" onclick="removeLastStarField()">Remove</button>
                     </div>
                 </div>
             </div>
 
             <div id="no_fields" class="hidden">
                 <div class="section">
-                    <label for="observer_name_no">Observer Name <span class="required-star">*</span></label>
-                    <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)" required>
-                    <label style="margin-bottom: 15px;">Please select the reason for not doing the observation <span class="required-star">*</span></label>
+                    <label for="observer_name_no">Observer Name</label>
+                    <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
+                    <label style="margin-bottom: 15px;">Please select the reason for not doing the observation</label>
                     <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; width: 100%;">
                         <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
                             <input type="checkbox" name="reason_weather" value="Cloudy weather" style="width: auto; margin: 0;">
@@ -398,14 +324,14 @@
 
                     <div class="input-container">
                         <label for="additional_info">Additional Info</label>
-                        <input type="text" id="additional_info" name="additional_info" placeholder="If there is any additional information, please write it here." required>
+                        <input type="text" id="additional_info" name="additional_info" placeholder="If there is any additional information, please write it here.">
                     </div>
                 </div>
             </div>
 
             <!-- Submit Butonu -->
             <div class="button-row">
-                <input type="submit" class="button small-button hidden" id="submit_button" value="Submit">
+                <input type="submit" class="button small-button" id="submit_button" value="Submit">
             </div>
         </form>
     </div>
