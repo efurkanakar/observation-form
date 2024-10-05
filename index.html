@@ -4,217 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Observation Form</title>
-    <style>
-        body {
-            font-family: "Gill Sans", sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            width: 98%;
-            max-width: 1600px;
-            min-width: 300px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        h1 {
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-            background-color: #e9ecef;
-            border-bottom: 1px solid #ccc;
-        }
-
-        .section {
-            padding: 30px;
-            margin: 20px 0;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            font-size: 13px;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 12px;
-        }
-
-        .button {
-            background-color: #28a745;
-            color: white;
-            padding: 12px;
-            font-size: 12px;
-            font-weight: normal;
-            border-radius: 5px;
-            border: none;
-            transition: background-color 0.2s ease;
-            cursor: pointer;
-        }
-
-        .button:hover {
-            background-color: #218838;
-        }
-
-        .button-row {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .hidden {
-            display: none;
-        }
-    </style>
+    <!-- EmailJS kütüphanesini ekliyoruz -->
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
-    <script>
-        // EmailJS kullanıcı kimliği başlatma
-        emailjs.init('nZCXhxreCRu0xCDYd'); // YOUR_USER_ID yerine EmailJS kullanıcı ID'nizi ekleyin
-
-        let firstTimeYesClicked = false;
-
-        window.onload = function() {
-            var now = new Date();
-            var formattedDate = now.toISOString().slice(0, 10); 
-            document.getElementById('observation_date').value = formattedDate;
-
-            document.getElementById('observation_done_yes').addEventListener('change', function() {
-                document.getElementById('yes_fields').classList.remove('hidden');
-                document.getElementById('no_fields').classList.add('hidden');
-                if (!firstTimeYesClicked) {
-                    addStarField();
-                    firstTimeYesClicked = true;
-                }
-                document.getElementById('submit_button').classList.remove('hidden');
-
-                document.getElementById('observer_name_no').removeAttribute('required');
-            });
-
-            document.getElementById('observation_done_no').addEventListener('change', function() {
-                document.getElementById('yes_fields').classList.add('hidden');
-                document.getElementById('no_fields').classList.remove('hidden');
-                document.getElementById('submit_button').classList.remove('hidden');
-
-                document.getElementById('observer_name').removeAttribute('required');
-            });
-        };
-
-        function addStarField() {
-            const starContainer = document.getElementById('stars_container');
-            const newStarField = document.createElement('div');
-            newStarField.classList.add('row');
-            newStarField.innerHTML = `
-                <label for="observed_stars">Object Name</label>
-                <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star" required>
-            `;
-            starContainer.appendChild(newStarField);
-        }
-
-        // Formu gönderme işlemi
-        document.addEventListener("submit", function(event) {
-            event.preventDefault();
-
-            const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
-
-            const date = document.getElementById('observation_date').value;
-            const telescopeUsed = document.querySelector('select[name="telescope_used"]').value;
-            let templateParams = {
-                observation_date: date,
-                telescope_used: telescopeUsed,
-                observation_done: observationDone
-            };
-
-            if (observationDone === "yes") {
-                const observerName = document.getElementById('observer_name').value;
-                let stars = Array.from(document.querySelectorAll('input[name="observed_stars[]"]')).map(input => input.value);
-                templateParams.observer_name = observerName;
-                templateParams.stars = stars;
-            } else {
-                const observerNameNo = document.getElementById('observer_name_no').value;
-                let reasons = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(input => input.value);
-                const otherReason = document.querySelector('input[name="other_reason_text"]').value;
-
-                templateParams.observer_name_no = observerNameNo;
-                templateParams.reason = reasons.length ? reasons.join(', ') : otherReason;
-            }
-
-            // Email gönderme
-            emailjs.send("service_h8sg6bj", "template_meegwr9", templateParams)
-            .then(function(response) {
-                alert('Email successfully sent!');
-            }, function(error) {
-                alert('Failed to send email...');
-            });
-        });
+    <script type="text/javascript">
+        (function(){
+            emailjs.init("SPZ4gMRCG9sHemlE7"); // API Public Key'i buraya ekliyoruz
+        })();
     </script>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Observation Info</h1>
+    <h1>Observation Form</h1>
 
-        <form id="observationForm">
-            <div class="section">
-                <label for="observation_date">Date</label>
-                <input type="date" id="observation_date" name="observation_date" required>
+    <form id="observation-form">
+        <label for="observer_name">Observer Name:</label>
+        <input type="text" id="observer_name" name="from_name" required><br><br> <!-- 'from_name' olmalı -->
 
-                <label for="telescope_used">Telescope Used</label>
-                <select id="telescope_used" name="telescope_used" required>
-                    <option value="T35">T35</option>
-                    <option value="T80">T80</option>
-                    <option value="T100">T100</option>
-                </select>
+        <label for="observed_stars">Observed Stars:</label>
+        <input type="text" id="observed_stars" name="observed_stars" required><br><br> <!-- 'observed_stars' -->
 
-                <label>Was the observation done?</label>
-                <div>
-                    <label>
-                        <input type="radio" id="observation_done_yes" name="observation_done" value="yes" required> Yes
-                    </label>
-                    <label>
-                        <input type="radio" id="observation_done_no" name="observation_done" value="no" required> No
-                    </label>
-                </div>
-            </div>
+        <label for="filter">Filter:</label>
+        <input type="text" id="filter" name="filter"><br><br> <!-- 'filter' -->
 
-            <div id="yes_fields" class="hidden">
-                <div class="section">
-                    <label for="observer_name">Observer Name</label>
-                    <input type="text" id="observer_name" name="observer_name" placeholder="Enter observer name" required>
-                    <div id="stars_container"></div>
-                    <button type="button" class="button" onclick="addStarField()">Add Star</button>
-                </div>
-            </div>
+        <label for="exposure_time">Exposure Time:</label>
+        <input type="text" id="exposure_time" name="exposure_time"><br><br> <!-- 'exposure_time' -->
 
-            <div id="no_fields" class="hidden">
-                <div class="section">
-                    <label for="observer_name_no">Observer Name</label>
-                    <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name">
-                    <label>Please select the reason for not doing the observation</label>
-                    <div>
-                        <label><input type="checkbox" name="reason" value="Cloudy weather"> Cloudy Weather</label>
-                        <label><input type="checkbox" name="reason" value="Technical issue"> Technical issue</label>
-                        <label><input type="text" name="other_reason_text" placeholder="Other reason"></label>
-                    </div>
-                </div>
-            </div>
+        <label for="binning">Binning:</label>
+        <input type="text" id="binning" name="binning"><br><br> <!-- 'binning' -->
 
-            <div class="button-row">
-                <button type="submit" class="button">Submit</button>
-            </div>
-        </form>
-    </div>
+        <label for="additional_info">Additional Info:</label>
+        <textarea id="additional_info" name="message"></textarea><br><br> <!-- 'message' -->
+
+        <button type="submit" onclick="sendMail(); return false;">Submit</button>
+    </form>
+
+    <script type="text/javascript">
+        function sendMail() {
+            var form = document.getElementById('observation-form');
+
+            // Form verilerini EmailJS ile gönderiyoruz
+            emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', form)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    alert("Form successfully submitted!");
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    alert("Failed to send the form. Please try again.");
+                });
+        }
+    </script>
 
 </body>
 </html>
