@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Observation Form</title>
     <style>
-        /* Genel stil ayarları */
         body {
             font-family: "Gill Sans", sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
         }
+
         .container {
             width: 98%;
             max-width: 1600px;
@@ -19,6 +19,7 @@
             margin: 0 auto;
             padding: 20px;
         }
+
         h1 {
             color: #333;
             margin: 0;
@@ -27,6 +28,7 @@
             background-color: #e9ecef;
             border-bottom: 1px solid #ccc;
         }
+
         .section {
             padding: 30px;
             margin: 20px 0;
@@ -34,11 +36,13 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         label {
             font-weight: bold;
             margin-bottom: 5px;
             font-size: 13px;
         }
+
         input, select {
             width: 100%;
             padding: 8px;
@@ -47,6 +51,7 @@
             border-radius: 5px;
             font-size: 12px;
         }
+
         .button.small-button {
             background-color: #28a745;
             color: white;
@@ -59,109 +64,143 @@
             border: 0px solid #28a745;
             transition: background-color 0.2s ease;
         }
+
         .button.small-button:hover {
             background-color: #218838;
             border-color: #1e7e34;
         }
+
         .button-row {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin-top: 20px;
         }
+
         .date-observation-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 10px;
         }
+
         .date-column, .observation-column, .telescope-column {
             width: 30%;
         }
+
         .observation-column {
             display: flex;
             flex-direction: column;
         }
+
         .radio-group {
             display: inline-flex;
             gap: 10px;
             align-items: center;
         }
+
         .radio-group label {
             display: flex;
             align-items: center;
             gap: 5px;
         }
+
         .row {
             display: flex;
             gap: 20px;
             align-items: center;
             flex-wrap: nowrap;
         }
+
         .input-container-special {
             flex: 1 1 13%;
         }
+
         .input-container-wide {
             flex: 1 1 20%; 
         }
+
         .input-container-large {
             flex: 1 1 100%;
         }
+
         .hidden {
             display: none;
         }
+
         .error {
             color: red;
             font-size: 12px;
             margin-bottom: 10px;
         }
+
     </style>
-    <!-- EmailJS kütüphanesini ekliyoruz -->
-    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
         window.onload = function() {
-            // EmailJS başlatılıyor
-            emailjs.init("SPZ4gMRCG9sHemlE7");
-
             var now = new Date();
             var formattedDate = now.toISOString().slice(0, 10); 
             document.getElementById('observation_date').value = formattedDate;
 
-            // Evet hayır alanları için listener
+            // "Yes" seçeneği seçilirse ilgili alanları göster ve "No" alanlarını gizle
             document.getElementById('observation_done_yes').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
-                document.getElementById('submit_button').classList.remove('hidden');
-                addStarField(); // İlk tıklamada yıldız alanı ekleniyor
+                document.getElementById('submit_button').classList.remove('hidden'); // Submit butonunu göster
+                resetNoFieldsValidation(); // No alanlarının required özelliğini kaldır
+                setYesFieldsValidation(); // Yes alanlarını required yap
+                if (document.getElementById('stars_container').children.length === 0) {
+                    addStarField(); // İlk açıldığında bir yıldız alanı ekle
+                }
             });
 
+            // "No" seçeneği seçilirse ilgili alanları göster ve "Yes" alanlarını gizle
             document.getElementById('observation_done_no').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
-                document.getElementById('submit_button').classList.remove('hidden');
+                document.getElementById('submit_button').classList.remove('hidden'); // Submit butonunu göster
+                resetYesFieldsValidation(); // Yes alanlarının required özelliğini kaldır
+                setNoFieldsValidation(); // No alanlarını required yap
             });
 
-            // Form submit işlemi
+            // Form submit işlemi için event listener
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault(); // Otomatik form submit'i durduruluyor
-                sendMail(); // EmailJS ile formu gönder
+
+                // Eğer tüm alanlar doğruysa submit işlemi gerçekleşir
+                alert('Form successfully submitted!');
+                document.getElementById('observationForm').submit();
             });
         };
 
-        function sendMail() {
-            var form = document.getElementById('observationForm');
-
-            // Form verilerini EmailJS ile gönderiyoruz
-            emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', form)
-                .then(function(response) {
-                    console.log('SUCCESS!', response.status, response.text);
-                    alert("Form successfully submitted!");
-                }, function(error) {
-                    console.log('FAILED...', error);
-                    alert("Failed to send the form. Please try again.");
-                });
+        // "Yes" alanlarını required yapar
+        function setYesFieldsValidation() {
+            document.getElementById('observer_name').setAttribute('required', 'required');
+            document.querySelector('input[name="filter"]').setAttribute('required', 'required');
+            document.querySelector('input[name="exposure_time"]').setAttribute('required', 'required');
+            document.querySelector('input[name="binning"]').setAttribute('required', 'required');
+            document.querySelector('input[name="sky_condition"]').setAttribute('required', 'required');
         }
 
+        // "No" alanlarını required yapar
+        function setNoFieldsValidation() {
+            document.getElementById('observer_name_no').setAttribute('required', 'required');
+        }
+
+        // "Yes" alanlarındaki required özelliğini kaldırır
+        function resetYesFieldsValidation() {
+            document.getElementById('observer_name').removeAttribute('required');
+            document.querySelector('input[name="filter"]').removeAttribute('required');
+            document.querySelector('input[name="exposure_time"]').removeAttribute('required');
+            document.querySelector('input[name="binning"]').removeAttribute('required');
+            document.querySelector('input[name="sky_condition"]').removeAttribute('required');
+        }
+
+        // "No" alanlarındaki required özelliğini kaldırır
+        function resetNoFieldsValidation() {
+            document.getElementById('observer_name_no').removeAttribute('required');
+        }
+
+        // Yıldız alanı eklemek için fonksiyon
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
             const newStarField = document.createElement('div');
@@ -271,7 +310,7 @@
             <div id="yes_fields" class="hidden">
                 <div class="section">
                     <label for="observer_name">Observer Name <span class="required-star">*</span></label>
-                    <input type="text" id="observer_name" name="observer_name" required placeholder="Enter observer name">
+                    <input type="text" id="observer_name" name="observer_name" placeholder="Enter observer name">
 
                     <div id="stars_container"></div>
 
@@ -284,7 +323,7 @@
             <div id="no_fields" class="hidden">
                 <div class="section">
                     <label for="observer_name_no">Observer Name <span class="required-star">*</span></label>
-                    <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)" required>
+                    <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
                     <label style="margin-bottom: 15px;">Please select the reason for not doing the observation <span class="required-star">*</span></label>
                     <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; width: 100%;">
                         <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
@@ -308,7 +347,7 @@
 
                     <div class="input-container">
                         <label for="additional_info">Additional Info</label>
-                        <input type="text" id="additional_info" name="additional_info" placeholder="If there is any additional information, please write it here." required>
+                        <input type="text" id="additional_info" name="additional_info" placeholder="If there is any additional information, please write it here.">
                     </div>
                 </div>
             </div>
