@@ -153,9 +153,11 @@
         }
 
     </style>
-    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <!-- En güncel EmailJS SDK'sını yükleme -->
+    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
-        emailjs.init('SPZ4gMRCG9sHemlE7');  // EmailJS public key
+        // EmailJS'i başlatma (public key ile)
+        emailjs.init('SPZ4gMRCG9sHemlE7');
 
         let firstTimeYesClicked = false;
 
@@ -191,44 +193,35 @@
         };
 
         function sendEmail() {
-            const observation_date = document.getElementById("observation_date") ? document.getElementById("observation_date").value : "";
-            const telescope_used = document.getElementById("telescope_used") ? document.getElementById("telescope_used").value : "";
-            const observation_done = document.querySelector('input[name="observation_done"]:checked') ? document.querySelector('input[name="observation_done"]:checked').value : "";
-            const observer_name = document.getElementById("observer_name") ? document.getElementById("observer_name").value : "";
-            const observed_stars = [...document.getElementsByName("observed_stars[]")].map(star => star.value);  // yıldızları array olarak topla
-            const filter = document.getElementsByName("filter")[0] ? document.getElementsByName("filter")[0].value : "";
-            const exposure_time = document.getElementsByName("exposure_time")[0] ? document.getElementsByName("exposure_time")[0].value : "";
-            const binning = document.getElementsByName("binning")[0] ? document.getElementsByName("binning")[0].value : "";
-            const sky_condition = document.getElementsByName("sky_condition")[0] ? document.getElementsByName("sky_condition")[0].value : "";
-            const file_link = document.getElementsByName("file_link")[0] ? document.getElementsByName("file_link")[0].value : "";
-            const extra_info = document.getElementsByName("extra_info")[0] ? document.getElementsByName("extra_info")[0].value : "";
-            const observer_name_no = document.getElementById("observer_name_no") ? document.getElementById("observer_name_no").value : "";
-            const reason_weather = document.querySelector('input[name="reason_weather"]:checked') ? "Cloudy Weather" : "";
-            const reason_wind = document.querySelector('input[name="reason_wind"]:checked') ? "Strong Wind" : "";
-            const reason_humidity = document.querySelector('input[name="reason_humidity"]:checked') ? "High Humidity" : "";
-            const reason_technical = document.querySelector('input[name="reason_technical"]:checked') ? "Technical Issue" : "";
-            const other_reason_text = document.getElementsByName("other_reason_text")[0] ? document.getElementsByName("other_reason_text")[0].value : "";
-            const general_info = document.getElementById("general_info") ? document.getElementById("general_info").value : "";
+            const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
+            const observerName = observationDone === 'yes' ? document.getElementById("observer_name").value : document.getElementById("observer_name_no").value;
+            const observedStars = observationDone === 'yes' ? [...document.getElementsByName('observed_stars[]')].map(input => input.value) : [];
+            const extraInfo = [...document.getElementsByName('extra_info[]')].map(input => input.value);
+
+            const reasonWeather = document.querySelector('input[name="reason_weather"]:checked') ? "Cloudy Weather" : "";
+            const reasonWind = document.querySelector('input[name="reason_wind"]:checked') ? "Strong Wind" : "";
+            const reasonHumidity = document.querySelector('input[name="reason_humidity"]:checked') ? "High Humidity" : "";
+            const reasonTechnical = document.querySelector('input[name="reason_technical"]:checked') ? "Technical Issue" : "";
+            const otherReasonText = document.getElementsByName("other_reason_text")[0].value;
 
             emailjs.send("service_r7cv4z9", "template_ah4hbac", {
-                observation_date,
-                telescope_used,
-                observation_done,
-                observer_name,
-                observed_stars,
-                filter,
-                exposure_time,
-                binning,
-                sky_condition,
-                file_link,
-                extra_info,
-                observer_name_no,
-                reason_weather,
-                reason_wind,
-                reason_humidity,
-                reason_technical,
-                other_reason_text,
-                general_info
+                observation_date: document.getElementById("observation_date").value,
+                telescope_used: document.getElementById("telescope_used").value,
+                observation_done: observationDone,
+                observer_name: observerName,
+                observed_stars: observedStars,
+                filter: document.getElementsByName("filter")[0]?.value || "",
+                exposure_time: document.getElementsByName("exposure_time")[0]?.value || "",
+                binning: document.getElementsByName("binning")[0]?.value || "",
+                sky_condition: document.getElementsByName("sky_condition")[0]?.value || "",
+                file_link: document.getElementsByName("file_link")[0]?.value || "",
+                extra_info: extraInfo,
+                reason_weather: reasonWeather,
+                reason_wind: reasonWind,
+                reason_humidity: reasonHumidity,
+                reason_technical: reasonTechnical,
+                other_reason_text: otherReasonText,
+                general_info: document.getElementById("general_info").value || ""
             })
             .then(function(response) {
                 console.log("SUCCESS!", response.status, response.text);
@@ -409,7 +402,7 @@
                         </label>
                         <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
                             <input type="checkbox" name="reason_humidity" value="High humidity" style="width: auto; margin: 0;">
-                            <span>High humidity</span>
+                            <span>High Humidity</span>
                         </label>
                         <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
                             <input type="checkbox" name="reason_technical" value="Technical issue" style="width: auto; margin: 0;">
