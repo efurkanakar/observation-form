@@ -8,14 +8,14 @@
     <script type="text/javascript">
         (function() {
             // EmailJS kullanıcı kimliği başlatma
-            emailjs.init("YOUR_USER_ID"); // YOUR_USER_ID kısmına kendi EmailJS User ID'nizi ekleyin
+            emailjs.init("SPZ4gMRCG9sHemlE7"); // YOUR_USER_ID kısmına kendi EmailJS User ID'nizi ekleyin
         })();
 
         function sendEmail(e) {
             e.preventDefault(); // Formun otomatik submit edilmesini engelle
 
             // EmailJS verilerini ayarla
-            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+            emailjs.send("service_r7cv4z9", "template_iu5c178", {
                 from_name: document.getElementById("from_name").value,
                 message: document.getElementById("message").value
             }).then(function(response) {
