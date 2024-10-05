@@ -184,7 +184,6 @@
                 document.getElementById('general_info_section').classList.remove('hidden');
             });
 
-            // Form submit edildiğinde emaili gönder
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault(); // Formun otomatik olarak submit edilmesini durdur
                 sendEmail();
@@ -192,43 +191,50 @@
         };
 
         function sendEmail() {
-            // Form verilerini topla
-            const templateParams = {
-                observation_date: document.getElementById("observation_date").value,
-                telescope_used: document.getElementById("telescope_used").value,
-                observation_done: document.querySelector('input[name="observation_done"]:checked').value,
-                observer_name: document.getElementById("observer_name").value,
-                observed_stars: collectStars(),
-                filter: document.getElementsByName("filter")[0]?.value || "",
-                exposure_time: document.getElementsByName("exposure_time")[0]?.value || "",
-                binning: document.getElementsByName("binning")[0]?.value || "",
-                sky_condition: document.getElementsByName("sky_condition")[0]?.value || "",
-                file_link: document.getElementsByName("file_link")[0]?.value || "",
-                extra_info: document.getElementsByName("extra_info")[0]?.value || "",
-                observer_name_no: document.getElementById("observer_name_no").value || "",
-                reason_weather: document.querySelector('input[name="reason_weather"]:checked') ? "Cloudy Weather" : "",
-                reason_wind: document.querySelector('input[name="reason_wind"]:checked') ? "Strong Wind" : "",
-                reason_humidity: document.querySelector('input[name="reason_humidity"]:checked') ? "High Humidity" : "",
-                reason_technical: document.querySelector('input[name="reason_technical"]:checked') ? "Technical Issue" : "",
-                other_reason_text: document.getElementsByName("other_reason_text")[0]?.value || "",
-                general_info: document.getElementById("general_info").value
-            };
+            const observation_date = document.getElementById("observation_date") ? document.getElementById("observation_date").value : "";
+            const telescope_used = document.getElementById("telescope_used") ? document.getElementById("telescope_used").value : "";
+            const observation_done = document.querySelector('input[name="observation_done"]:checked') ? document.querySelector('input[name="observation_done"]:checked').value : "";
+            const observer_name = document.getElementById("observer_name") ? document.getElementById("observer_name").value : "";
+            const observed_stars = [...document.getElementsByName("observed_stars[]")].map(star => star.value);  // yıldızları array olarak topla
+            const filter = document.getElementsByName("filter")[0] ? document.getElementsByName("filter")[0].value : "";
+            const exposure_time = document.getElementsByName("exposure_time")[0] ? document.getElementsByName("exposure_time")[0].value : "";
+            const binning = document.getElementsByName("binning")[0] ? document.getElementsByName("binning")[0].value : "";
+            const sky_condition = document.getElementsByName("sky_condition")[0] ? document.getElementsByName("sky_condition")[0].value : "";
+            const file_link = document.getElementsByName("file_link")[0] ? document.getElementsByName("file_link")[0].value : "";
+            const extra_info = document.getElementsByName("extra_info")[0] ? document.getElementsByName("extra_info")[0].value : "";
+            const observer_name_no = document.getElementById("observer_name_no") ? document.getElementById("observer_name_no").value : "";
+            const reason_weather = document.querySelector('input[name="reason_weather"]:checked') ? "Cloudy Weather" : "";
+            const reason_wind = document.querySelector('input[name="reason_wind"]:checked') ? "Strong Wind" : "";
+            const reason_humidity = document.querySelector('input[name="reason_humidity"]:checked') ? "High Humidity" : "";
+            const reason_technical = document.querySelector('input[name="reason_technical"]:checked') ? "Technical Issue" : "";
+            const other_reason_text = document.getElementsByName("other_reason_text")[0] ? document.getElementsByName("other_reason_text")[0].value : "";
+            const general_info = document.getElementById("general_info") ? document.getElementById("general_info").value : "";
 
-            // Email gönderme
-            emailjs.send("service_r7cv4z9", "template_ah4hbac", templateParams)
+            emailjs.send("service_r7cv4z9", "template_ah4hbac", {
+                observation_date,
+                telescope_used,
+                observation_done,
+                observer_name,
+                observed_stars,
+                filter,
+                exposure_time,
+                binning,
+                sky_condition,
+                file_link,
+                extra_info,
+                observer_name_no,
+                reason_weather,
+                reason_wind,
+                reason_humidity,
+                reason_technical,
+                other_reason_text,
+                general_info
+            })
             .then(function(response) {
-               console.log("SUCCESS!", response.status, response.text);
-               alert("Email Sent Successfully!");
+                console.log("SUCCESS!", response.status, response.text);
             }, function(error) {
-               console.log("FAILED...", error);
-               alert("Failed to send email. Please try again.");
+                console.log("FAILED...", error);
             });
-        }
-
-        // Yıldız bilgilerini toplamak için fonksiyon
-        function collectStars() {
-            const stars = document.querySelectorAll('input[name="observed_stars[]"]');
-            return Array.from(stars).map(star => star.value).filter(star => star !== '');
         }
 
         // Yıldız bilgilerini eklemek için fonksiyon
