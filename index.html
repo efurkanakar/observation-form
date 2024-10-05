@@ -153,11 +153,12 @@
         }
 
     </style>
-    <!-- En güncel EmailJS SDK'sını yükleme -->
+    <!-- EmailJS script -->
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
-        // EmailJS'i başlatma (public key ile)
-        emailjs.init('SPZ4gMRCG9sHemlE7');
+        (function() {
+            emailjs.init("SPZ4gMRCG9sHemlE7"); // Replace with your EmailJS public key
+        })();
 
         let firstTimeYesClicked = false;
 
@@ -186,56 +187,27 @@
                 document.getElementById('general_info_section').classList.remove('hidden');
             });
 
+            // Form gönderme işlemi
             document.getElementById('observationForm').addEventListener('submit', function(event) {
-                event.preventDefault(); // Formun otomatik olarak submit edilmesini durdur
-                sendEmail();
+                event.preventDefault(); // Sayfanın yenilenmesini engeller
+
+                emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', this)
+                .then(function(response) {
+                    alert('Form successfully submitted and email sent!');
+                    console.log('SUCCESS!', response.status, response.text);
+                }, function(error) {
+                    alert('Failed to send email. Please try again.');
+                    console.log('FAILED...', error);
+                });
             });
         };
-
-        function sendEmail() {
-            const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
-            const observerName = observationDone === 'yes' ? document.getElementById("observer_name").value : document.getElementById("observer_name_no").value;
-            const observedStars = observationDone === 'yes' ? [...document.getElementsByName('observed_stars[]')].map(input => input.value) : [];
-            const extraInfo = [...document.getElementsByName('extra_info[]')].map(input => input.value);
-
-            const reasonWeather = document.querySelector('input[name="reason_weather"]:checked') ? "Cloudy Weather" : "";
-            const reasonWind = document.querySelector('input[name="reason_wind"]:checked') ? "Strong Wind" : "";
-            const reasonHumidity = document.querySelector('input[name="reason_humidity"]:checked') ? "High Humidity" : "";
-            const reasonTechnical = document.querySelector('input[name="reason_technical"]:checked') ? "Technical Issue" : "";
-            const otherReasonText = document.getElementsByName("other_reason_text")[0].value;
-
-            emailjs.send("service_r7cv4z9", "template_ah4hbac", {
-                observation_date: document.getElementById("observation_date").value,
-                telescope_used: document.getElementById("telescope_used").value,
-                observation_done: observationDone,
-                observer_name: observerName,
-                observed_stars: observedStars,
-                filter: document.getElementsByName("filter")[0]?.value || "",
-                exposure_time: document.getElementsByName("exposure_time")[0]?.value || "",
-                binning: document.getElementsByName("binning")[0]?.value || "",
-                sky_condition: document.getElementsByName("sky_condition")[0]?.value || "",
-                file_link: document.getElementsByName("file_link")[0]?.value || "",
-                extra_info: extraInfo,
-                reason_weather: reasonWeather,
-                reason_wind: reasonWind,
-                reason_humidity: reasonHumidity,
-                reason_technical: reasonTechnical,
-                other_reason_text: otherReasonText,
-                general_info: document.getElementById("general_info").value || ""
-            })
-            .then(function(response) {
-                console.log("SUCCESS!", response.status, response.text);
-            }, function(error) {
-                console.log("FAILED...", error);
-            });
-        }
 
         // Yıldız bilgilerini eklemek için fonksiyon
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
             const newStarField = document.createElement('div');
             newStarField.classList.add('section');
-            newStarField.innerHTML = `
+            newStarField.innerHTML = 
                 <div class="row">
                     <div class="input-container-wide">
                         <label for="observed_stars">Object Name</label>
@@ -302,7 +274,7 @@
                     <label for="extra_info">Additional Info</label>
                     <input type="text" name="extra_info[]" class="small-input" placeholder="Enter any issues encountered during the observation (if any)">
                 </div>
-            `;
+            ;
             starContainer.appendChild(newStarField);
             toggleRemoveButton();
         }
@@ -402,7 +374,7 @@
                         </label>
                         <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
                             <input type="checkbox" name="reason_humidity" value="High humidity" style="width: auto; margin: 0;">
-                            <span>High Humidity</span>
+                            <span>High humidity</span>
                         </label>
                         <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
                             <input type="checkbox" name="reason_technical" value="Technical issue" style="width: auto; margin: 0;">
