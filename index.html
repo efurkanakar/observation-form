@@ -74,7 +74,7 @@
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-top: 0px;
+            margin-top: 20px;
         }
 
         .date-observation-row {
@@ -128,9 +128,13 @@
             display: none;
         }
 
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
     </style>
-    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script> <!-- jsPDF -->
     <script type="text/javascript">
         let firstTimeYesClicked = false;
 
@@ -142,6 +146,7 @@
             document.getElementById('observation_done_yes').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
+                document.getElementById('submit_button').classList.remove('hidden'); // Submit butonunu göster
                 if (!firstTimeYesClicked) {
                     addStarField();
                     firstTimeYesClicked = true;
@@ -151,6 +156,43 @@
             document.getElementById('observation_done_no').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
+                document.getElementById('submit_button').classList.remove('hidden'); // Submit butonunu göster
+            });
+
+            // Form submit işlemi için event listener
+            document.getElementById('observationForm').addEventListener('submit', function(event) {
+                event.preventDefault(); // Otomatik form submit'i durduruluyor
+
+                // Gerekli alanların kontrolü
+                let isValid = true;
+                const observationDone = document.querySelector('input[name="observation_done"]:checked');
+                const observerName = document.getElementById('observer_name').value;
+                const filter = document.querySelector('input[name="filter"]').value;
+                const exposureTime = document.querySelector('input[name="exposure_time"]').value;
+                const binning = document.querySelector('input[name="binning"]').value;
+                const skyCondition = document.querySelector('input[name="sky_condition"]').value;
+                const observerNameNo = document.getElementById('observer_name_no').value;
+
+                if (!observationDone) {
+                    alert('Please select if the observation was done.');
+                    isValid = false;
+                } else if (observationDone.value === 'yes') {
+                    if (!observerName || !filter || !exposureTime || !binning || !skyCondition) {
+                        alert('Please fill in all required fields for the observation.');
+                        isValid = false;
+                    }
+                } else if (observationDone.value === 'no') {
+                    if (!observerNameNo) {
+                        alert('Please provide the observer name and the reason for not observing.');
+                        isValid = false;
+                    }
+                }
+
+                // Eğer tüm alanlar doğruysa submit işlemi gerçekleşir
+                if (isValid) {
+                    alert('Form successfully submitted!');
+                    document.getElementById('observationForm').submit();
+                }
             });
         };
 
@@ -235,11 +277,15 @@
 
         function removeLastStarField() {
             const starContainer = document.getElementById('stars_container');
-            const starFields = starContainer.querySelectorAll('.row, .input-container-large');
+            const starFields = starContainer.querySelectorAll('.row');
 
-            if (starFields.length > 2) {
+            if (starFields.length > 1) {
                 starContainer.removeChild(starFields[starFields.length - 1]);
-                starContainer.removeChild(starFields[starFields.length - 2]);
+            }
+
+            const additionalInfos = starContainer.querySelectorAll('.input-container-large');
+            if (additionalInfos.length > 1) {
+                starContainer.removeChild(additionalInfos[additionalInfos.length - 1]);
             }
 
             toggleRemoveButton();
@@ -257,63 +303,6 @@
             }
         }
 
-        // Add General Observation Info field below Add button
-        function addGeneralObservationInfo() {
-            const generalInfoContainer = document.getElementById('general_info_container');
-            const generalInfoField = document.createElement('div');
-            generalInfoField.classList.add('input-container-large');
-            generalInfoField.innerHTML = `
-                <label for="general_info">General Observation Info</label>
-                <input type="text" name="general_info" class="small-input" placeholder="Enter general information about the observation">
-            `;
-            generalInfoContainer.appendChild(generalInfoField);
-        }
-
-        // PDF oluşturma ve EmailJS ile gönderme
-        document.addEventListener("submit", function(event) {
-            event.preventDefault(); // Formun otomatik submit edilmesini engelle
-
-            // Form verilerini al
-            const date = document.getElementById('observation_date').value;
-            const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
-            const telescopeUsed = document.querySelector('select[name="telescope_used"]').value;
-            
-            // PDF oluştur
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.text(`Observation Date: ${date}`, 10, 10);
-            doc.text(`Observation Done: ${observationDone}`, 10, 20);
-            doc.text(`Telescope Used: ${telescopeUsed}`, 10, 30);
-
-            // Yıldız bilgilerini al ve PDF'e ekle
-            let starDetails = '';
-            document.querySelectorAll('input[name="observed_stars[]"]').forEach((input, index) => {
-                starDetails += `
-                    Object Name: ${input.value}
-                    Filter: ${document.querySelectorAll('input[name="filter"]')[index].value}
-                    Exposure Time: ${document.querySelectorAll('input[name="exposure_time"]')[index].value}
-                    Binning: ${document.querySelectorAll('input[name="binning"]')[index].value}
-                    Sky Condition: ${document.querySelectorAll('input[name="sky_condition"]')[index].value}
-                    Preliminary Result: ${document.querySelectorAll('input[name="file_link[]"]')[index].value}
-                `;
-                doc.text(starDetails, 10, 40 + (index * 10));
-            });
-
-            // PDF'i base64 formatında al
-            const pdfOutput = doc.output('datauristring');
-
-            // EmailJS ile verileri gönder
-            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
-                observation_date: date,
-                observation_done: observationDone,
-                telescope_used: telescopeUsed,
-                pdf_file: pdfOutput // PDF base64 olarak eklendi
-            }).then(function(response) {
-                alert('Email sent successfully!', response.status, response.text);
-            }, function(error) {
-                alert('Failed to send email...', error);
-            });
-        });
     </script>
 </head>
 <body>
@@ -364,7 +353,6 @@
                         <button type="button" class="button small-button remove-button hidden" id="remove_button" onclick="removeLastStarField()">Remove</button>
                     </div>
 
-                    <!-- General Observation Info -->
                     <div id="general_info_container"></div>
 
                     <script>
@@ -407,7 +395,7 @@
 
             <!-- Submit Butonu -->
             <div class="button-row">
-                <input type="submit" class="button small-button" value="Submit">
+                <input type="submit" class="button small-button hidden" id="submit_button" value="Submit">
             </div>
         </form>
     </div>
