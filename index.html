@@ -130,9 +130,8 @@
 
     </style>
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script> <!-- jsPDF -->
-    <script type="text/javascript">
-        // EmailJS kullanıcı kimliği başlatma (user ID'yi buraya ekleyin)
+    <script>
+        // EmailJS kullanıcı kimliği başlatma
         emailjs.init('SPZ4gMRCG9sHemlE7'); // YOUR_USER_ID yerine EmailJS kullanıcı ID'nizi ekleyin
 
         let firstTimeYesClicked = false;
@@ -153,10 +152,6 @@
 
                 // "No" seçeneği için gerekli input'lardan required'ı kaldır
                 document.getElementById('observer_name_no').removeAttribute('required');
-                document.getElementById('additional_info').removeAttribute('required');
-
-                // "Yes" seçeneği için gerekli input'lara required ekle
-                document.getElementById('observer_name').setAttribute('required', 'true');
             });
 
             document.getElementById('observation_done_no').addEventListener('change', function() {
@@ -166,10 +161,6 @@
 
                 // "Yes" seçeneği için gerekli input'lardan required'ı kaldır
                 document.getElementById('observer_name').removeAttribute('required');
-
-                // "No" seçeneği seçildiğinde gerekli input'lara required ekle
-                document.getElementById('observer_name_no').setAttribute('required', 'true');
-                document.getElementById('additional_info').setAttribute('required', 'true');
             });
         };
 
@@ -276,44 +267,53 @@
             }
         }
 
-        // PDF oluşturma ve EmailJS ile gönderme
+        // En az bir checkbox veya "Other reason" alanının doldurulmasını kontrol et
+        function validateNoOption() {
+            let checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            let otherReason = document.querySelector('input[name="other_reason_text"]').value.trim();
+            if (checkboxes.length === 0 && otherReason === "") {
+                alert("Please select at least one reason or provide another reason.");
+                return false;
+            }
+            return true;
+        }
+
+        // Form verilerini gönderme
         document.addEventListener("submit", function(event) {
             event.preventDefault(); // Formun otomatik submit edilmesini engelle
 
-            // Form verilerini al
-            const date = document.getElementById('observation_date').value;
             const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
+
+            // Eğer "No" seçilmişse validasyon yap
+            if (observationDone === "no" && !validateNoOption()) {
+                return;
+            }
+
+            const date = document.getElementById('observation_date').value;
             const telescopeUsed = document.querySelector('select[name="telescope_used"]').value;
-            
-            // PDF oluştur
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.text(`Observation Date: ${date}`, 10, 10);
-            doc.text(`Observation Done: ${observationDone}`, 10, 20);
-            doc.text(`Telescope Used: ${telescopeUsed}`, 10, 30);
-
-            // Yıldız bilgilerini al ve PDF'e ekle
-            let yOffset = 40;
-            document.querySelectorAll('input[name="observed_stars[]"]').forEach((input, index) => {
-                doc.text(`Object Name: ${input.value}`, 10, yOffset);
-                doc.text(`Filter: ${document.querySelectorAll('input[name="filter"]')[index].value}`, 10, yOffset + 10);
-                doc.text(`Exposure Time: ${document.querySelectorAll('input[name="exposure_time"]')[index].value}`, 10, yOffset + 20);
-                doc.text(`Binning: ${document.querySelectorAll('input[name="binning"]')[index].value}`, 10, yOffset + 30);
-                doc.text(`Sky Condition: ${document.querySelectorAll('input[name="sky_condition"]')[index].value}`, 10, yOffset + 40);
-                doc.text(`Preliminary Result: ${document.querySelectorAll('input[name="file_link[]"]')[index].value}`, 10, yOffset + 50);
-                yOffset += 60;
-            });
-
-            // PDF'i base64 formatında al
-            const pdfOutput = doc.output('datauristring');
-
-            // EmailJS ile verileri gönder
-            emailjs.send("service_r7cv4z9", "template_iu5c178", {
+            let templateParams = {
                 observation_date: date,
-                observation_done: observationDone,
                 telescope_used: telescopeUsed,
-                pdf_file: pdfOutput // PDF base64 olarak eklendi
-            }).then(function(response) {
+                observation_done: observationDone
+            };
+
+            if (observationDone === "yes") {
+                const observerName = document.getElementById('observer_name').value;
+                let stars = Array.from(document.querySelectorAll('input[name="observed_stars[]"]')).map(input => input.value);
+                templateParams.observer_name = observerName;
+                templateParams.stars = stars.join(', ');
+            } else {
+                const observerNameNo = document.getElementById('observer_name_no').value;
+                let reasons = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(input => input.value);
+                const otherReason = document.querySelector('input[name="other_reason_text"]').value;
+
+                templateParams.observer_name_no = observerNameNo;
+                templateParams.reason = reasons.length ? reasons.join(', ') : otherReason;
+            }
+
+            // Email gönderme
+            emailjs.send("service_r7cv4z9", "template_iu5c178", templateParams)
+            .then(function(response) {
                 alert('Email successfully sent!', response.status, response.text);
             }, function(error) {
                 alert('Failed to send email...', error);
@@ -404,8 +404,7 @@
                 </div>
             </div>
 
-            <!-- Submit Butonu -->
-            <div class="button-row hidden" id="submit_button">
+            <div id="submit_button" class="button-row hidden">
                 <input type="submit" class="button small-button" value="Submit">
             </div>
         </form>
