@@ -143,26 +143,25 @@
             var formattedDate = now.toISOString().slice(0, 10); 
             document.getElementById('observation_date').value = formattedDate;
 
-            // Yes seçildiğinde Yes alanlarını zorunlu yap ve No alanlarını zorunlu olmaktan çıkar
             document.getElementById('observation_done_yes').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
-                document.getElementById('submit_button').classList.remove('hidden'); // Submit butonunu göster
-                setRequiredFieldsForYes();
-                resetRequiredFieldsForNo();
+                document.getElementById('submit_button').classList.remove('hidden');
+                setRequiredFieldsForYes(); // "Yes" alanlarını zorunlu yap
+                resetRequiredFieldsForNo(); // "No" alanlarını zorunlu olmaktan çıkar
+
                 if (!firstTimeYesClicked) {
                     addStarField();
                     firstTimeYesClicked = true;
                 }
             });
 
-            // No seçildiğinde No alanlarını zorunlu yap ve Yes alanlarını zorunlu olmaktan çıkar
             document.getElementById('observation_done_no').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
-                document.getElementById('submit_button').classList.remove('hidden'); // Submit butonunu göster
-                setRequiredFieldsForNo();
-                resetRequiredFieldsForYes();
+                document.getElementById('submit_button').classList.remove('hidden');
+                setRequiredFieldsForNo(); // "No" alanlarını zorunlu yap
+                resetRequiredFieldsForYes(); // "Yes" alanlarını zorunlu olmaktan çıkar
             });
 
             // Form submit işlemi için event listener
@@ -170,8 +169,31 @@
                 event.preventDefault(); // Otomatik form submit'i durduruluyor
 
                 let isValid = true;
+                const observationDone = document.querySelector('input[name="observation_done"]:checked');
+                const observerName = document.getElementById('observer_name').value;
+                const observerNameNo = document.getElementById('observer_name_no').value;
 
-                // Tüm zorunlu alanların dolu olup olmadığını kontrol et
+                // Validation kontrolü: "Yes" seçildiğinde gözlem bilgileri kontrol edilir
+                if (observationDone && observationDone.value === 'yes') {
+                    const filter = document.querySelector('input[name="filter"]').value;
+                    const exposureTime = document.querySelector('input[name="exposure_time"]').value;
+                    const binning = document.querySelector('input[name="binning"]').value;
+                    const skyCondition = document.querySelector('input[name="sky_condition"]').value;
+
+                    if (!observerName || !filter || !exposureTime || !binning || !skyCondition) {
+                        alert('Please fill in all required fields for the observation.');
+                        isValid = false;
+                    }
+                } 
+                // Validation kontrolü: "No" seçildiğinde gözlem yapılmadığı için doldurulması gereken alanlar kontrol edilir
+                else if (observationDone && observationDone.value === 'no') {
+                    if (!observerNameNo) {
+                        alert('Please provide the observer name and the reason for not observing.');
+                        isValid = false;
+                    }
+                }
+
+                // Eğer tüm alanlar doğruysa form submit edilir
                 if (isValid) {
                     alert('Form successfully submitted!');
                     document.getElementById('observationForm').submit();
@@ -179,7 +201,7 @@
             });
         };
 
-        // Yes alanlarını zorunlu yapar
+        // "Yes" seçildiğinde zorunlu yapılacak alanlar
         function setRequiredFieldsForYes() {
             document.getElementById('observer_name').setAttribute('required', 'required');
             document.querySelector('input[name="filter"]').setAttribute('required', 'required');
@@ -188,12 +210,12 @@
             document.querySelector('input[name="sky_condition"]').setAttribute('required', 'required');
         }
 
-        // No alanlarını zorunlu yapar
+        // "No" seçildiğinde zorunlu yapılacak alanlar
         function setRequiredFieldsForNo() {
             document.getElementById('observer_name_no').setAttribute('required', 'required');
         }
 
-        // Yes alanlarındaki zorunlu işaretini kaldırır
+        // "Yes" alanlarındaki zorunlu işaretlerini kaldırır
         function resetRequiredFieldsForYes() {
             document.getElementById('observer_name').removeAttribute('required');
             document.querySelector('input[name="filter"]').removeAttribute('required');
@@ -202,11 +224,12 @@
             document.querySelector('input[name="sky_condition"]').removeAttribute('required');
         }
 
-        // No alanlarındaki zorunlu işaretini kaldırır
+        // "No" alanlarındaki zorunlu işaretlerini kaldırır
         function resetRequiredFieldsForNo() {
             document.getElementById('observer_name_no').removeAttribute('required');
         }
 
+        // Yıldız alanı eklemek için fonksiyon
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
             const newStarField = document.createElement('div');
@@ -323,6 +346,7 @@
 
                     <div class="button-row">
                         <button type="button" class="button small-button" onclick="addStarField()">Add</button>
+                        <button type="button" class="button small-button remove-button hidden" id="remove_button" onclick="removeLastStarField()">Remove</button>
                     </div>
                 </div>
             </div>
