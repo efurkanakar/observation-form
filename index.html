@@ -153,12 +153,9 @@
         }
 
     </style>
-    <!-- EmailJS script -->
-    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
-        (function() {
-            emailjs.init("SPZ4gMRCG9sHemlE7"); // Replace with your EmailJS public key
-        })();
+        emailjs.init('SPZ4gMRCG9sHemlE7');  // EmailJS public key
 
         let firstTimeYesClicked = false;
 
@@ -187,20 +184,47 @@
                 document.getElementById('general_info_section').classList.remove('hidden');
             });
 
-            // Form gönderme işlemi
             document.getElementById('observationForm').addEventListener('submit', function(event) {
-                event.preventDefault(); // Sayfanın yenilenmesini engeller
-
-                emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', this)
-                .then(function(response) {
-                    alert('Form successfully submitted and email sent!');
-                    console.log('SUCCESS!', response.status, response.text);
-                }, function(error) {
-                    alert('Failed to send email. Please try again.');
-                    console.log('FAILED...', error);
-                });
+                event.preventDefault(); // Formun otomatik olarak submit edilmesini durdur
+                sendEmail();
             });
         };
+
+        function sendEmail() {
+            const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
+
+            let templateParams = {
+                observation_date: document.getElementById('observation_date').value,
+                telescope_used: document.querySelector('select[name="telescope_used"]').value,
+                observation_done: observationDone,
+                general_info: document.getElementById('general_info').value
+            };
+
+            if (observationDone === 'yes') {
+                templateParams.observer_name = document.getElementById('observer_name').value;
+                templateParams.observed_stars = Array.from(document.querySelectorAll('input[name="observed_stars[]"]')).map(input => input.value).join(", ");
+                templateParams.filter = document.querySelector('input[name="filter"]').value;
+                templateParams.exposure_time = document.querySelector('input[name="exposure_time"]').value;
+                templateParams.binning = document.querySelector('input[name="binning"]').value;
+                templateParams.sky_condition = document.querySelector('input[name="sky_condition"]').value;
+                templateParams.file_link = document.querySelector('input[name="file_link[]"]').value;
+                templateParams.extra_info = document.querySelector('input[name="extra_info[]"]').value;
+            } else {
+                templateParams.observer_name_no = document.getElementById('observer_name_no').value;
+                templateParams.reason_weather = document.querySelector('input[name="reason_weather"]:checked') ? 'Cloudy Weather' : '';
+                templateParams.reason_wind = document.querySelector('input[name="reason_wind"]:checked') ? 'Strong Wind' : '';
+                templateParams.reason_humidity = document.querySelector('input[name="reason_humidity"]:checked') ? 'High Humidity' : '';
+                templateParams.reason_technical = document.querySelector('input[name="reason_technical"]:checked') ? 'Technical Issue' : '';
+                templateParams.other_reason_text = document.querySelector('input[name="other_reason_text"]').value;
+            }
+
+            emailjs.send('service_r7cv4z9', 'template_ah4hbac', templateParams)
+                .then(function(response) {
+                   alert('Form successfully submitted!');
+                }, function(error) {
+                   alert('FAILED...', error);
+                });
+        }
 
         // Yıldız bilgilerini eklemek için fonksiyon
         function addStarField() {
