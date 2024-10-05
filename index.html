@@ -70,6 +70,24 @@
             border-color: #1e7e34;
         }
 
+        .button.remove-button {
+            background-color: #dc3545;
+            color: white;
+            padding: 12px 12px;
+            font-size: 12px;
+            font-weight: normal;
+            width: 80px;
+            max-width: 80px;
+            border-radius: 5px;
+            border: 0px solid #dc3545;
+            transition: background-color 0.2s ease;
+        }
+
+        .button.remove-button:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
         .button-row {
             display: flex;
             justify-content: center;
@@ -238,8 +256,32 @@
                 </div>
             `;
             starContainer.appendChild(newStarField);
+            toggleRemoveButton();
         }
 
+        // Yıldız bilgilerini silmek için fonksiyon
+        function removeLastStarField() {
+            const starContainer = document.getElementById('stars_container');
+            const starFields = starContainer.querySelectorAll('.section');
+
+            if (starFields.length > 1) {
+                starContainer.removeChild(starFields[starFields.length - 1]);
+            }
+            toggleRemoveButton();
+        }
+
+        // Remove butonunu görünür yapmak için
+        function toggleRemoveButton() {
+            const starContainer = document.getElementById('stars_container');
+            const removeButton = document.getElementById('remove_button');
+            const starFields = starContainer.querySelectorAll('.section');
+
+            if (starFields.length > 1) {
+                removeButton.classList.remove('hidden');
+            } else {
+                removeButton.classList.add('hidden');
+            }
+        }
     </script>
 </head>
 <body>
@@ -288,16 +330,19 @@
 
                     <div class="button-row">
                         <button type="button" class="button small-button" onclick="addStarField()">Add</button>
+                        <button type="button" class="button remove-button hidden" id="remove_button" onclick="removeLastStarField()">Remove</button>
                     </div>
                 </div>
             </div>
 
             <!-- No seçilirse görüntülenecek alanlar -->
-            <div id="no_fields" class="hidden">
-                <div class="section">
-                    <label for="observer_name_no">Observer Name</label>
-                    <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
-                    <label style="margin-bottom: 15px;">Please select the reason for not doing the observation</label>
+            <div id="no_fields" class="hidden section">
+                <label for="observer_name_no">Observer Name</label>
+                <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
+                
+                <label style="margin-bottom: 10px;">Please select the reason for not doing the observation</label>
+                
+                <div class="section" style="padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
                     <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; width: 100%;">
                         <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
                             <input type="checkbox" name="reason_weather" value="Cloudy weather" style="width: auto; margin: 0;">
@@ -316,7 +361,8 @@
                             <span>Technical issue</span>
                         </label>
                     </div>
-                    <input type="text" name="other_reason_text" placeholder="Other reason" style="margin-top: 10px;">
+                    <!-- "Other reason" input inside the same section with padding -->
+                    <input type="text" name="other_reason_text" placeholder="Other reason" style="width: 100%; margin-top: 15px; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
                 </div>
             </div>
 
