@@ -153,7 +153,13 @@
         }
 
     </style>
+    <!-- EmailJS script -->
+    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
+        (function() {
+            emailjs.init("SPZ4gMRCG9sHemlE7"); // Replace with your EmailJS public key
+        })();
+
         let firstTimeYesClicked = false;
 
         window.onload = function() {
@@ -179,6 +185,20 @@
                 document.getElementById('no_fields').classList.remove('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
                 document.getElementById('general_info_section').classList.remove('hidden');
+            });
+
+            // Form gönderme işlemi
+            document.getElementById('observationForm').addEventListener('submit', function(event) {
+                event.preventDefault(); // Sayfanın yenilenmesini engeller
+
+                emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', this)
+                .then(function(response) {
+                    alert('Form successfully submitted and email sent!');
+                    console.log('SUCCESS!', response.status, response.text);
+                }, function(error) {
+                    alert('Failed to send email. Please try again.');
+                    console.log('FAILED...', error);
+                });
             });
         };
 
