@@ -3,44 +3,411 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EmailJS Test</title>
-    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
-    <script type="text/javascript">
-        (function() {
-            // EmailJS kullanıcı kimliği başlatma
-            emailjs.init("nZCXhxreCRu0xCDYd"); // YOUR_USER_ID kısmına kendi EmailJS User ID'nizi ekleyin
-        })();
-
-        function sendEmail(e) {
-            e.preventDefault(); // Formun otomatik submit edilmesini engelle
-
-            // EmailJS verilerini ayarla
-            emailjs.send("service_h8sg6bj", "template_c4awdil", {
-                from_name: document.getElementById("from_name").value,
-                message: document.getElementById("message").value
-            }).then(function(response) {
-                alert('Email başarıyla gönderildi!'); // Başarı mesajı
-                console.log('SUCCESS!', response.status, response.text);
-            }, function(error) {
-                alert('E-posta gönderme başarısız oldu...');
-                console.log('FAILED...', error);
-            });
+    <title>Observation Form</title>
+    <style>
+        body {
+            font-family: "Gill Sans", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
         }
+
+        .container {
+            width: 98%;
+            max-width: 1600px;
+            min-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            background-color: #e9ecef;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .section {
+            padding: 30px;
+            margin: 20px 0;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .button.small-button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 12px;
+            font-size: 12px;
+            font-weight: normal;
+            width: 80px;
+            max-width: 80px;
+            border-radius: 5px;
+            border: 0px solid #28a745;
+            transition: background-color 0.2s ease;
+        }
+
+        .button.small-button:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 0px;
+        }
+
+        .date-observation-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .date-column, .observation-column, .telescope-column {
+            width: 30%;
+        }
+
+        .observation-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .radio-group {
+            display: inline-flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        .input-container-special {
+            flex: 1 1 13%;
+        }
+
+        .input-container-wide {
+            flex: 1 1 20%; 
+        }
+
+        .input-container-large {
+            flex: 1 1 100%;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+    </style>
+    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script>
+        // EmailJS kullanıcı kimliği başlatma
+        emailjs.init('nZCXhxreCRu0xCDYd'); // YOUR_USER_ID yerine EmailJS kullanıcı ID'nizi ekleyin
+
+        let firstTimeYesClicked = false;
+
+        window.onload = function() {
+            var now = new Date();
+            var formattedDate = now.toISOString().slice(0, 10); 
+            document.getElementById('observation_date').value = formattedDate;
+
+            document.getElementById('observation_done_yes').addEventListener('change', function() {
+                document.getElementById('yes_fields').classList.remove('hidden');
+                document.getElementById('no_fields').classList.add('hidden');
+                if (!firstTimeYesClicked) {
+                    addStarField();
+                    firstTimeYesClicked = true;
+                }
+                document.getElementById('submit_button').classList.remove('hidden');
+
+                // "No" seçeneği için gerekli input'lardan required'ı kaldır
+                document.getElementById('observer_name_no').removeAttribute('required');
+            });
+
+            document.getElementById('observation_done_no').addEventListener('change', function() {
+                document.getElementById('yes_fields').classList.add('hidden');
+                document.getElementById('no_fields').classList.remove('hidden');
+                document.getElementById('submit_button').classList.remove('hidden');
+
+                // "Yes" seçeneği için gerekli input'lardan required'ı kaldır
+                document.getElementById('observer_name').removeAttribute('required');
+            });
+        };
+
+        function addStarField() {
+            const starContainer = document.getElementById('stars_container');
+            const newStarField = document.createElement('div');
+            newStarField.classList.add('row');
+            newStarField.innerHTML = `
+                <div class="input-container-wide">
+                    <label for="observed_stars">Object Name <span class="required-star">*</span></label>
+                    <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star" required>
+                </div>
+
+                <div class="input-container-special">
+                    <label for="filter">Filter <span class="required-star">*</span></label>
+                    <input list="filters" name="filter" placeholder="Enter filter" required>
+                    <datalist id="filters">
+                        <option value="SDSS-u'">
+                        <option value="SDSS-g'">
+                        <option value="SDSS-r'">
+                        <option value="SDSS-i'">
+                        <option value="SDSS-z'">
+                        <option value="Clear">
+                        <option value="Bessel-B">
+                        <option value="Bessel-V">
+                        <option value="Bessel-R">
+                        <option value="Bessel-I">
+                    </datalist>
+                </div>
+
+                <div class="input-container-special">
+                    <label for="exposure_time">Exposure Time <span class="required-star">*</span></label>
+                    <input list="exposure_times" name="exposure_time" placeholder="Enter exposure time" required>
+                    <datalist id="exposure_times">
+                        <option value="5s">
+                        <option value="10s">
+                        <option value="20s">
+                        <option value="30s">
+                        <option value="60s">
+                    </datalist>
+                </div>
+
+                <div class="input-container-special">
+                    <label for="binning">Binning <span class="required-star">*</span></label>
+                    <input list="binnings" name="binning" placeholder="Enter binning" required>
+                    <datalist id="binnings">
+                        <option value="1x1">
+                        <option value="2x2">
+                        <option value="3x3">
+                        <option value="4x4">
+                    </datalist>
+                </div>
+
+                <div class="input-container-special">
+                    <label for="sky_condition">Sky Condition <span class="required-star">*</span></label>
+                    <input list="sky_conditions" name="sky_condition" placeholder="Enter sky condition" required>
+                    <datalist id="sky_conditions">
+                        <option value="Cloudy">
+                        <option value="Partly Cloudy">
+                        <option value="Clear">
+                        <option value="Transparent">
+                    </datalist>
+                </div>
+
+                <div class="input-container-wide"> 
+                    <label for="file_link">Preliminary Result</label>
+                    <input type="text" name="file_link[]" class="small-input" placeholder="Paste file link here">
+                </div>
+            `;
+            starContainer.appendChild(newStarField);
+
+            const additionalInfo = document.createElement('div');
+            additionalInfo.classList.add('input-container-large');
+            additionalInfo.innerHTML = `
+                <label for="extra_info">Additional Info</label>
+                <input type="text" name="extra_info[]" class="small-input" placeholder="Enter any issues encountered during the observation (if any)">
+            `;
+            starContainer.appendChild(additionalInfo);
+
+            toggleRemoveButton();
+        }
+
+        function removeLastStarField() {
+            const starContainer = document.getElementById('stars_container');
+            const starFields = starContainer.querySelectorAll('.row, .input-container-large');
+
+            if (starFields.length > 2) {
+                starContainer.removeChild(starFields[starFields.length - 1]);
+                starContainer.removeChild(starFields[starFields.length - 2]);
+            }
+
+            toggleRemoveButton();
+        }
+
+        function toggleRemoveButton() {
+            const starContainer = document.getElementById('stars_container');
+            const removeButton = document.getElementById('remove_button');
+            const starFields = starContainer.querySelectorAll('.row');
+
+            if (starFields.length > 1) {
+                removeButton.classList.remove('hidden');
+            } else {
+                removeButton.classList.add('hidden');
+            }
+        }
+
+        // En az bir checkbox veya "Other reason" alanının doldurulmasını kontrol et
+        function validateNoOption() {
+            let checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            let otherReason = document.querySelector('input[name="other_reason_text"]').value.trim();
+            if (checkboxes.length === 0 && otherReason === "") {
+                alert("Please select at least one reason or provide another reason.");
+                return false;
+            }
+            return true;
+        }
+
+        // Form verilerini gönderme
+        document.addEventListener("submit", function(event) {
+            event.preventDefault(); // Formun otomatik submit edilmesini engelle
+
+            const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
+
+            // Eğer "No" seçilmişse validasyon yap
+            if (observationDone === "no" && !validateNoOption()) {
+                return;
+            }
+
+            const date = document.getElementById('observation_date').value;
+            const telescopeUsed = document.querySelector('select[name="telescope_used"]').value;
+            let templateParams = {
+                observation_date: date,
+                telescope_used: telescopeUsed,
+                observation_done: observationDone
+            };
+
+            if (observationDone === "yes") {
+                const observerName = document.getElementById('observer_name').value;
+                let stars = Array.from(document.querySelectorAll('input[name="observed_stars[]"]')).map(input => input.value);
+                templateParams.observer_name = observerName;
+                templateParams.stars = stars.join(', ');
+            } else {
+                const observerNameNo = document.getElementById('observer_name_no').value;
+                let reasons = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(input => input.value);
+                const otherReason = document.querySelector('input[name="other_reason_text"]').value;
+
+                templateParams.observer_name_no = observerNameNo;
+                templateParams.reason = reasons.length ? reasons.join(', ') : otherReason;
+            }
+
+            // Email gönderme
+            emailjs.send("service_h8sg6bj", "template_c4awdil", templateParams)
+            .then(function(response) {
+                alert('Email successfully sent!', response.status, response.text);
+            }, function(error) {
+                alert('Failed to send email...', error);
+            });
+        });
     </script>
 </head>
 <body>
 
-    <h1>EmailJS Test Formu</h1>
+    <div class="container">
+        <h1>Observation Info</h1>
 
-    <form onsubmit="sendEmail(event)">
-        <label for="from_name">Gönderen Adı:</label><br>
-        <input type="text" id="from_name" name="from_name" required><br><br>
+        <form id="observationForm">
+            <div class="section">
+                <div class="date-observation-row">
+                    <div class="date-column">
+                        <label for="observation_date">Date</label>
+                        <input type="date" id="observation_date" name="observation_date" required>
+                    </div>
 
-        <label for="message">Mesaj:</label><br>
-        <textarea id="message" name="message" required></textarea><br><br>
+                    <div class="telescope-column">
+                        <label for="telescope_used">Telescope Used</label>
+                        <select name="telescope_used" required>
+                            <option value="T35">T35</option>
+                            <option value="T80">T80</option>
+                            <option value="T100">T100</option>
+                        </select>
+                    </div>
 
-        <button type="submit">Gönder</button>
-    </form>
+                    <div class="observation-column">
+                        <label for="observation_done">Was the observation done?</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" id="observation_done_yes" name="observation_done" value="yes" required> Yes
+                            </label>
+                            <label>
+                                <input type="radio" id="observation_done_no" name="observation_done" value="no" required> No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div id="yes_fields" class="hidden">
+                <div class="section">
+                    <label for="observer_name">Observer Name <span class="required-star">*</span></label>
+                    <input type="text" id="observer_name" name="observer_name" required placeholder="Enter observer name">
+
+                    <div id="stars_container"></div>
+
+                    <div class="button-row">
+                        <button type="button" class="button small-button" onclick="addStarField()">Add</button>
+                        <button type="button" class="button small-button remove-button hidden" id="remove_button" onclick="removeLastStarField()">Remove</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="no_fields" class="hidden">
+                <div class="section">
+                    <label for="observer_name_no">Observer Name <span class="required-star">*</span></label>
+                    <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
+                    <label style="margin-bottom: 15px;">Please select the reason for not doing the observation <span class="required-star">*</span></label>
+                    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; width: 100%;">
+                        <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
+                            <input type="checkbox" name="reason_weather" value="Cloudy weather" style="width: auto; margin: 0;">
+                            <span>Cloudy Weather</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
+                            <input type="checkbox" name="reason_wind" value="Strong wind" style="width: auto; margin: 0;">
+                            <span>Strong wind</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
+                            <input type="checkbox" name="reason_humidity" value="High humidity" style="width: auto; margin: 0;">
+                            <span>High humidity</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
+                            <input type="checkbox" name="reason_technical" value="Technical issue" style="width: auto; margin: 0;">
+                            <span>Technical issue</span>
+                        </label>
+                    </div>
+                    <input type="text" name="other_reason_text" placeholder="Other reason" style="margin-top: 10px;">
+
+                    <div class="input-container">
+                        <label for="additional_info">Additional Info</label>
+                        <input type="text" id="additional_info" name="additional_info" placeholder="If there is any additional information, please write it here.">
+                    </div>
+                </div>
+            </div>
+
+            <div id="submit_button" class="button-row hidden">
+                <input type="submit" class="button small-button" value="Submit">
+            </div>
+        </form>
+    </div>
 </body>
 </html>
