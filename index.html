@@ -190,41 +190,31 @@
             });
         };
 
-        function sendEmail() {
-            const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
-
-            let templateParams = {
-                observation_date: document.getElementById('observation_date').value,
-                telescope_used: document.querySelector('select[name="telescope_used"]').value,
-                observation_done: observationDone,
-                general_info: document.getElementById('general_info').value
-            };
-
-            if (observationDone === 'yes') {
-                templateParams.observer_name = document.getElementById('observer_name').value;
-                templateParams.observed_stars = Array.from(document.querySelectorAll('input[name="observed_stars[]"]')).map(input => input.value).join(", ");
-                templateParams.filter = document.querySelector('input[name="filter"]').value;
-                templateParams.exposure_time = document.querySelector('input[name="exposure_time"]').value;
-                templateParams.binning = document.querySelector('input[name="binning"]').value;
-                templateParams.sky_condition = document.querySelector('input[name="sky_condition"]').value;
-                templateParams.file_link = document.querySelector('input[name="file_link[]"]').value;
-                templateParams.extra_info = document.querySelector('input[name="extra_info[]"]').value;
-            } else {
-                templateParams.observer_name_no = document.getElementById('observer_name_no').value;
-                templateParams.reason_weather = document.querySelector('input[name="reason_weather"]:checked') ? 'Cloudy Weather' : '';
-                templateParams.reason_wind = document.querySelector('input[name="reason_wind"]:checked') ? 'Strong Wind' : '';
-                templateParams.reason_humidity = document.querySelector('input[name="reason_humidity"]:checked') ? 'High Humidity' : '';
-                templateParams.reason_technical = document.querySelector('input[name="reason_technical"]:checked') ? 'Technical Issue' : '';
-                templateParams.other_reason_text = document.querySelector('input[name="other_reason_text"]').value;
-            }
-
-            emailjs.send('service_r7cv4z9', 'template_ah4hbac', templateParams)
-                .then(function(response) {
-                   alert('Form successfully submitted!');
-                }, function(error) {
-                   alert('FAILED...', error);
-                });
-        }
+emailjs.send("service_r7cv4z9", "template_ah4hbac", {
+    observation_date: document.getElementById("observation_date").value,
+    telescope_used: document.getElementById("telescope_used").value,
+    observation_done: document.querySelector('input[name="observation_done"]:checked').value,
+    observer_name: document.getElementById("observer_name").value,
+    observed_stars: [], // yıldızları bir array olarak topla
+    filter: document.getElementsByName("filter").value,
+    exposure_time: document.getElementsByName("exposure_time").value,
+    binning: document.getElementsByName("binning").value,
+    sky_condition: document.getElementsByName("sky_condition").value,
+    file_link: document.getElementsByName("file_link").value,
+    extra_info: document.getElementsByName("extra_info").value,
+    observer_name_no: document.getElementById("observer_name_no").value,
+    reason_weather: document.querySelector('input[name="reason_weather"]:checked') ? "Cloudy Weather" : "",
+    reason_wind: document.querySelector('input[name="reason_wind"]:checked') ? "Strong Wind" : "",
+    reason_humidity: document.querySelector('input[name="reason_humidity"]:checked') ? "High Humidity" : "",
+    reason_technical: document.querySelector('input[name="reason_technical"]:checked') ? "Technical Issue" : "",
+    other_reason_text: document.getElementsByName("other_reason_text").value,
+    general_info: document.getElementById("general_info").value
+}, "SPZ4gMRCG9sHemlE7")
+.then(function(response) {
+   console.log("SUCCESS!", response.status, response.text);
+}, function(error) {
+   console.log("FAILED...", error);
+});
 
         // Yıldız bilgilerini eklemek için fonksiyon
         function addStarField() {
