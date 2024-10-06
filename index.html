@@ -21,12 +21,15 @@
         }
 
         h1 {
+            font-family: "Georgia", serif;
             color: #333;
             margin: 0;
             padding: 20px;
             text-align: center;
             background-color: #e9ecef;
             border-bottom: 1px solid #ccc;
+            font-size: 24px;
+            font-weight: bold;
         }
 
         .section {
@@ -164,11 +167,11 @@
 
         window.onload = function() {
             var now = new Date();
-            // Tarih formatını gün.ay.yıl olarak ayarla
+            now.setHours(now.getHours() - 12); // 12 saat geri alıyoruz
             var day = String(now.getDate()).padStart(2, '0');
             var month = String(now.getMonth() + 1).padStart(2, '0');
             var year = now.getFullYear();
-            var formattedDate = `${day}.${month}.${year}`; // Gün.ay.yıl formatı
+            var formattedDate = `${day}.${month}.${year}`;
             document.getElementById('observation_date').value = formattedDate;
 
             // "Yes" seçeneği seçilirse ilgili alanları göster ve "No" alanlarını gizle
@@ -195,34 +198,6 @@
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault(); // Sayfanın yenilenmesini engeller
 
-                // Checkbox değerlerini toplama işlemi
-                const reasons = [];
-                if (document.querySelector('input[name="reason_weather"]').checked) {
-                    reasons.push('Cloudy Weather');
-                }
-                if (document.querySelector('input[name="reason_wind"]').checked) {
-                    reasons.push('Strong Wind');
-                }
-                if (document.querySelector('input[name="reason_humidity"]').checked) {
-                    reasons.push('High Humidity');
-                }
-                if (document.querySelector('input[name="reason_technical"]').checked) {
-                    reasons.push('Technical Issue');
-                }
-                const otherReason = document.querySelector('input[name="other_reason_text"]').value;
-                if (otherReason) {
-                    reasons.push('Other: ' + otherReason);
-                }
-
-                // Gizli input alanını nedenlerle güncelle
-                document.getElementById('selected_reasons').value = reasons.join(', ');
-
-                // General Info eğer boşsa "-" olarak ayarla
-                const generalInfo = document.getElementById('general_info').value || "-"; 
-                document.getElementById('general_info_hidden').value = generalInfo;
-
-                // Yıldız bilgilerini toplama
-                const starObservations = [];
                 const starNames = document.querySelectorAll('input[name="observed_stars[]"]');
                 const filters = document.querySelectorAll('input[name="filter"]');
                 const exposureTimes = document.querySelectorAll('input[name="exposure_time"]');
@@ -230,33 +205,35 @@
                 const skyConditions = document.querySelectorAll('input[name="sky_condition"]');
                 const resultLinks = document.querySelectorAll('input[name="file_link[]"]');
                 const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
+                const generalInfo = document.getElementById('general_info').value || "-"; // General Info için boşsa "-"
+
+                let observations = "";
 
                 for (let i = 0; i < starNames.length; i++) {
-                    let observation = {};
-                    observation.star = starNames[i].value || "-";
-                    observation.filter = filters[i].value || "-";
-                    observation.exposure = exposureTimes[i].value || "-";
-                    observation.binning = binnings[i].value || "-";
-                    observation.sky = skyConditions[i].value || "-";
-                    observation.link = resultLinks[i].value || "-";
-                    observation.info = extraInfos[i].value || "-";
-                    starObservations.push(observation);
+                    observations += `- **Object Name**: ${starNames[i].value || "-"}\n`;
+                    observations += `  - **Filter**: ${filters[i].value || "-"}\n`;
+                    observations += `  - **Exposure Time**: ${exposureTimes[i].value || "-"}\n`;
+                    observations += `  - **Binning**: ${binnings[i].value || "-"}\n`;
+                    observations += `  - **Sky Condition**: ${skyConditions[i].value || "-"}\n`;
+                    observations += `  - **Preliminary Result Link**: ${resultLinks[i].value || "-"}\n`; // Boşsa "-"
+                    observations += `  - **Additional Info**: ${extraInfos[i].value || "-"}\n`; // Boşsa "-"
+                    observations += "---------------------------\n";
                 }
 
-                // Yıldız gözlemlerini gizli alana yerleştir
-                document.getElementById('star_observations_text').value = JSON.stringify(starObservations);
+                // Observations stringini gizli input'a koyuyoruz
+                document.getElementById('star_observations_text').value = observations;
 
                 const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
 
                 // EmailJS fonksiyonunu tetikleyin
                 emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
-                .then(function(response) {
-                    alert('Form successfully submitted and email sent!');
-                    console.log('SUCCESS!', response.status, response.text);
-                }, function(error) {
-                    alert('Failed to send email. Please try again.');
-                    console.log('FAILED...', error);
-                });
+                    .then(function(response) {
+                        alert('Form successfully submitted and email sent!');
+                        console.log('SUCCESS!', response.status, response.text);
+                    }, function(error) {
+                        alert('Failed to send email. Please try again.');
+                        console.log('FAILED...', error);
+                    });
             });
         };
 
@@ -365,7 +342,7 @@
 <body>
 
     <div class="container">
-        <h1>Observation Info</h1>
+        <h1>Observation Report</h1>
 
         <form id="observationForm">
             <div class="section">
@@ -452,7 +429,6 @@
             <div id="general_info_section" class="hidden section">
                 <label for="general_info">General Info</label>
                 <input type="text" id="general_info" name="general_info" placeholder="Enter any general observation information">
-                <input type="hidden" id="general_info_hidden" name="general_info_hidden">
             </div>
 
             <!-- Submit Butonu -->
