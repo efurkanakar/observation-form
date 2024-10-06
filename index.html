@@ -172,7 +172,7 @@
             var day = String(now.getDate()).padStart(2, '0');
             var month = String(now.getMonth() + 1).padStart(2, '0'); // Aylar 0-11 arası olduğu için +1 ekliyoruz.
             var year = now.getFullYear();
-            var formattedDate = `${day}.${month}.${year}`; // Gün-ay-yıl formatı
+            var formattedDate = `${day}.${month}.${year}`; // Gün.ay.yıl formatı
             document.getElementById('observation_date').value = formattedDate;
 
             // "Yes" seçeneği seçilirse ilgili alanları göster ve "No" alanlarını gizle
@@ -206,26 +206,27 @@
                 const skyConditions = document.querySelectorAll('input[name="sky_condition"]');
                 const resultLinks = document.querySelectorAll('input[name="file_link[]"]');
                 const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
-                const generalInfo = document.getElementById('general_info').value || "-"; // General Info için boşsa "-"
+                const generalInfo = document.getElementById('general_info').value || "-"; // General Info için boşsa "No General Info"
 
-                // Yıldız gözlem bilgilerini formatlı olarak oluştur
-                let formattedObservations = "";
+                let observations = "";
+
                 for (let i = 0; i < starNames.length; i++) {
-                    formattedObservations += `- Object Name: ${starNames[i].value || "-"}\n`;
-                    formattedObservations += `  Filter: ${filters[i].value || "-"}\n`;
-                    formattedObservations += `  Exposure Time: ${exposureTimes[i].value || "-"}\n`;
-                    formattedObservations += `  Binning: ${binnings[i].value || "-"}\n`;
-                    formattedObservations += `  Sky Condition: ${skyConditions[i].value || "-"}\n`;
-                    formattedObservations += `  Preliminary Result Link: ${resultLinks[i].value || "-"}\n`;
-                    formattedObservations += `  Additional Info: ${extraInfos[i].value || "-"}\n`;
-                    formattedObservations += "---------------------------\n";
+                    observations += `- **Object Name**: ${starNames[i].value || "-"}\n`;
+                    observations += `  - **Filter**: ${filters[i].value || "-"}\n`;
+                    observations += `  - **Exposure Time**: ${exposureTimes[i].value || "-"}\n`;
+                    observations += `  - **Binning**: ${binnings[i].value || "-"}\n`;
+                    observations += `  - **Sky Condition**: ${skyConditions[i].value || "-"}\n`;
+                    observations += `  - **Preliminary Result Link**: ${resultLinks[i].value || "-"}\n`;
+                    observations += `  - **Additional Info**: ${extraInfos[i].value || "-"}\n`;
+                    observations += "---------------------------\n";
                 }
 
-                // Gözlem bilgilerini gizli input'a aktar
-                document.getElementById('star_observations_text').value = formattedObservations;
+                // Observations stringini gizli input'a koyuyoruz
+                document.getElementById('star_observations_text').value = observations;
+
+                const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
 
                 // EmailJS fonksiyonunu tetikleyin
-                const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
                 emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
                     .then(function(response) {
                         alert('Form successfully submitted and email sent!');
