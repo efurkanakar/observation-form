@@ -217,10 +217,34 @@
                 // Gizli input alanını nedenlerle güncelle
                 document.getElementById('selected_reasons').value = reasons.join(', ');
 
-                const generalInfo = document.getElementById('general_info').value || "-"; // General Info boşsa "-"
-
-                // General info gizli input alanını güncelle
+                // General Info eğer boşsa "-" olarak ayarla
+                const generalInfo = document.getElementById('general_info').value || "-"; 
                 document.getElementById('general_info_hidden').value = generalInfo;
+
+                // Yıldız bilgilerini toplama
+                const starObservations = [];
+                const starNames = document.querySelectorAll('input[name="observed_stars[]"]');
+                const filters = document.querySelectorAll('input[name="filter"]');
+                const exposureTimes = document.querySelectorAll('input[name="exposure_time"]');
+                const binnings = document.querySelectorAll('input[name="binning"]');
+                const skyConditions = document.querySelectorAll('input[name="sky_condition"]');
+                const resultLinks = document.querySelectorAll('input[name="file_link[]"]');
+                const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
+
+                for (let i = 0; i < starNames.length; i++) {
+                    let observation = {};
+                    observation.star = starNames[i].value || "-";
+                    observation.filter = filters[i].value || "-";
+                    observation.exposure = exposureTimes[i].value || "-";
+                    observation.binning = binnings[i].value || "-";
+                    observation.sky = skyConditions[i].value || "-";
+                    observation.link = resultLinks[i].value || "-";
+                    observation.info = extraInfos[i].value || "-";
+                    starObservations.push(observation);
+                }
+
+                // Yıldız gözlemlerini gizli alana yerleştir
+                document.getElementById('star_observations_text').value = JSON.stringify(starObservations);
 
                 const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
 
@@ -435,6 +459,9 @@
             <div class="button-row">
                 <input type="submit" class="button small-button hidden" id="submit_button" value="Submit">
             </div>
+
+            <!-- Yıldız gözlemleri için gizli input -->
+            <input type="hidden" id="star_observations_text" name="star_observations_text">
         </form>
     </div>
 </body>
