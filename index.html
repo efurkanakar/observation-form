@@ -162,84 +162,45 @@
 
         let firstTimeYesClicked = false;
 
-        window.onload = function() {
-            var now = new Date();
-            var formattedDate = now.toISOString().slice(0, 10); 
-            document.getElementById('observation_date').value = formattedDate;
+window.onload = function() {
+    var now = new Date();
+    var formattedDate = now.toISOString().slice(0, 10); 
+    document.getElementById('observation_date').value = formattedDate;
 
-            // "Yes" seçeneği seçilirse ilgili alanları göster ve "No" alanlarını gizle
-            document.getElementById('observation_done_yes').addEventListener('change', function() {
-                document.getElementById('yes_fields').classList.remove('hidden');
-                document.getElementById('no_fields').classList.add('hidden');
-                document.getElementById('submit_button').classList.remove('hidden');
-                document.getElementById('general_info_section').classList.remove('hidden');
-                if (!firstTimeYesClicked) {
-                    addStarField(); // Otomatik olarak bir yıldız bilgi alanı eklenir
-                    firstTimeYesClicked = true;
-                }
+    document.getElementById('observation_done_yes').addEventListener('change', function() {
+        document.getElementById('yes_fields').classList.remove('hidden');
+        document.getElementById('no_fields').classList.add('hidden');
+        document.getElementById('submit_button').classList.remove('hidden');
+        document.getElementById('general_info_section').classList.remove('hidden');
+    });
+
+    document.getElementById('observation_done_no').addEventListener('change', function() {
+        document.getElementById('yes_fields').classList.add('hidden');
+        document.getElementById('no_fields').classList.remove('hidden');
+        document.getElementById('submit_button').classList.remove('hidden');
+        document.getElementById('general_info_section').classList.remove('hidden');
+    });
+
+    document.getElementById('observationForm').addEventListener('submit', function(event) {
+        event.preventDefault(); 
+
+        const generalInfoField = document.getElementById('general_info');
+        let generalInfo = generalInfoField.value.trim();
+        if (!generalInfo) {
+            generalInfo = "-";  // Eğer kullanıcı bilgi girmezse '-' olarak ayarla
+        }
+
+        document.getElementById('general_info_hidden').value = generalInfo;
+
+        emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', this)
+            .then(function(response) {
+                alert('Form successfully submitted and email sent!');
+            }, function(error) {
+                alert('Failed to send email. Please try again.');
             });
+    });
+};
 
-            // "No" seçeneği seçilirse ilgili alanları göster ve "Yes" alanlarını gizle
-            document.getElementById('observation_done_no').addEventListener('change', function() {
-                document.getElementById('yes_fields').classList.add('hidden');
-                document.getElementById('no_fields').classList.remove('hidden');
-                document.getElementById('submit_button').classList.remove('hidden');
-                document.getElementById('general_info_section').classList.remove('hidden');
-            });
-
-            // Form gönderme işlemi sırasında gözlem durumu 'yes' ya da 'no' bilgisiyle gönderiliyor.
-            document.getElementById('observationForm').addEventListener('submit', function(event) {
-                event.preventDefault(); // Sayfanın yenilenmesini engeller
-
-                // Checkbox değerlerini toplama işlemi
-                const reasons = [];
-                if (document.querySelector('input[name="reason_weather"]').checked) {
-                    reasons.push('Cloudy Weather');
-                }
-                if (document.querySelector('input[name="reason_wind"]').checked) {
-                    reasons.push('Strong Wind');
-                }
-                if (document.querySelector('input[name="reason_humidity"]').checked) {
-                    reasons.push('High Humidity');
-                }
-                if (document.querySelector('input[name="reason_technical"]').checked) {
-                    reasons.push('Technical Issue');
-                }
-                const otherReason = document.querySelector('input[name="other_reason_text"]').value;
-                if (otherReason) {
-                    reasons.push('Other: ' + otherReason);
-                }
-
-                // Gizli input alanını nedenlerle güncelle
-                document.getElementById('selected_reasons').value = reasons.join(', ');
-
-                // General Info kontrolü, boşsa "-" atayalım
-                let generalInfo = document.getElementById('general_info').value.trim();
-                if (!generalInfo) {
-                    generalInfo = "-"; // Eğer boşsa varsayılan olarak "-"
-                }
-
-                // Ekstra bilgi (Additional Info) kontrolü, boşsa "-" atayalım
-                const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
-                extraInfos.forEach(info => {
-                    if (!info.value.trim()) {
-                        info.value = "-"; // Boşsa "-"
-                    }
-                });
-
-                const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
-                
-                // EmailJS fonksiyonunu tetikleyin
-                emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
-                .then(function(response) {
-                    alert('Form successfully submitted and email sent!');
-                    console.log('SUCCESS!', response.status, response.text);
-                }, function(error) {
-                    alert('Failed to send email. Please try again.');
-                    console.log('FAILED...', error);
-                });
-            });
-        };
 
         // Yıldız bilgilerini eklemek için fonksiyon
         function addStarField() {
