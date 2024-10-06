@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Observation Form</title>
+    <title>Observation Info</title>
     <style>
         body {
             font-family: "Gill Sans", sans-serif;
@@ -166,32 +166,41 @@
             var now = new Date();
             var formattedDate = now.toISOString().slice(0, 10); 
             document.getElementById('observation_date').value = formattedDate;
-        
+
+            // "Yes" seçeneği seçilirse ilgili alanları göster ve "No" alanlarını gizle
             document.getElementById('observation_done_yes').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
                 document.getElementById('general_info_section').classList.remove('hidden');
+                if (!firstTimeYesClicked) {
+                    addStarField(); // Otomatik olarak bir yıldız bilgi alanı eklenir
+                    firstTimeYesClicked = true;
+                }
             });
-        
+
+            // "No" seçeneği seçilirse ilgili alanları göster ve "Yes" alanlarını gizle
             document.getElementById('observation_done_no').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
                 document.getElementById('general_info_section').classList.remove('hidden');
             });
-        
+
             document.getElementById('observationForm').addEventListener('submit', function(event) {
-                event.preventDefault(); 
-        
+                event.preventDefault(); // Sayfanın yenilenmesini engeller
+
+                // General Info alanı boşsa "-" değerini atama
                 const generalInfoField = document.getElementById('general_info');
                 let generalInfo = generalInfoField.value.trim();
                 if (!generalInfo) {
-                    generalInfo = "-";  // Eğer kullanıcı bilgi girmezse '-' olarak ayarla
+                    generalInfo = "-";  // Boşsa "-" olarak gönder.
                 }
-        
-                document.getElementById('general_info_hidden').value = generalInfo; // Hidden input field'da güncelleme
-        
+
+                // Gizli input'a atama
+                document.getElementById('general_info_hidden').value = generalInfo;
+
+                // EmailJS fonksiyonunu tetikleyin
                 emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', this)
                     .then(function(response) {
                         alert('Form successfully submitted and email sent!');
@@ -200,7 +209,6 @@
                     });
             });
         };
-
 
         // Yıldız bilgilerini eklemek için fonksiyon
         function addStarField() {
@@ -395,13 +403,16 @@
                 <label for="general_info">General Info</label>
                 <input type="text" id="general_info" name="general_info" placeholder="Enter any general observation information">
                 <!-- Gizli input alanı -->
-                <input type="hidden" id="general_info_hidden" name="general_info">
+                <input type="hidden" id="general_info_hidden" name="general_info_hidden">
             </div>
 
             <!-- Submit Butonu -->
             <div class="button-row">
                 <input type="submit" class="button small-button hidden" id="submit_button" value="Submit">
             </div>
+
+            <!-- Yıldız gözlemleri için gizli input -->
+            <input type="hidden" id="star_observations_text" name="star_observations_text">
         </form>
     </div>
 </body>
