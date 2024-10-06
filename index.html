@@ -23,7 +23,7 @@
         h1 {
             color: #333;
             font-family: "Georgia", serif;
-            font-size: 28px;
+            font-size: 32px; /* Başlık için punto büyütüldü */
             margin: 0;
             padding: 15px;
             text-align: center;
@@ -43,26 +43,26 @@
         label {
             font-weight: bold;
             margin-bottom: 5px;
-            font-size: 13px;
+            font-size: 18px; /* Label puntoları büyütüldü */
         }
 
         input, select {
             width: 100%;
-            padding: 8px;
+            padding: 10px; /* Padding artırıldı */
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            font-size: 12px;
+            font-size: 16px; /* Input ve select için font boyutu büyütüldü */
         }
 
         .button.small-button {
             background-color: #28a745;
             color: white;
-            padding: 12px 12px;
-            font-size: 12px;
+            padding: 14px 14px; /* Butonlar için padding artırıldı */
+            font-size: 16px; /* Font boyutu büyütüldü */
             font-weight: normal;
-            width: 80px;
-            max-width: 80px;
+            width: 100px;
+            max-width: 100px;
             border-radius: 5px;
             border: 0px solid #28a745;
             transition: background-color 0.2s ease;
@@ -73,14 +73,13 @@
             border-color: #1e7e34;
         }
 
-
         #submit_button {
-            background-color: #007bff; /* Mavi renk */
+            background-color: #007bff;
             color: white;
-            padding: 16px 16px; /* Butonu biraz daha büyük yapmak için padding artırıldı */
-            font-size: 12px; /* Font boyutu artırıldı */
+            padding: 16px 16px;
+            font-size: 16px;
             font-weight: bold;
-            width: 100px; /* Genişliği artırıldı */
+            width: 100px;
             max-width: 100px;
             border-radius: 5px;
             border: 0px solid #007bff;
@@ -88,18 +87,17 @@
         }
         
         #submit_button:hover {
-            background-color: #0056b3; /* Hover sırasında koyu mavi */
+            background-color: #0056b3;
             border-color: #004085;
         }
 
         .button.remove-button {
             background-color: #dc3545;
             color: white;
-            padding: 12px 12px;
-            font-size: 12px;
-            font-weight: normal;
-            width: 80px;
-            max-width: 80px;
+            padding: 14px 14px;
+            font-size: 16px;
+            width: 100px;
+            max-width: 100px;
             border-radius: 5px;
             border: 0px solid #dc3545;
             transition: background-color 0.2s ease;
@@ -125,47 +123,32 @@
         }
         .date-column, .observation-column, .telescope-column {
             flex: 1;
-            max-width: 250px; /* Kolonların genişliklerini dengeler */
+            max-width: 250px;
         }
 
         .observation-column {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: flex-start; /* Bu, soruyu sola yaslayacaktır */
-        }
-
-
-        .date-observation-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center; /* Elemanları dikey olarak merkezler */
-            gap: 10px;
-        }
-
-        .observation-column {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start; /* Soru grubunu yukarı kaydırır */
-            align-items: center; 
+            align-items: flex-start;
         }
 
         .observation-column label {
-            margin-bottom: 12px; /* Soru ile radyo butonları arasındaki boşluğu azaltır */
+            margin-bottom: 12px;
         }
 
         .radio-group {
             display: flex;
-            gap: 50px; /* "Yes" ve "No" arasındaki boşluğu ayarlamak için */
-            align-items: flex-start; /* Radyo butonlarını yukarı kaydırır */
+            gap: 50px;
+            align-items: flex-start;
         }
 
         .radio-group label {
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            margin-top: 0px; /* Butonları daha yukarı kaydırmak için negatif margin eklenebilir */
         }
+
         input[type="radio"] {
             vertical-align: middle;
             margin: 0;
@@ -196,7 +179,7 @@
 
         .error {
             color: red;
-            font-size: 12px;
+            font-size: 14px;
             margin-bottom: 10px;
         }
 
@@ -235,8 +218,12 @@
                 document.getElementById('general_info_section').classList.remove('hidden');
             });
 
-            // Form açıldığında General Info'ya otomatik metin ekler
-            document.getElementById('general_info').value = "No additional info";
+            // Enter tuşu formu göndermesin
+            document.getElementById('observationForm').addEventListener('keydown', function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                }
+            });
 
             // Form gönderme işlemi sırasında gözlem durumu 'yes' ya da 'no' bilgisiyle gönderiliyor.
             document.getElementById('observationForm').addEventListener('submit', function(event) {
@@ -284,12 +271,10 @@
                     observations += "---------------------------\n";
                 }
 
-                // Observations stringini gizli input'a koyuyoruz
                 document.getElementById('star_observations_text').value = observations;
 
                 const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
 
-                // EmailJS fonksiyonunu tetikleyin
                 emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
                     .then(function(response) {
                         alert('Form successfully submitted and email sent!');
@@ -379,7 +364,6 @@
             toggleRemoveButton();
         }
 
-        // Yıldız bilgilerini silmek için fonksiyon
         function removeLastStarField() {
             const starContainer = document.getElementById('stars_container');
             const starFields = starContainer.querySelectorAll('.section');
@@ -390,7 +374,6 @@
             toggleRemoveButton();
         }
 
-        // Remove butonunu görünür yapmak için
         function toggleRemoveButton() {
             const starContainer = document.getElementById('stars_container');
             const removeButton = document.getElementById('remove_button');
@@ -440,7 +423,6 @@
                 </div>
             </div>
 
-            <!-- Yes seçilirse görüntülenecek alanlar -->
             <div id="yes_fields" class="hidden">
                 <div class="section">
                     <label for="observer_name">Observer</label>
@@ -455,7 +437,6 @@
                 </div>
             </div>
 
-            <!-- No seçilirse görüntülenecek alanlar -->
             <div id="no_fields" class="hidden section">
                 <label for="observer_name_no">Observer</label>
                 <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
@@ -482,36 +463,27 @@
                         </label>
                     </div>
                     
-                    <!-- Gizli input alanı seçili nedenlerle -->
                     <input type="hidden" id="selected_reasons" name="selected_reasons">
                     
-                    <!-- "Other reason" input inside the same section with padding -->
                     <input type="text" name="other_reason_text" placeholder="Other reason" style="width: 100%; margin-top: 15px; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
                 </div>
             </div>
 
-            <!-- General Info -->
             <div id="general_info_section" class="hidden section">
                 <label for="general_info">General Info</label>
-                <small style="display: block; font-size: 12px; font-style: italic; margin-bottom: 5px;">You can edit this information if needed</small>
+                <small style="display: block; font-size: 14px; font-style: italic; margin-bottom: 5px;">You can edit this information if needed</small>
                 <input type="text" id="general_info" name="general_info" value="No additional info">
             </div>
 
-
-
-
-            <!-- Submit Butonu -->
             <div class="button-row">
                 <input type="submit" class="button small-button hidden" id="submit_button" value="Submit">
             </div>
 
-            <!-- Yıldız gözlemleri için gizli input -->
             <input type="hidden" id="star_observations_text" name="star_observations_text">
         </form>
     </div>
 
-        
-<p style="position: fixed; bottom: 0; left: 0; right: 0; width: 100%; text-align: center; font-size: 12px; color: #555; background-color: #f4f4f4; padding: 10px; border-top: 1px solid #ccc; z-index: 1000;">
+<p style="position: fixed; bottom: 0; left: 0; right: 0; width: 100%; text-align: center; font-size: 14px; color: #555; background-color: #f4f4f4; padding: 10px; border-top: 1px solid #ccc; z-index: 1000;">
     If you encounter any issues, please contact me at <a href="mailto:efurkanakar@gmail.com" style="color: #007bff; text-decoration: none;">here</a>.
 </p>
 
