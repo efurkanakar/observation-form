@@ -191,39 +191,43 @@
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault(); // Sayfanın yenilenmesini engeller
 
-                // Checkbox değerlerini toplama işlemi
-                const reasons = [];
-                if (document.querySelector('input[name="reason_weather"]').checked) {
-                    reasons.push('Cloudy Weather');
-                }
-                if (document.querySelector('input[name="reason_wind"]').checked) {
-                    reasons.push('Strong Wind');
-                }
-                if (document.querySelector('input[name="reason_humidity"]').checked) {
-                    reasons.push('High Humidity');
-                }
-                if (document.querySelector('input[name="reason_technical"]').checked) {
-                    reasons.push('Technical Issue');
-                }
-                const otherReason = document.querySelector('input[name="other_reason_text"]').value;
-                if (otherReason) {
-                    reasons.push('Other: ' + otherReason);
+                // Yıldız gözlemlerini toplama işlemi
+                const starObservations = [];
+                const starNames = document.querySelectorAll('input[name="observed_stars[]"]');
+                const filters = document.querySelectorAll('input[name="filter"]');
+                const exposureTimes = document.querySelectorAll('input[name="exposure_time"]');
+                const binnings = document.querySelectorAll('input[name="binning"]');
+                const skyConditions = document.querySelectorAll('input[name="sky_condition"]');
+                const resultLinks = document.querySelectorAll('input[name="file_link[]"]');
+                const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
+
+                for (let i = 0; i < starNames.length; i++) {
+                    const observation = {
+                        starName: starNames[i].value || "No Name",
+                        filter: filters[i].value || "No Filter",
+                        exposureTime: exposureTimes[i].value || "No Exposure Time",
+                        binning: binnings[i].value || "No Binning",
+                        skyCondition: skyConditions[i].value || "No Sky Condition",
+                        resultLink: resultLinks[i].value || "No Result Link",
+                        extraInfo: extraInfos[i].value || "No Extra Info"
+                    };
+                    starObservations.push(observation);
                 }
 
-                // Gizli input alanını nedenlerle güncelle
-                document.getElementById('selected_reasons').value = reasons.join(', ');
+                // Yıldız gözlemleri JSON formatında gizli input'a aktarılıyor
+                document.getElementById('star_observations').value = JSON.stringify(starObservations);
 
                 const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
-                
+
                 // EmailJS fonksiyonunu tetikleyin
                 emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
-                .then(function(response) {
-                    alert('Form successfully submitted and email sent!');
-                    console.log('SUCCESS!', response.status, response.text);
-                }, function(error) {
-                    alert('Failed to send email. Please try again.');
-                    console.log('FAILED...', error);
-                });
+                    .then(function(response) {
+                        alert('Form successfully submitted and email sent!');
+                        console.log('SUCCESS!', response.status, response.text);
+                    }, function(error) {
+                        alert('Failed to send email. Please try again.');
+                        console.log('FAILED...', error);
+                    });
             });
         };
 
@@ -425,6 +429,9 @@
             <div class="button-row">
                 <input type="submit" class="button small-button hidden" id="submit_button" value="Submit">
             </div>
+
+            <!-- Yıldız gözlemleri için JSON gizli input -->
+            <input type="hidden" id="star_observations" name="star_observations">
         </form>
     </div>
 </body>
