@@ -163,9 +163,14 @@
         let firstTimeYesClicked = false;
 
         window.onload = function() {
+            // Tarihi 12 saat geri almak ve formda gün-ay-yıl olarak göstermek
             var now = new Date();
-            var formattedDate = now.toISOString().slice(0, 10); 
-            document.getElementById('observation_date').value = formattedDate;
+            now.setHours(now.getHours() - 12); // 12 saat geri alıyoruz
+            var day = String(now.getDate()).padStart(2, '0');
+            var month = String(now.getMonth() + 1).padStart(2, '0'); // Aylar 0-11 arası olduğu için +1 ekliyoruz.
+            var year = now.getFullYear();
+            var formattedDate = `${year}-${month}-${day}`; // Gün-ay-yıl formatı
+            document.getElementById('observation_date').value = formattedDate; // Date input için format güncellenmiş olmalı
 
             // "Yes" seçeneği seçilirse ilgili alanları göster ve "No" alanlarını gizle
             document.getElementById('observation_done_yes').addEventListener('change', function() {
@@ -198,17 +203,18 @@
                 const skyConditions = document.querySelectorAll('input[name="sky_condition"]');
                 const resultLinks = document.querySelectorAll('input[name="file_link[]"]');
                 const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
+                const generalInfo = document.getElementById('general_info').value || "-"; // General Info için boşsa "-"
 
                 let observations = "";
 
                 for (let i = 0; i < starNames.length; i++) {
-                    observations += `- **Object Name**: ${starNames[i].value || "No Name"}\n`;
-                    observations += `  - **Filter**: ${filters[i].value || "No Filter"}\n`;
-                    observations += `  - **Exposure Time**: ${exposureTimes[i].value || "No Exposure Time"}\n`;
-                    observations += `  - **Binning**: ${binnings[i].value || "No Binning"}\n`;
-                    observations += `  - **Sky Condition**: ${skyConditions[i].value || "No Sky Condition"}\n`;
-                    observations += `  - **Preliminary Result Link**: ${resultLinks[i].value || "No Result Link"}\n`;
-                    observations += `  - **Additional Info**: ${extraInfos[i].value || "No Additional Info"}\n`;
+                    observations += `- **Object Name**: ${starNames[i].value || "-"}\n`;
+                    observations += `  - **Filter**: ${filters[i].value || "-"}\n`;
+                    observations += `  - **Exposure Time**: ${exposureTimes[i].value || "-"}\n`;
+                    observations += `  - **Binning**: ${binnings[i].value || "-"}\n`;
+                    observations += `  - **Sky Condition**: ${skyConditions[i].value || "-"}\n`;
+                    observations += `  - **Preliminary Result Link**: ${resultLinks[i].value || "-"}\n`; // Boşsa "-"
+                    observations += `  - **Additional Info**: ${extraInfos[i].value || "-"}\n`; // Boşsa "-"
                     observations += "---------------------------\n";
                 }
 
