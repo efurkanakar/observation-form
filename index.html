@@ -98,35 +98,62 @@
             margin-top: 20px;
         }
 
-        .date-observation-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-        }
+.date-observation-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+.date-column, .observation-column, .telescope-column {
+    flex: 1;
+    max-width: 250px; /* Kolonların genişliklerini dengeler */
+}
 
-        .date-column, .observation-column, .telescope-column {
-            flex: 1;
-            max-width: 250px;
-        }
+.observation-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start; /* Bu, soruyu sola yaslayacaktır */
+}
 
-        .observation-column {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-        }
 
-        .radio-group {
-            display: flex;
-            gap: 50px;
-            align-items: flex-start;
-        }
+.date-observation-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Elemanları dikey olarak merkezler */
+    gap: 10px;
+}
 
-        input[type="radio"] {
-            vertical-align: middle;
-            margin: 0;
-        }
+.observation-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Soru grubunu yukarı kaydırır */
+    align-items: center; 
+}
+
+.observation-column label {
+    margin-bottom: 12px; /* Soru ile radyo butonları arasındaki boşluğu azaltır */
+}
+
+.radio-group {
+    display: flex;
+    gap: 50px; /* "Yes" ve "No" arasındaki boşluğu ayarlamak için */
+    align-items: flex-start; /* Radyo butonlarını yukarı kaydırır */
+}
+
+.radio-group label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 0px; /* Butonları daha yukarı kaydırmak için negatif margin eklenebilir */
+}
+input[type="radio"] {
+    vertical-align: middle;
+    margin: 0;
+}
+
+
+
 
         .row {
             display: flex;
@@ -140,7 +167,7 @@
         }
 
         .input-container-wide {
-            flex: 1 1 20%;
+            flex: 1 1 20%; 
         }
 
         .input-container-large {
@@ -150,14 +177,19 @@
         .hidden {
             display: none;
         }
-    </style>
 
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+    </style>
     <!-- EmailJS script -->
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
-        // Initialize EmailJS with your public key
         (function() {
-            emailjs.init("SPZ4gMRCG9sHemlE7"); // Replace with your actual public key
+            emailjs.init("SPZ4gMRCG9sHemlE7"); // EmailJS public key
         })();
 
         let firstTimeYesClicked = false;
@@ -167,30 +199,31 @@
             var formattedDate = now.toISOString().slice(0, 10); 
             document.getElementById('observation_date').value = formattedDate;
 
+            // "Yes" seçeneği seçilirse ilgili alanları göster ve "No" alanlarını gizle
             document.getElementById('observation_done_yes').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
-                document.getElementById('general_info_yes_section').classList.remove('hidden');
-                document.getElementById('general_info_no_section').classList.add('hidden');
+                document.getElementById('general_info_section').classList.remove('hidden');
                 if (!firstTimeYesClicked) {
-                    addStarField();
+                    addStarField(); // Otomatik olarak bir yıldız bilgi alanı eklenir
                     firstTimeYesClicked = true;
                 }
             });
 
+            // "No" seçeneği seçilirse ilgili alanları göster ve "Yes" alanlarını gizle
             document.getElementById('observation_done_no').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
-                document.getElementById('general_info_yes_section').classList.add('hidden');
-                document.getElementById('general_info_no_section').classList.remove('hidden');
+                document.getElementById('general_info_section').classList.remove('hidden');
             });
 
+            // Form gönderme işlemi sırasında gözlem durumu 'yes' ya da 'no' bilgisiyle gönderiliyor.
             document.getElementById('observationForm').addEventListener('submit', function(event) {
-                event.preventDefault(); // Prevent form from submitting normally
+                event.preventDefault(); // Sayfanın yenilenmesini engeller
 
-                // Collect reasons (if No is selected)
+                // Checkbox değerlerini toplama işlemi (No kısmı için)
                 const reasons = [];
                 if (document.querySelector('input[name="reason_weather"]').checked) {
                     reasons.push('Cloudy Weather');
@@ -211,7 +244,6 @@
 
                 document.getElementById('selected_reasons').value = reasons.join(', ') || "-";
 
-                // Collect star observation details (if Yes is selected)
                 const starNames = document.querySelectorAll('input[name="observed_stars[]"]');
                 const filters = document.querySelectorAll('input[name="filter"]');
                 const exposureTimes = document.querySelectorAll('input[name="exposure_time"]');
@@ -220,15 +252,14 @@
                 const resultLinks = document.querySelectorAll('input[name="file_link[]"]');
                 const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
 
-                let generalInfoYes = document.getElementById('general_info_yes').value;
-                let generalInfoNo = document.getElementById('general_info_no').value;
+                // General Info kontrolü
+                let generalInfo = document.getElementById('general_info').value;
+                if (!generalInfo || generalInfo.trim() === "") {
+                    generalInfo = "No General Info"; // Eğer boşsa varsayılan olarak "No General Info"
+                }
 
-                // Set default text if no general info was provided
-                generalInfoYes = generalInfoYes ? generalInfoYes : 'No general info';
-                generalInfoNo = generalInfoNo ? generalInfoNo : 'No general info';
-
-                // Construct observations details
                 let observations = "";
+
                 for (let i = 0; i < starNames.length; i++) {
                     observations += `- **Object Name**: ${starNames[i].value || "-"}\n`;
                     observations += `  - **Filter**: ${filters[i].value || "-"}\n`;
@@ -240,24 +271,16 @@
                     observations += "---------------------------\n";
                 }
 
+                // Observations stringini gizli input'a koyuyoruz
                 document.getElementById('star_observations_text').value = observations;
 
                 const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
 
-                // Select the correct template based on whether observation was done or not
+                // EmailJS fonksiyonunu tetikleyin
                 emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
                     .then(function(response) {
                         alert('Form successfully submitted and email sent!');
                         console.log('SUCCESS!', response.status, response.text);
-
-                        // Reset form after submission
-                        document.getElementById('observationForm').reset();
-                        document.getElementById('yes_fields').classList.add('hidden');
-                        document.getElementById('no_fields').classList.add('hidden');
-                        document.getElementById('general_info_yes_section').classList.add('hidden');
-                        document.getElementById('general_info_no_section').classList.add('hidden');
-                        document.getElementById('submit_button').classList.add('hidden');
-                        firstTimeYesClicked = false;
                     }, function(error) {
                         alert('Failed to send email. Please try again.');
                         console.log('FAILED...', error);
@@ -265,6 +288,7 @@
             });
         };
 
+        // Yıldız bilgilerini eklemek için fonksiyon
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
             const newStarField = document.createElement('div');
@@ -341,6 +365,7 @@
             toggleRemoveButton();
         }
 
+        // Yıldız bilgilerini silmek için fonksiyon
         function removeLastStarField() {
             const starContainer = document.getElementById('stars_container');
             const starFields = starContainer.querySelectorAll('.section');
@@ -351,6 +376,7 @@
             toggleRemoveButton();
         }
 
+        // Remove butonunu görünür yapmak için
         function toggleRemoveButton() {
             const starContainer = document.getElementById('stars_container');
             const removeButton = document.getElementById('remove_button');
@@ -390,7 +416,7 @@
                     </div>
 
                     <div class="telescope-column">
-                        <label for="telescope_used">Telescope</label>
+                        <label for="telescope_used">Telescope Used</label>
                         <select name="telescope_used">
                             <option value="T35">T35</option>
                             <option value="T80">T80</option>
@@ -450,24 +476,18 @@
                 </div>
             </div>
 
-            <!-- General Info (Yes) -->
-            <div id="general_info_yes_section" class="hidden section">
-                <label for="general_info_yes">General Info (Yes)</label>
-                <input type="text" id="general_info_yes" name="general_info_yes" placeholder="Enter any general observation information for 'Yes'">
+            <!-- General Info -->
+            <div id="general_info_section" class="hidden section">
+                <label for="general_info">General Info</label>
+                <input type="text" id="general_info" name="general_info" placeholder="Enter any general observation information">
             </div>
 
-            <!-- General Info (No) -->
-            <div id="general_info_no_section" class="hidden section">
-                <label for="general_info_no">General Info (No)</label>
-                <input type="text" id="general_info_no" name="general_info_no" placeholder="Enter any general observation information for 'No'">
-            </div>
-
-            <!-- Submit Button -->
+            <!-- Submit Butonu -->
             <div class="button-row">
                 <input type="submit" class="button small-button hidden" id="submit_button" value="Submit">
             </div>
 
-            <!-- Hidden Fields for Email -->
+            <!-- Yıldız gözlemleri için gizli input -->
             <input type="hidden" id="star_observations_text" name="star_observations_text">
         </form>
     </div>
