@@ -226,7 +226,7 @@
                 // Checkbox değerlerini toplama işlemi (No kısmı için)
                 const reasons = [];
                 if (document.querySelector('input[name="reason_weather"]').checked) {
-                    reasons.push('Cloudy Weather');
+                    reasons.push('Cloudy weather');
                 }
                 if (document.querySelector('input[name="reason_wind"]').checked) {
                     reasons.push('Strong Wind');
@@ -352,7 +352,7 @@
                 </div>
                 <div class="input-container-large">
                     <label for="extra_info">Additional Info</label>
-                    <input type="text" name="extra_info[]" class="small-input" placeholder="Enter any issues encountered during the observation (if any)">
+                    <input type="text" name="extra_info[]" class="small-input" placeholder="Enter any issues during the observation (if any)">
                 </div>
             `;
             starContainer.appendChild(newStarField);
@@ -410,7 +410,7 @@
                     </div>
 
                     <div class="telescope-column">
-                        <label for="telescope_used">Telescope Used</label>
+                        <label for="telescope_used">Telescope</label>
                         <select name="telescope_used">
                             <option value="T35">T35</option>
                             <option value="T80">T80</option>
@@ -423,8 +423,8 @@
             <!-- Yes seçilirse görüntülenecek alanlar -->
             <div id="yes_fields" class="hidden">
                 <div class="section">
-                    <label for="observer_name">Observer Name</label>
-                    <input type="text" id="observer_name" name="observer_name" placeholder="Enter observer(s) name">
+                    <label for="observer_name">Observer</label>
+                    <input type="text" id="observer_name" name="observer_name" placeholder="Enter observer name(s)">
 
                     <div id="stars_container"></div>
 
@@ -437,7 +437,7 @@
 
             <!-- No seçilirse görüntülenecek alanlar -->
             <div id="no_fields" class="hidden section">
-                <label for="observer_name_no">Observer Name</label>
+                <label for="observer_name_no">Observer</label>
                 <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
                 
                 <label style="margin-bottom: 10px;">Please select the reason for not doing the observation</label>
@@ -446,7 +446,7 @@
                     <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; width: 100%;">
                         <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
                             <input type="checkbox" name="reason_weather" value="Cloudy weather" style="width: auto; margin: 0;">
-                            <span>Cloudy Weather</span>
+                            <span>Cloudy weather</span>
                         </label>
                         <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
                             <input type="checkbox" name="reason_wind" value="Strong wind" style="width: auto; margin: 0;">
@@ -473,8 +473,12 @@
             <!-- General Info -->
             <div id="general_info_section" class="hidden section">
                 <label for="general_info">General Info</label>
-                <input type="text" id="general_info" name="general_info">
+                <small style="display: block; font-size: 12px; font-style: italic; margin-bottom: 5px;">You can edit this information if needed</small>
+                <input type="text" id="general_info" name="general_info" value="No additional info">
             </div>
+
+
+
 
             <!-- Submit Butonu -->
             <div class="button-row">
@@ -485,5 +489,11 @@
             <input type="hidden" id="star_observations_text" name="star_observations_text">
         </form>
     </div>
+
+        
+<p style="position: fixed; bottom: 0; left: 0; right: 0; width: 100%; text-align: center; font-size: 12px; color: #555; background-color: #f4f4f4; padding: 10px; border-top: 1px solid #ccc; z-index: 1000;">
+    If you encounter any issues, please contact me <a href="mailto:efurkanakar@gmail.com" style="color: #007bff; text-decoration: none;">here</a>.
+</p>
+
 </body>
 </html>
