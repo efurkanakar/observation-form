@@ -205,6 +205,10 @@
                 if (document.querySelector('input[name="reason_technical"]').checked) {
                     reasons.push('Technical Issue');
                 }
+                const otherReason = document.querySelector('input[name="other_reason_text"]').value;
+                if (otherReason) {
+                    reasons.push('Other: ' + otherReason);
+                }
 
                 // Gizli input alanını checkbox sonuçlarıyla güncelle
                 document.getElementById('selected_reasons').value = reasons.join(', ');
