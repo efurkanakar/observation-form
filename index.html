@@ -157,7 +157,7 @@
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            emailjs.init("SPZ4gMRCG9sHemlE7"); // Replace with your EmailJS public key
+            emailjs.init("SPZ4gMRCG9sHemlE7"); // EmailJS public key
         })();
 
         let firstTimeYesClicked = false;
@@ -187,18 +187,32 @@
                 document.getElementById('general_info_section').classList.remove('hidden');
             });
 
-            // Form gönderme işlemi
+            // Form gönderme işlemi sırasında gözlem durumu 'yes' ya da 'no' bilgisiyle gönderiliyor.
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault(); // Sayfanın yenilenmesini engeller
 
-                emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', this)
-                .then(function(response) {
-                    alert('Form successfully submitted and email sent!');
-                    console.log('SUCCESS!', response.status, response.text);
-                }, function(error) {
-                    alert('Failed to send email. Please try again.');
-                    console.log('FAILED...', error);
-                });
+                const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
+                
+                // Koşullu olarak emailJS fonksiyonunu tetikleyin
+                if (observationDone === 'yes') {
+                    emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', this)
+                    .then(function(response) {
+                        alert('Form successfully submitted and email sent!');
+                        console.log('SUCCESS!', response.status, response.text);
+                    }, function(error) {
+                        alert('Failed to send email. Please try again.');
+                        console.log('FAILED...', error);
+                    });
+                } else if (observationDone === 'no') {
+                    emailjs.sendForm('service_r7cv4z9', 'template_ej607me', this)
+                    .then(function(response) {
+                        alert('Form successfully submitted and email sent!');
+                        console.log('SUCCESS!', response.status, response.text);
+                    }, function(error) {
+                        alert('Failed to send email. Please try again.');
+                        console.log('FAILED...', error);
+                    });
+                }
             });
         };
 
