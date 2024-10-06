@@ -21,13 +21,18 @@
         }
 
         h1 {
-            color: #333;
+            color: #0056b3; /* Başlık için mavi renk */
+            font-family: "Georgia", serif; /* Serif bir font kullanımı */
+            font-size: 36px; /* Daha büyük boyut */
             margin: 0;
             padding: 20px;
             text-align: center;
             background-color: #e9ecef;
-            border-bottom: 1px solid #ccc;
+            border-bottom: 3px solid #007bff; /* Daha kalın alt sınır */
+            text-transform: uppercase; /* Metni büyük harfe çevirme */
+            letter-spacing: 2px; /* Harfler arası boşluk */
         }
+
 
         .section {
             padding: 30px;
@@ -187,25 +192,71 @@
                 document.getElementById('general_info_section').classList.remove('hidden');
             });
 
+            // Form gönderme işlemi sırasında gözlem durumu 'yes' ya da 'no' bilgisiyle gönderiliyor.
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault(); // Sayfanın yenilenmesini engeller
 
-                // General Info alanı boşsa "-" değerini atama
-                const generalInfoField = document.getElementById('general_info');
-                let generalInfo = generalInfoField.value.trim();
-                if (!generalInfo) {
-                    generalInfo = "-";  // Boşsa "-" olarak gönder.
+                // Checkbox değerlerini toplama işlemi (No kısmı için)
+                const reasons = [];
+                if (document.querySelector('input[name="reason_weather"]').checked) {
+                    reasons.push('Cloudy Weather');
+                }
+                if (document.querySelector('input[name="reason_wind"]').checked) {
+                    reasons.push('Strong Wind');
+                }
+                if (document.querySelector('input[name="reason_humidity"]').checked) {
+                    reasons.push('High Humidity');
+                }
+                if (document.querySelector('input[name="reason_technical"]').checked) {
+                    reasons.push('Technical Issue');
+                }
+                const otherReason = document.querySelector('input[name="other_reason_text"]').value;
+                if (otherReason) {
+                    reasons.push('Other: ' + otherReason);
                 }
 
-                // Gizli input'a atama
-                document.getElementById('general_info_hidden').value = generalInfo;
+                document.getElementById('selected_reasons').value = reasons.join(', ') || "-";
+
+                const starNames = document.querySelectorAll('input[name="observed_stars[]"]');
+                const filters = document.querySelectorAll('input[name="filter"]');
+                const exposureTimes = document.querySelectorAll('input[name="exposure_time"]');
+                const binnings = document.querySelectorAll('input[name="binning"]');
+                const skyConditions = document.querySelectorAll('input[name="sky_condition"]');
+                const resultLinks = document.querySelectorAll('input[name="file_link[]"]');
+                const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
+
+                // General Info kontrolü
+                let generalInfo = document.getElementById('general_info').value;
+                if (!generalInfo || generalInfo.trim() === "") {
+                    generalInfo = "No General Info"; // Eğer boşsa varsayılan olarak "No General Info"
+                }
+
+                let observations = "";
+
+                for (let i = 0; i < starNames.length; i++) {
+                    observations += `- **Object Name**: ${starNames[i].value || "-"}\n`;
+                    observations += `  - **Filter**: ${filters[i].value || "-"}\n`;
+                    observations += `  - **Exposure Time**: ${exposureTimes[i].value || "-"}\n`;
+                    observations += `  - **Binning**: ${binnings[i].value || "-"}\n`;
+                    observations += `  - **Sky Condition**: ${skyConditions[i].value || "-"}\n`;
+                    observations += `  - **Preliminary Result Link**: ${resultLinks[i].value || "-"}\n`;
+                    observations += `  - **Additional Info**: ${extraInfos[i].value || "-"}\n`;
+                    observations += "---------------------------\n";
+                }
+
+                // Observations stringini gizli input'a koyuyoruz
+                document.getElementById('star_observations_text').value = observations;
+
+                const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
 
                 // EmailJS fonksiyonunu tetikleyin
-                emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', this)
+                emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
                     .then(function(response) {
                         alert('Form successfully submitted and email sent!');
+                        console.log('SUCCESS!', response.status, response.text);
                     }, function(error) {
                         alert('Failed to send email. Please try again.');
+                        console.log('FAILED...', error);
                     });
             });
         };
@@ -402,8 +453,6 @@
             <div id="general_info_section" class="hidden section">
                 <label for="general_info">General Info</label>
                 <input type="text" id="general_info" name="general_info" placeholder="Enter any general observation information">
-                <!-- Gizli input alanı -->
-                <input type="hidden" id="general_info_hidden" name="general_info_hidden">
             </div>
 
             <!-- Submit Butonu -->
