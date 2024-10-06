@@ -169,9 +169,9 @@
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
-                document.getElementById('general_info_section').classList.remove('hidden');
+                document.getElementById('general_info_yes_section').classList.remove('hidden');
+                document.getElementById('general_info_no_section').classList.add('hidden');
                 if (!firstTimeYesClicked) {
-                    addStarField();
                     firstTimeYesClicked = true;
                 }
             });
@@ -180,7 +180,8 @@
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
-                document.getElementById('general_info_section').classList.remove('hidden');
+                document.getElementById('general_info_no_section').classList.remove('hidden');
+                document.getElementById('general_info_yes_section').classList.add('hidden');
             });
 
             document.getElementById('observationForm').addEventListener('submit', function(event) {
@@ -214,9 +215,14 @@
                 const resultLinks = document.querySelectorAll('input[name="file_link[]"]');
                 const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
 
-                let generalInfo = document.getElementById('general_info').value;
-                if (!generalInfo || generalInfo.trim() === "") {
-                    generalInfo = "-";
+                let generalInfoYes = document.getElementById('general_info_yes').value;
+                if (!generalInfoYes || generalInfoYes.trim() === "") {
+                    generalInfoYes = "No general info";
+                }
+
+                let generalInfoNo = document.getElementById('general_info_no').value;
+                if (!generalInfoNo || generalInfoNo.trim() === "") {
+                    generalInfoNo = "No general info";
                 }
 
                 let observations = "";
@@ -236,16 +242,22 @@
 
                 const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
 
-                emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
+                // Send either generalInfoYes or generalInfoNo based on observation status
+                const templateParams = {
+                    general_info: observationDone === 'yes' ? generalInfoYes : generalInfoNo,
+                };
+
+                emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this, templateParams)
                     .then(function(response) {
                         alert('Form successfully submitted and email sent!');
                         console.log('SUCCESS!', response.status, response.text);
 
-                        // Sayfa temizleme işlemi (form resetleme)
+                        // Reset form and hide fields
                         document.getElementById('observationForm').reset();
                         document.getElementById('yes_fields').classList.add('hidden');
                         document.getElementById('no_fields').classList.add('hidden');
-                        document.getElementById('general_info_section').classList.add('hidden');
+                        document.getElementById('general_info_yes_section').classList.add('hidden');
+                        document.getElementById('general_info_no_section').classList.add('hidden');
                         document.getElementById('submit_button').classList.add('hidden');
                         firstTimeYesClicked = false;
                     }, function(error) {
@@ -440,10 +452,16 @@
                 </div>
             </div>
 
-            <!-- General Info -->
-            <div id="general_info_section" class="hidden section">
-                <label for="general_info">General Info</label>
-                <input type="text" id="general_info" name="general_info" placeholder="Enter any general observation information">
+            <!-- General Info for Yes -->
+            <div id="general_info_yes_section" class="hidden section">
+                <label for="general_info_yes">General Info (Yes)</label>
+                <input type="text" id="general_info_yes" name="general_info_yes" placeholder="Enter any general observation information">
+            </div>
+
+            <!-- General Info for No -->
+            <div id="general_info_no_section" class="hidden section">
+                <label for="general_info_no">General Info (No)</label>
+                <input type="text" id="general_info_no" name="general_info_no" placeholder="Enter any general observation information">
             </div>
 
             <!-- Submit Butonu -->
