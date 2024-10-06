@@ -23,7 +23,7 @@
         h1 {
             color: #333;
             font-family: "Georgia", serif;
-            font-size: 32px; /* Başlık için punto büyütüldü */
+            font-size: 28px;
             margin: 0;
             padding: 15px;
             text-align: center;
@@ -43,26 +43,26 @@
         label {
             font-weight: bold;
             margin-bottom: 5px;
-            font-size: 18px; /* Label puntoları büyütüldü */
+            font-size: 13px;
         }
 
         input, select {
             width: 100%;
-            padding: 10px; /* Padding artırıldı */
+            padding: 8px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            font-size: 16px; /* Input ve select için font boyutu büyütüldü */
+            font-size: 12px;
         }
 
         .button.small-button {
             background-color: #28a745;
             color: white;
-            padding: 14px 14px; /* Butonlar için padding artırıldı */
-            font-size: 16px; /* Font boyutu büyütüldü */
+            padding: 12px 12px;
+            font-size: 12px;
             font-weight: normal;
-            width: 100px;
-            max-width: 100px;
+            width: 80px;
+            max-width: 80px;
             border-radius: 5px;
             border: 0px solid #28a745;
             transition: background-color 0.2s ease;
@@ -73,13 +73,14 @@
             border-color: #1e7e34;
         }
 
+
         #submit_button {
-            background-color: #007bff;
+            background-color: #007bff; /* Mavi renk */
             color: white;
-            padding: 16px 16px;
-            font-size: 16px;
+            padding: 16px 16px; /* Butonu biraz daha büyük yapmak için padding artırıldı */
+            font-size: 12px; /* Font boyutu artırıldı */
             font-weight: bold;
-            width: 100px;
+            width: 100px; /* Genişliği artırıldı */
             max-width: 100px;
             border-radius: 5px;
             border: 0px solid #007bff;
@@ -87,17 +88,18 @@
         }
         
         #submit_button:hover {
-            background-color: #0056b3;
+            background-color: #0056b3; /* Hover sırasında koyu mavi */
             border-color: #004085;
         }
 
         .button.remove-button {
             background-color: #dc3545;
             color: white;
-            padding: 14px 14px;
-            font-size: 16px;
-            width: 100px;
-            max-width: 100px;
+            padding: 12px 12px;
+            font-size: 12px;
+            font-weight: normal;
+            width: 80px;
+            max-width: 80px;
             border-radius: 5px;
             border: 0px solid #dc3545;
             transition: background-color 0.2s ease;
@@ -123,32 +125,47 @@
         }
         .date-column, .observation-column, .telescope-column {
             flex: 1;
-            max-width: 250px;
+            max-width: 250px; /* Kolonların genişliklerini dengeler */
         }
 
         .observation-column {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: flex-start;
+            align-items: flex-start; /* Bu, soruyu sola yaslayacaktır */
+        }
+
+
+        .date-observation-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Elemanları dikey olarak merkezler */
+            gap: 10px;
+        }
+
+        .observation-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Soru grubunu yukarı kaydırır */
+            align-items: center; 
         }
 
         .observation-column label {
-            margin-bottom: 12px;
+            margin-bottom: 12px; /* Soru ile radyo butonları arasındaki boşluğu azaltır */
         }
 
         .radio-group {
             display: flex;
-            gap: 50px;
-            align-items: flex-start;
+            gap: 50px; /* "Yes" ve "No" arasındaki boşluğu ayarlamak için */
+            align-items: flex-start; /* Radyo butonlarını yukarı kaydırır */
         }
 
         .radio-group label {
             display: inline-flex;
             align-items: center;
             gap: 5px;
+            margin-top: 0px; /* Butonları daha yukarı kaydırmak için negatif margin eklenebilir */
         }
-
         input[type="radio"] {
             vertical-align: middle;
             margin: 0;
@@ -179,7 +196,7 @@
 
         .error {
             color: red;
-            font-size: 14px;
+            font-size: 12px;
             margin-bottom: 10px;
         }
 
@@ -204,6 +221,7 @@
                 document.getElementById('no_fields').classList.add('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
                 document.getElementById('general_info_section').classList.remove('hidden');
+                document.getElementById('bcc_email_section').classList.remove('hidden');
                 if (!firstTimeYesClicked) {
                     addStarField(); // Otomatik olarak bir yıldız bilgi alanı eklenir
                     firstTimeYesClicked = true;
@@ -216,6 +234,7 @@
                 document.getElementById('no_fields').classList.remove('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
                 document.getElementById('general_info_section').classList.remove('hidden');
+                document.getElementById('bcc_email_section').classList.remove('hidden');
             });
 
             // Enter tuşu formu göndermesin
@@ -274,6 +293,13 @@
                 document.getElementById('star_observations_text').value = observations;
 
                 const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
+
+                // BCC için e-posta adresini alıyoruz
+                const bccEmail = document.getElementById('bcc_email').value;
+                const emailParams = {
+                    bcc: bccEmail || "", // BCC e-postası varsa ekliyoruz
+                    ...this // Formdaki diğer tüm bilgileri ekle
+                };
 
                 emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
                     .then(function(response) {
@@ -473,6 +499,12 @@
                 <label for="general_info">General Info</label>
                 <small style="display: block; font-size: 14px; font-style: italic; margin-bottom: 5px;">You can edit this information if needed</small>
                 <input type="text" id="general_info" name="general_info" value="No additional info">
+            </div>
+
+            <!-- BCC Email Section -->
+            <div id="bcc_email_section" class="hidden section">
+                <label for="bcc_email">BCC Email (if you want to send a copy)</label>
+                <input type="email" id="bcc_email" name="bcc_email" placeholder="Enter BCC email here">
             </div>
 
             <div class="button-row">
