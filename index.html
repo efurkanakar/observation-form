@@ -13,8 +13,8 @@
         }
 
         .container {
-            width: 70%;
-            max-width: 1200px;
+            width: 80%;
+            max-width: 1100px;
             min-width: 300px;
             margin: 0 auto;
             padding: 20px;
@@ -127,8 +127,8 @@
 .observation-column {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Yatayda ortalanmış halde soruyu hizalar */
-    align-items: center; /* Elemanları merkezler */
+    justify-content: flex-start; /* Soru grubunu yukarı kaydırır */
+    align-items: center; 
 }
 
 .observation-column label {
@@ -137,25 +137,20 @@
 
 .radio-group {
     display: flex;
-    gap: 50px; /* "Yes" ve "No" arasındaki boşluk */
-    align-items: center; /* Butonları ve etiketleri yukarı kaydırır */
+    gap: 50px; /* "Yes" ve "No" arasındaki boşluğu ayarlamak için */
+    align-items: flex-start; /* Radyo butonlarını yukarı kaydırır */
 }
-
 
 .radio-group label {
     display: inline-flex;
-    flex-direction: flex;
     align-items: center;
-    gap: 5px; /* Buton ve etiket arasındaki boşluk */
+    gap: 5px;
+    margin-top: 0px; /* Butonları daha yukarı kaydırmak için negatif margin eklenebilir */
 }
-
 input[type="radio"] {
     vertical-align: middle;
     margin: 0;
 }
-
-
-
 
         .row {
             display: flex;
@@ -257,7 +252,7 @@ input[type="radio"] {
                 // General Info kontrolü
                 let generalInfo = document.getElementById('general_info').value;
                 if (!generalInfo || generalInfo.trim() === "") {
-                    generalInfo = "No General Info"; // Eğer boşsa varsayılan olarak "No General Info"
+                    generalInfo = "-"; // Eğer boşsa varsayılan olarak "-" yazsın
                 }
 
                 let observations = "";
@@ -418,7 +413,7 @@ input[type="radio"] {
                     </div>
 
                     <div class="telescope-column">
-                        <label for="telescope_used">Telescope Used</label>
+                        <label for="telescope_used">Telescope</label>
                         <select name="telescope_used">
                             <option value="T35">T35</option>
                             <option value="T80">T80</option>
@@ -432,7 +427,7 @@ input[type="radio"] {
             <div id="yes_fields" class="hidden">
                 <div class="section">
                     <label for="observer_name">Observer Name</label>
-                    <input type="text" id="observer_name" name="observer_name" placeholder="Enter observer name">
+                    <input type="text" id="observer_name" name="observer_name" placeholder="Enter observer(s) name">
 
                     <div id="stars_container"></div>
 
