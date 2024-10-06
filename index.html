@@ -98,59 +98,35 @@
             margin-top: 20px;
         }
 
-.date-observation-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-}
-.date-column, .observation-column, .telescope-column {
-    flex: 1;
-    max-width: 250px; /* Kolonların genişliklerini dengeler */
-}
+        .date-observation-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
 
-.observation-column {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start; /* Bu, soruyu sola yaslayacaktır */
-}
+        .date-column, .observation-column, .telescope-column {
+            flex: 1;
+            max-width: 250px;
+        }
 
+        .observation-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
 
-.date-observation-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; /* Elemanları dikey olarak merkezler */
-    gap: 10px;
-}
+        .radio-group {
+            display: flex;
+            gap: 50px;
+            align-items: flex-start;
+        }
 
-.observation-column {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Soru grubunu yukarı kaydırır */
-    align-items: center; 
-}
-
-.observation-column label {
-    margin-bottom: 12px; /* Soru ile radyo butonları arasındaki boşluğu azaltır */
-}
-
-.radio-group {
-    display: flex;
-    gap: 50px; /* "Yes" ve "No" arasındaki boşluğu ayarlamak için */
-    align-items: flex-start; /* Radyo butonlarını yukarı kaydırır */
-}
-
-.radio-group label {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    margin-top: 0px; /* Butonları daha yukarı kaydırmak için negatif margin eklenebilir */
-}
-input[type="radio"] {
-    vertical-align: middle;
-    margin: 0;
-}
+        input[type="radio"] {
+            vertical-align: middle;
+            margin: 0;
+        }
 
         .row {
             display: flex;
@@ -164,7 +140,7 @@ input[type="radio"] {
         }
 
         .input-container-wide {
-            flex: 1 1 20%; 
+            flex: 1 1 20%;
         }
 
         .input-container-large {
@@ -174,13 +150,6 @@ input[type="radio"] {
         .hidden {
             display: none;
         }
-
-        .error {
-            color: red;
-            font-size: 12px;
-            margin-bottom: 10px;
-        }
-
     </style>
     <!-- EmailJS script -->
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
@@ -196,19 +165,17 @@ input[type="radio"] {
             var formattedDate = now.toISOString().slice(0, 10); 
             document.getElementById('observation_date').value = formattedDate;
 
-            // "Yes" seçeneği seçilirse ilgili alanları göster ve "No" alanlarını gizle
             document.getElementById('observation_done_yes').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
                 document.getElementById('general_info_section').classList.remove('hidden');
                 if (!firstTimeYesClicked) {
-                    addStarField(); // Otomatik olarak bir yıldız bilgi alanı eklenir
+                    addStarField();
                     firstTimeYesClicked = true;
                 }
             });
 
-            // "No" seçeneği seçilirse ilgili alanları göster ve "Yes" alanlarını gizle
             document.getElementById('observation_done_no').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
@@ -216,11 +183,9 @@ input[type="radio"] {
                 document.getElementById('general_info_section').classList.remove('hidden');
             });
 
-            // Form gönderme işlemi sırasında gözlem durumu 'yes' ya da 'no' bilgisiyle gönderiliyor.
             document.getElementById('observationForm').addEventListener('submit', function(event) {
-                event.preventDefault(); // Sayfanın yenilenmesini engeller
+                event.preventDefault();
 
-                // Checkbox değerlerini toplama işlemi (No kısmı için)
                 const reasons = [];
                 if (document.querySelector('input[name="reason_weather"]').checked) {
                     reasons.push('Cloudy Weather');
@@ -249,10 +214,9 @@ input[type="radio"] {
                 const resultLinks = document.querySelectorAll('input[name="file_link[]"]');
                 const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
 
-                // General Info kontrolü
                 let generalInfo = document.getElementById('general_info').value;
                 if (!generalInfo || generalInfo.trim() === "") {
-                    generalInfo = "-"; // Eğer boşsa varsayılan olarak "-" yazsın
+                    generalInfo = "-";
                 }
 
                 let observations = "";
@@ -268,16 +232,22 @@ input[type="radio"] {
                     observations += "---------------------------\n";
                 }
 
-                // Observations stringini gizli input'a koyuyoruz
                 document.getElementById('star_observations_text').value = observations;
 
                 const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
 
-                // EmailJS fonksiyonunu tetikleyin
                 emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
                     .then(function(response) {
                         alert('Form successfully submitted and email sent!');
                         console.log('SUCCESS!', response.status, response.text);
+
+                        // Sayfa temizleme işlemi (form resetleme)
+                        document.getElementById('observationForm').reset();
+                        document.getElementById('yes_fields').classList.add('hidden');
+                        document.getElementById('no_fields').classList.add('hidden');
+                        document.getElementById('general_info_section').classList.add('hidden');
+                        document.getElementById('submit_button').classList.add('hidden');
+                        firstTimeYesClicked = false;
                     }, function(error) {
                         alert('Failed to send email. Please try again.');
                         console.log('FAILED...', error);
@@ -285,7 +255,6 @@ input[type="radio"] {
             });
         };
 
-        // Yıldız bilgilerini eklemek için fonksiyon
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
             const newStarField = document.createElement('div');
@@ -362,7 +331,6 @@ input[type="radio"] {
             toggleRemoveButton();
         }
 
-        // Yıldız bilgilerini silmek için fonksiyon
         function removeLastStarField() {
             const starContainer = document.getElementById('stars_container');
             const starFields = starContainer.querySelectorAll('.section');
@@ -373,7 +341,6 @@ input[type="radio"] {
             toggleRemoveButton();
         }
 
-        // Remove butonunu görünür yapmak için
         function toggleRemoveButton() {
             const starContainer = document.getElementById('stars_container');
             const removeButton = document.getElementById('remove_button');
