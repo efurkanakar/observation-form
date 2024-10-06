@@ -14,7 +14,7 @@
 
         .container {
             width: 80%;
-            max-width: 1100px;
+            max-width: 1000px;
             min-width: 300px;
             margin: 0 auto;
             padding: 20px;
@@ -103,6 +103,72 @@
             justify-content: space-between;
             align-items: center;
             gap: 10px;
+        }
+        .date-column, .observation-column, .telescope-column {
+            flex: 1;
+            max-width: 250px; /* Kolonların genişliklerini dengeler */
+        }
+
+        .observation-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start; /* Bu, soruyu sola yaslayacaktır */
+        }
+
+
+        .date-observation-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Elemanları dikey olarak merkezler */
+            gap: 10px;
+        }
+
+        .observation-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Soru grubunu yukarı kaydırır */
+            align-items: center; 
+        }
+
+        .observation-column label {
+            margin-bottom: 12px; /* Soru ile radyo butonları arasındaki boşluğu azaltır */
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 50px; /* "Yes" ve "No" arasındaki boşluğu ayarlamak için */
+            align-items: flex-start; /* Radyo butonlarını yukarı kaydırır */
+        }
+
+        .radio-group label {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 0px; /* Butonları daha yukarı kaydırmak için negatif margin eklenebilir */
+        }
+        input[type="radio"] {
+            vertical-align: middle;
+            margin: 0;
+        }
+
+        .row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        .input-container-special {
+            flex: 1 1 13%;
+        }
+
+        .input-container-wide {
+            flex: 1 1 20%; 
+        }
+
+        .input-container-large {
+            flex: 1 1 100%;
         }
 
         .hidden {
