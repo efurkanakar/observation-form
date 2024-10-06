@@ -206,7 +206,12 @@
                 const skyConditions = document.querySelectorAll('input[name="sky_condition"]');
                 const resultLinks = document.querySelectorAll('input[name="file_link[]"]');
                 const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
-                const generalInfo = document.getElementById('general_info').value || "No Info"; // General Info için boşsa "No General Info"
+
+                // General Info kontrolü
+                let generalInfo = document.getElementById('general_info').value;
+                if (!generalInfo || generalInfo.trim() === "") {
+                    generalInfo = "No General Info"; // Eğer boşsa varsayılan olarak "No General Info"
+                }
 
                 let observations = "";
 
