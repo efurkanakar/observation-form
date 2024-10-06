@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Observation Form</title>
+    <title>Observation Report</title>
     <style>
         body {
             font-family: "Gill Sans", sans-serif;
@@ -21,12 +21,15 @@
         }
 
         h1 {
+            font-family: "Georgia", serif;
             color: #333;
             margin: 0;
             padding: 20px;
             text-align: center;
             background-color: #e9ecef;
             border-bottom: 1px solid #ccc;
+            font-size: 24px;
+            font-weight: bold;
         }
 
         .section {
@@ -192,7 +195,7 @@
                 document.getElementById('general_info_section').classList.remove('hidden');
             });
 
-            // Form gönderme işlemi sırasında gözlem durumu 'yes' ya da 'no' bilgisiyle gönderiliyor.
+            // Form gönderme işlemi sırasında gözlem durumu 'yes' ya da 'No' bilgisiyle gönderiliyor.
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault(); // Sayfanın yenilenmesini engeller
 
@@ -340,7 +343,7 @@
 <body>
 
     <div class="container">
-        <h1>Observation Info</h1>
+        <h1>Observation Report</h1>
 
         <form id="observationForm">
             <div class="section">
