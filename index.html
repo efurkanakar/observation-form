@@ -14,7 +14,7 @@
 
         .container {
             width: 80%;
-            max-width: 1000px;
+            max-width: 1100px;
             min-width: 300px;
             margin: 0 auto;
             padding: 20px;
@@ -294,6 +294,7 @@
                     .then(function(response) {
                         alert('Form successfully submitted and email sent!');
                         console.log('SUCCESS!', response.status, response.text);
+                        document.getElementById('observationForm').reset();
                     }, function(error) {
                         alert('Failed to send email. Please try again.');
                         console.log('FAILED...', error);
