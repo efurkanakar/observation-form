@@ -73,6 +73,25 @@
             border-color: #1e7e34;
         }
 
+
+                #submit_button {
+            background-color: #007bff; /* Mavi renk */
+            color: white;
+            padding: 16px 16px; /* Butonu biraz daha büyük yapmak için padding artırıldı */
+            font-size: 12px; /* Font boyutu artırıldı */
+            font-weight: bold;
+            width: 100px; /* Genişliği artırıldı */
+            max-width: 100px;
+            border-radius: 5px;
+            border: 0px solid #007bff;
+            transition: background-color 0.2s ease;
+        }
+        
+        #submit_button:hover {
+            background-color: #0056b3; /* Hover sırasında koyu mavi */
+            border-color: #004085;
+        }
+
         .button.remove-button {
             background-color: #dc3545;
             color: white;
@@ -315,11 +334,12 @@
                         <label for="exposure_time">Exposure Time</label>
                         <input list="exposure_times" name="exposure_time" placeholder="Enter exposure time">
                         <datalist id="exposure_times">
-                            <option value="5s">
-                            <option value="10s">
-                            <option value="20s">
-                            <option value="30s">
-                            <option value="60s">
+                            <option value="10">
+                            <option value="20">
+                            <option value="30">
+                            <option value="40">
+                            <option value="50">
+                            <option value="60">
                         </datalist>
                     </div>
 
@@ -338,7 +358,7 @@
                         <label for="sky_condition">Sky Condition</label>
                         <input list="sky_conditions" name="sky_condition" placeholder="Enter sky condition">
                         <datalist id="sky_conditions">
-                            <option value="Cloudy">
+                            <option value="Wispy Cloudy">
                             <option value="Partly Cloudy">
                             <option value="Clear">
                             <option value="Transparent">
@@ -492,7 +512,7 @@
 
         
 <p style="position: fixed; bottom: 0; left: 0; right: 0; width: 100%; text-align: center; font-size: 12px; color: #555; background-color: #f4f4f4; padding: 10px; border-top: 1px solid #ccc; z-index: 1000;">
-    If you encounter any issues, please contact me <a href="mailto:efurkanakar@gmail.com" style="color: #007bff; text-decoration: none;">here</a>.
+    If you encounter any issues, please contact me at <a href="mailto:efurkanakar@gmail.com" style="color: #007bff; text-decoration: none;">here</a>.
 </p>
 
 </body>
