@@ -6,7 +6,7 @@
     <title>Observation Report</title>
     <style>
         body {
-            font-family: "Gill Sans", sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
@@ -21,15 +21,13 @@
         }
 
         h1 {
-            font-family: "Georgia", serif;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-            background-color: #e9ecef;
-            border-bottom: 1px solid #ccc;
             font-size: 24px;
             font-weight: bold;
+            color: #444;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ccc;
+            margin-bottom: 20px;
         }
 
         .section {
@@ -149,12 +147,6 @@
             display: none;
         }
 
-        .error {
-            color: red;
-            font-size: 12px;
-            margin-bottom: 10px;
-        }
-
     </style>
     <!-- EmailJS script -->
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
@@ -166,28 +158,26 @@
         let firstTimeYesClicked = false;
 
         window.onload = function() {
-            // Tarihi 12 saat geri almak ve formda gün-ay-yıl olarak göstermek
+            // Tarihi gün-ay-yıl formatında ayarla
             var now = new Date();
-            now.setHours(now.getHours() - 12); // 12 saat geri alıyoruz
             var day = String(now.getDate()).padStart(2, '0');
-            var month = String(now.getMonth() + 1).padStart(2, '0'); // Aylar 0-11 arası olduğu için +1 ekliyoruz.
+            var month = String(now.getMonth() + 1).padStart(2, '0');
             var year = now.getFullYear();
-            var formattedDate = `${day}.${month}.${year}`; // Gün.ay.yıl formatı
+            var formattedDate = `${day}.${month}.${year}`;
             document.getElementById('observation_date').value = formattedDate;
 
-            // "Yes" seçeneği seçilirse ilgili alanları göster ve "No" alanlarını gizle
+            // "Yes" seçeneği seçilirse ilgili alanları göster, "No" seçilirse gizle
             document.getElementById('observation_done_yes').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
                 document.getElementById('general_info_section').classList.remove('hidden');
                 if (!firstTimeYesClicked) {
-                    addStarField(); // Otomatik olarak bir yıldız bilgi alanı eklenir
+                    addStarField();
                     firstTimeYesClicked = true;
                 }
             });
 
-            // "No" seçeneği seçilirse ilgili alanları göster ve "Yes" alanlarını gizle
             document.getElementById('observation_done_no').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
@@ -195,9 +185,9 @@
                 document.getElementById('general_info_section').classList.remove('hidden');
             });
 
-            // Form gönderme işlemi sırasında gözlem durumu 'yes' ya da 'No' bilgisiyle gönderiliyor.
+            // Form gönderimi
             document.getElementById('observationForm').addEventListener('submit', function(event) {
-                event.preventDefault(); // Sayfanın yenilenmesini engeller
+                event.preventDefault();
 
                 const starNames = document.querySelectorAll('input[name="observed_stars[]"]');
                 const filters = document.querySelectorAll('input[name="filter"]');
@@ -208,13 +198,12 @@
                 const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
 
                 // General Info kontrolü
-                let generalInfo = document.getElementById('general_info').value;
-                if (!generalInfo || generalInfo.trim() === "") {
-                    generalInfo = "No General Info"; // Eğer boşsa varsayılan olarak "No General Info"
+                let generalInfo = document.getElementById('general_info').value.trim();
+                if (!generalInfo) {
+                    generalInfo = "No General Info";
                 }
 
                 let observations = "";
-
                 for (let i = 0; i < starNames.length; i++) {
                     observations += `- **Object Name**: ${starNames[i].value || "-"}\n`;
                     observations += `  - **Filter**: ${filters[i].value || "-"}\n`;
@@ -226,24 +215,40 @@
                     observations += "---------------------------\n";
                 }
 
-                // Observations stringini gizli input'a koyuyoruz
                 document.getElementById('star_observations_text').value = observations;
 
-                const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
+                const reasons = [];
+                if (document.querySelector('input[name="reason_weather"]').checked) {
+                    reasons.push('Cloudy Weather');
+                }
+                if (document.querySelector('input[name="reason_wind"]').checked) {
+                    reasons.push('Strong Wind');
+                }
+                if (document.querySelector('input[name="reason_humidity"]').checked) {
+                    reasons.push('High Humidity');
+                }
+                if (document.querySelector('input[name="reason_technical"]').checked) {
+                    reasons.push('Technical Issue');
+                }
+                const otherReason = document.querySelector('input[name="other_reason_text"]').value;
+                if (otherReason) {
+                    reasons.push('Other: ' + otherReason);
+                }
 
-                // EmailJS fonksiyonunu tetikleyin
+                document.getElementById('selected_reasons').value = reasons.join(', ') || "-";
+                document.getElementById('general_info_hidden').value = generalInfo;
+
+                const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
                 emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
                     .then(function(response) {
                         alert('Form successfully submitted and email sent!');
-                        console.log('SUCCESS!', response.status, response.text);
                     }, function(error) {
                         alert('Failed to send email. Please try again.');
-                        console.log('FAILED...', error);
                     });
             });
         };
 
-        // Yıldız bilgilerini eklemek için fonksiyon
+        // Yıldız bilgisi eklemek için
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
             const newStarField = document.createElement('div');
@@ -320,7 +325,7 @@
             toggleRemoveButton();
         }
 
-        // Yıldız bilgilerini silmek için fonksiyon
+        // Yıldız bilgisi silmek için
         function removeLastStarField() {
             const starContainer = document.getElementById('stars_container');
             const starFields = starContainer.querySelectorAll('.section');
@@ -411,15 +416,15 @@
                         </label>
                         <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
                             <input type="checkbox" name="reason_wind" value="Strong wind" style="width: auto; margin: 0;">
-                            <span>Strong wind</span>
+                            <span>Strong Wind</span>
                         </label>
                         <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
                             <input type="checkbox" name="reason_humidity" value="High humidity" style="width: auto; margin: 0;">
-                            <span>High humidity</span>
+                            <span>High Humidity</span>
                         </label>
                         <label style="display: flex; align-items: center; gap: 10px; width: 200px;">
                             <input type="checkbox" name="reason_technical" value="Technical issue" style="width: auto; margin: 0;">
-                            <span>Technical issue</span>
+                            <span>Technical Issue</span>
                         </label>
                     </div>
                     
