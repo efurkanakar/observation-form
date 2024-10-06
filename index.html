@@ -205,7 +205,7 @@
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            emailjs.init("SPZ4gMRCG9sHemlE7"); // EmailJS public key
+            emailjs.init("SPZ4gMRCG9sHemlE7");
         })();
 
         let firstTimeYesClicked = false;
@@ -215,40 +215,33 @@
             var formattedDate = now.toISOString().slice(0, 10); 
             document.getElementById('observation_date').value = formattedDate;
 
-            // "Yes" seçeneği seçilirse ilgili alanları göster ve "No" alanlarını gizle
             document.getElementById('observation_done_yes').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
                 document.getElementById('general_info_section').classList.remove('hidden');
-                document.getElementById('bcc_email_section').classList.remove('hidden');
                 if (!firstTimeYesClicked) {
-                    addStarField(); // Otomatik olarak bir yıldız bilgi alanı eklenir
+                    addStarField();
                     firstTimeYesClicked = true;
                 }
             });
 
-            // "No" seçeneği seçilirse ilgili alanları göster ve "Yes" alanlarını gizle
             document.getElementById('observation_done_no').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
                 document.getElementById('general_info_section').classList.remove('hidden');
-                document.getElementById('bcc_email_section').classList.remove('hidden');
             });
 
-            // Enter tuşu formu göndermesin
             document.getElementById('observationForm').addEventListener('keydown', function(event) {
                 if (event.key === "Enter") {
                     event.preventDefault();
                 }
             });
 
-            // Form gönderme işlemi sırasında gözlem durumu 'yes' ya da 'no' bilgisiyle gönderiliyor.
             document.getElementById('observationForm').addEventListener('submit', function(event) {
-                event.preventDefault(); // Sayfanın yenilenmesini engeller
+                event.preventDefault();
 
-                // Checkbox değerlerini toplama işlemi (No kısmı için)
                 const reasons = [];
                 if (document.querySelector('input[name="reason_weather"]').checked) {
                     reasons.push('Cloudy weather');
@@ -280,39 +273,42 @@
                 let observations = "";
 
                 for (let i = 0; i < starNames.length; i++) {
-                    observations += `- **Object Name**: ${starNames[i].value || "-"}\n`;
-                    observations += `  - **Filter**: ${filters[i].value || "-"}\n`;
-                    observations += `  - **Exposure Time**: ${exposureTimes[i].value || "-"}\n`;
-                    observations += `  - **Binning**: ${binnings[i].value || "-"}\n`;
-                    observations += `  - **Sky Condition**: ${skyConditions[i].value || "-"}\n`;
-                    observations += `  - **Preliminary Result Link**: ${resultLinks[i].value || "-"}\n`;
-                    observations += `  - **Additional Info**: ${extraInfos[i].value || "-"}\n`;
-                    observations += "---------------------------\n";
+                    if (starNames[i].value) {
+                        observations += `- **Object Name**: ${starNames[i].value || "-"}\n`;
+                        observations += `  - **Filter**: ${filters[i].value || "-"}\n`;
+                        observations += `  - **Exposure Time**: ${exposureTimes[i].value || "-"}\n`;
+                        observations += `  - **Binning**: ${binnings[i].value || "-"}\n`;
+                        observations += `  - **Sky Condition**: ${skyConditions[i].value || "-"}\n`;
+                        observations += `  - **Preliminary Result Link**: ${resultLinks[i].value || "-"}\n`;
+                        observations += `  - **Additional Info**: ${extraInfos[i].value || "-"}\n`;
+                    }
                 }
 
                 document.getElementById('star_observations_text').value = observations;
 
                 const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
 
-                // BCC için e-posta adresini alıyoruz
                 const bccEmail = document.getElementById('bcc_email').value;
                 const emailParams = {
-                    bcc: bccEmail || "", // BCC e-postası varsa ekliyoruz
-                    ...this // Formdaki diğer tüm bilgileri ekle
+                    bcc: bccEmail || "",
+                    ...this
                 };
 
                 emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
                     .then(function(response) {
                         alert('Form successfully submitted and email sent!');
-                        console.log('SUCCESS!', response.status, response.text);
+                        document.getElementById('observationForm').reset();
+                        document.getElementById('yes_fields').classList.add('hidden');
+                        document.getElementById('no_fields').classList.add('hidden');
+                        document.getElementById('general_info_section').classList.add('hidden');
+                        document.getElementById('submit_button').classList.add('hidden');
+                        firstTimeYesClicked = false;
                     }, function(error) {
                         alert('Failed to send email. Please try again.');
-                        console.log('FAILED...', error);
                     });
             });
         };
 
-        // Yıldız bilgilerini eklemek için fonksiyon
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
             const newStarField = document.createElement('div');
@@ -499,11 +495,10 @@
                 <label for="general_info">General Info</label>
                 <small style="display: block; font-size: 14px; font-style: italic; margin-bottom: 5px;">You can edit this information if needed</small>
                 <input type="text" id="general_info" name="general_info" value="No additional info">
-            </div>
 
-            <!-- BCC Email Section -->
-            <div id="bcc_email_section" class="hidden section">
-                <label for="bcc_email">BCC Email (if you want to send a copy)</label>
+                <!-- BCC Email Section -->
+                <label for="bcc_email">BCC Email</label>
+                <small style="display: block; font-size: 14px; font-style: italic; margin-bottom: 5px;">Enter BCC email if you want to send a copy</small>
                 <input type="email" id="bcc_email" name="bcc_email" placeholder="Enter BCC email here">
             </div>
 
@@ -515,8 +510,8 @@
         </form>
     </div>
 
-<p style="position: fixed; bottom: 0; left: 0; right: 0; width: 100%; text-align: center; font-size: 14px; color: #555; background-color: #f4f4f4; padding: 10px; border-top: 1px solid #ccc; z-index: 1000;">
-    If you encounter any issues, please contact me at <a href="mailto:efurkanakar@gmail.com" style="color: #007bff; text-decoration: none;">here</a>.
+<p style="position: fixed; bottom: 0; left: 0; right: 0; width: 100%; text-align: center; font-size: 14px; color: #555; background-color: #f4f4f4; padding: 2px; border-top: 1px solid #ccc; z-index: 1000; margin: 0;">
+    Created by Furkan Akar. If you encounter any issues, please reach out <a href="https://github.com/efurkanakar" style="color: #007bff; text-decoration: none;">here</a>.
 </p>
 
 </body>
