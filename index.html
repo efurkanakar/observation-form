@@ -187,31 +187,22 @@
                 document.getElementById('general_info_section').classList.remove('hidden');
             });
 
+            // Checkbox'ları izleyerek gizli inputları güncelleme
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const hiddenInputId = 'hidden_' + this.name;
+                    const hiddenInput = document.getElementById(hiddenInputId);
+                    if (this.checked) {
+                        hiddenInput.value = 'Checked';
+                    } else {
+                        hiddenInput.value = 'Unchecked';
+                    }
+                });
+            });
+
             // Form gönderme işlemi sırasında gözlem durumu 'yes' ya da 'no' bilgisiyle gönderiliyor.
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault(); // Sayfanın yenilenmesini engeller
-
-                // Checkbox değerlerini topla
-                const reasons = [];
-                if (document.querySelector('input[name="reason_weather"]').checked) {
-                    reasons.push('Cloudy Weather');
-                }
-                if (document.querySelector('input[name="reason_wind"]').checked) {
-                    reasons.push('Strong Wind');
-                }
-                if (document.querySelector('input[name="reason_humidity"]').checked) {
-                    reasons.push('High Humidity');
-                }
-                if (document.querySelector('input[name="reason_technical"]').checked) {
-                    reasons.push('Technical Issue');
-                }
-                const otherReason = document.querySelector('input[name="other_reason_text"]').value;
-                if (otherReason) {
-                    reasons.push('Other: ' + otherReason);
-                }
-
-                // Gizli input alanını checkbox sonuçlarıyla güncelle
-                document.getElementById('selected_reasons').value = reasons.join(', ');
 
                 const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
                 
@@ -417,8 +408,12 @@
                             <span>Technical issue</span>
                         </label>
                     </div>
-                    <!-- Gizli input alanı checkbox sonuçları için -->
-                    <input type="hidden" id="selected_reasons" name="selected_reasons">
+                    
+                    <!-- Gizli input alanları checkbox durumları için -->
+                    <input type="hidden" id="hidden_reason_weather" name="hidden_reason_weather" value="Unchecked">
+                    <input type="hidden" id="hidden_reason_wind" name="hidden_reason_wind" value="Unchecked">
+                    <input type="hidden" id="hidden_reason_humidity" name="hidden_reason_humidity" value="Unchecked">
+                    <input type="hidden" id="hidden_reason_technical" name="hidden_reason_technical" value="Unchecked">
                     
                     <!-- "Other reason" input inside the same section with padding -->
                     <input type="text" name="other_reason_text" placeholder="Other reason" style="width: 100%; margin-top: 15px; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
