@@ -201,7 +201,6 @@
         }
 
     </style>
-    <!-- EmailJS script -->
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
@@ -311,78 +310,80 @@
 
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
-            const newStarField = document.createElement('div');
-            newStarField.classList.add('section');
-            newStarField.innerHTML = `
-                <div class="row">
-                    <div class="input-container-wide">
-                        <label for="observed_stars">Object Name</label>
-                        <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star">
-                    </div>
+            if (starContainer.children.length === 0) { // Yıldız alanı yoksa bir tane ekle
+                const newStarField = document.createElement('div');
+                newStarField.classList.add('section');
+                newStarField.innerHTML = `
+                    <div class="row">
+                        <div class="input-container-wide">
+                            <label for="observed_stars">Object Name</label>
+                            <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star">
+                        </div>
 
-                    <div class="input-container-special">
-                        <label for="filter">Filter</label>
-                        <input list="filters" name="filter" placeholder="Enter filter">
-                        <datalist id="filters">
-                            <option value="SDSS-u'">
-                            <option value="SDSS-g'">
-                            <option value="SDSS-r'">
-                            <option value="SDSS-i'">
-                            <option value="SDSS-z'">
-                            <option value="Clear">
-                            <option value="Bessel-B">
-                            <option value="Bessel-V">
-                            <option value="Bessel-R">
-                            <option value="Bessel-I">
-                        </datalist>
-                    </div>
+                        <div class="input-container-special">
+                            <label for="filter">Filter</label>
+                            <input list="filters" name="filter" placeholder="Enter filter">
+                            <datalist id="filters">
+                                <option value="SDSS-u'">
+                                <option value="SDSS-g'">
+                                <option value="SDSS-r'">
+                                <option value="SDSS-i'">
+                                <option value="SDSS-z'">
+                                <option value="Clear">
+                                <option value="Bessel-B">
+                                <option value="Bessel-V">
+                                <option value="Bessel-R">
+                                <option value="Bessel-I">
+                            </datalist>
+                        </div>
 
-                    <div class="input-container-special">
-                        <label for="exposure_time">Exposure Time</label>
-                        <input list="exposure_times" name="exposure_time" placeholder="Enter exposure time">
-                        <datalist id="exposure_times">
-                            <option value="10">
-                            <option value="20">
-                            <option value="30">
-                            <option value="40">
-                            <option value="50">
-                            <option value="60">
-                        </datalist>
-                    </div>
+                        <div class="input-container-special">
+                            <label for="exposure_time">Exposure Time</label>
+                            <input list="exposure_times" name="exposure_time" placeholder="Enter exposure time">
+                            <datalist id="exposure_times">
+                                <option value="10">
+                                <option value="20">
+                                <option value="30">
+                                <option value="40">
+                                <option value="50">
+                                <option value="60">
+                            </datalist>
+                        </div>
 
-                    <div class="input-container-special">
-                        <label for="binning">Binning</label>
-                        <input list="binnings" name="binning" placeholder="Enter binning">
-                        <datalist id="binnings">
-                            <option value="1x1">
-                            <option value="2x2">
-                            <option value="3x3">
-                            <option value="4x4">
-                        </datalist>
-                    </div>
+                        <div class="input-container-special">
+                            <label for="binning">Binning</label>
+                            <input list="binnings" name="binning" placeholder="Enter binning">
+                            <datalist id="binnings">
+                                <option value="1x1">
+                                <option value="2x2">
+                                <option value="3x3">
+                                <option value="4x4">
+                            </datalist>
+                        </div>
 
-                    <div class="input-container-special">
-                        <label for="sky_condition">Sky Condition</label>
-                        <input list="sky_conditions" name="sky_condition" placeholder="Enter sky condition">
-                        <datalist id="sky_conditions">
-                            <option value="Wispy Cloudy">
-                            <option value="Partly Cloudy">
-                            <option value="Clear">
-                            <option value="Transparent">
-                        </datalist>
-                    </div>
+                        <div class="input-container-special">
+                            <label for="sky_condition">Sky Condition</label>
+                            <input list="sky_conditions" name="sky_condition" placeholder="Enter sky condition">
+                            <datalist id="sky_conditions">
+                                <option value="Wispy Cloudy">
+                                <option value="Partly Cloudy">
+                                <option value="Clear">
+                                <option value="Transparent">
+                            </datalist>
+                        </div>
 
-                    <div class="input-container-wide"> 
-                        <label for="file_link">Preliminary Result</label>
-                        <input type="text" name="file_link[]" class="small-input" placeholder="Paste file link here">
+                        <div class="input-container-wide"> 
+                            <label for="file_link">Preliminary Result</label>
+                            <input type="text" name="file_link[]" class="small-input" placeholder="Paste file link here">
+                        </div>
                     </div>
-                </div>
-                <div class="input-container-large">
-                    <label for="extra_info">Additional Info</label>
-                    <input type="text" name="extra_info[]" class="small-input" placeholder="Enter any issues during the observation (if any)">
-                </div>
-            `;
-            starContainer.appendChild(newStarField);
+                    <div class="input-container-large">
+                        <label for="extra_info">Additional Info</label>
+                        <input type="text" name="extra_info[]" class="small-input" placeholder="Enter any issues during the observation (if any)">
+                    </div>
+                `;
+                starContainer.appendChild(newStarField);
+            }
             toggleRemoveButton();
         }
 
