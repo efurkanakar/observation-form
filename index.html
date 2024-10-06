@@ -151,11 +151,13 @@
             display: none;
         }
     </style>
+
     <!-- EmailJS script -->
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
+        // Initialize EmailJS with your public key
         (function() {
-            emailjs.init("SPZ4gMRCG9sHemlE7"); // EmailJS public key
+            emailjs.init("YOUR_PUBLIC_KEY_HERE"); // Replace with your actual public key
         })();
 
         let firstTimeYesClicked = false;
@@ -168,11 +170,11 @@
             document.getElementById('observation_done_yes').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.remove('hidden');
                 document.getElementById('no_fields').classList.add('hidden');
+                document.getElementById('submit_button').classList.remove('hidden');
                 document.getElementById('general_info_yes_section').classList.remove('hidden');
                 document.getElementById('general_info_no_section').classList.add('hidden');
-                document.getElementById('submit_button').classList.remove('hidden');
                 if (!firstTimeYesClicked) {
-                    addStarField(); // Only add stars the first time "Yes" is clicked
+                    addStarField();
                     firstTimeYesClicked = true;
                 }
             });
@@ -180,14 +182,15 @@
             document.getElementById('observation_done_no').addEventListener('change', function() {
                 document.getElementById('yes_fields').classList.add('hidden');
                 document.getElementById('no_fields').classList.remove('hidden');
-                document.getElementById('general_info_no_section').classList.remove('hidden');
-                document.getElementById('general_info_yes_section').classList.add('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
+                document.getElementById('general_info_yes_section').classList.add('hidden');
+                document.getElementById('general_info_no_section').classList.remove('hidden');
             });
 
             document.getElementById('observationForm').addEventListener('submit', function(event) {
-                event.preventDefault();
+                event.preventDefault(); // Prevent form from submitting normally
 
+                // Collect reasons (if No is selected)
                 const reasons = [];
                 if (document.querySelector('input[name="reason_weather"]').checked) {
                     reasons.push('Cloudy Weather');
@@ -208,6 +211,7 @@
 
                 document.getElementById('selected_reasons').value = reasons.join(', ') || "-";
 
+                // Collect star observation details (if Yes is selected)
                 const starNames = document.querySelectorAll('input[name="observed_stars[]"]');
                 const filters = document.querySelectorAll('input[name="filter"]');
                 const exposureTimes = document.querySelectorAll('input[name="exposure_time"]');
@@ -216,6 +220,14 @@
                 const resultLinks = document.querySelectorAll('input[name="file_link[]"]');
                 const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
 
+                let generalInfoYes = document.getElementById('general_info_yes').value;
+                let generalInfoNo = document.getElementById('general_info_no').value;
+
+                // Set default text if no general info was provided
+                generalInfoYes = generalInfoYes ? generalInfoYes : 'No general info';
+                generalInfoNo = generalInfoNo ? generalInfoNo : 'No general info';
+
+                // Construct observations details
                 let observations = "";
                 for (let i = 0; i < starNames.length; i++) {
                     observations += `- **Object Name**: ${starNames[i].value || "-"}\n`;
@@ -230,33 +242,26 @@
 
                 document.getElementById('star_observations_text').value = observations;
 
-                // Get the appropriate General Info field for Yes or No case
-                let generalInfoYes = document.getElementById('general_info_yes').value || "No general info";
-                let generalInfoNo = document.getElementById('general_info_no').value || "No general info";
-
                 const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
-                let generalInfoToSend = observationDone === 'yes' ? generalInfoYes : generalInfoNo;
 
-                // Send the form through EmailJS with the right general info
-                emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this, {
-                    general_info: generalInfoToSend,  // Send correct general info
-                })
-                .then(function(response) {
-                    alert('Form successfully submitted and email sent!');
-                    console.log('SUCCESS!', response.status, response.text);
+                // Select the correct template based on whether observation was done or not
+                emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
+                    .then(function(response) {
+                        alert('Form successfully submitted and email sent!');
+                        console.log('SUCCESS!', response.status, response.text);
 
-                    // Reset form after submission
-                    document.getElementById('observationForm').reset();
-                    document.getElementById('yes_fields').classList.add('hidden');
-                    document.getElementById('no_fields').classList.add('hidden');
-                    document.getElementById('general_info_yes_section').classList.add('hidden');
-                    document.getElementById('general_info_no_section').classList.add('hidden');
-                    document.getElementById('submit_button').classList.add('hidden');
-                    firstTimeYesClicked = false;
-                }, function(error) {
-                    alert('Failed to send email. Please try again.');
-                    console.log('FAILED...', error);
-                });
+                        // Reset form after submission
+                        document.getElementById('observationForm').reset();
+                        document.getElementById('yes_fields').classList.add('hidden');
+                        document.getElementById('no_fields').classList.add('hidden');
+                        document.getElementById('general_info_yes_section').classList.add('hidden');
+                        document.getElementById('general_info_no_section').classList.add('hidden');
+                        document.getElementById('submit_button').classList.add('hidden');
+                        firstTimeYesClicked = false;
+                    }, function(error) {
+                        alert('Failed to send email. Please try again.');
+                        console.log('FAILED...', error);
+                    });
             });
         };
 
@@ -395,7 +400,7 @@
                 </div>
             </div>
 
-            <!-- Yes fields -->
+            <!-- Yes seçilirse görüntülenecek alanlar -->
             <div id="yes_fields" class="hidden">
                 <div class="section">
                     <label for="observer_name">Observer Name</label>
@@ -410,7 +415,7 @@
                 </div>
             </div>
 
-            <!-- No fields -->
+            <!-- No seçilirse görüntülenecek alanlar -->
             <div id="no_fields" class="hidden section">
                 <label for="observer_name_no">Observer Name</label>
                 <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
@@ -437,30 +442,32 @@
                         </label>
                     </div>
                     
+                    <!-- Gizli input alanı seçili nedenlerle -->
                     <input type="hidden" id="selected_reasons" name="selected_reasons">
                     
+                    <!-- "Other reason" input inside the same section with padding -->
                     <input type="text" name="other_reason_text" placeholder="Other reason" style="width: 100%; margin-top: 15px; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
                 </div>
             </div>
 
-            <!-- General Info for Yes -->
+            <!-- General Info (Yes) -->
             <div id="general_info_yes_section" class="hidden section">
-                <label for="general_info_yes">General Info for Yes</label>
-                <input type="text" id="general_info_yes" name="general_info_yes" placeholder="Enter general observation information for Yes">
+                <label for="general_info_yes">General Info (Yes)</label>
+                <input type="text" id="general_info_yes" name="general_info_yes" placeholder="Enter any general observation information for 'Yes'">
             </div>
 
-            <!-- General Info for No -->
+            <!-- General Info (No) -->
             <div id="general_info_no_section" class="hidden section">
-                <label for="general_info_no">General Info for No</label>
-                <input type="text" id="general_info_no" name="general_info_no" placeholder="Enter general observation information for No">
+                <label for="general_info_no">General Info (No)</label>
+                <input type="text" id="general_info_no" name="general_info_no" placeholder="Enter any general observation information for 'No'">
             </div>
 
-            <!-- Submit button -->
+            <!-- Submit Button -->
             <div class="button-row">
                 <input type="submit" class="button small-button hidden" id="submit_button" value="Submit">
             </div>
 
-            <!-- Hidden field for star observations -->
+            <!-- Hidden Fields for Email -->
             <input type="hidden" id="star_observations_text" name="star_observations_text">
         </form>
     </div>
