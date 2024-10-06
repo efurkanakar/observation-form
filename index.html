@@ -254,9 +254,12 @@ input[type="radio"] {
 
                 // General Info kontrolü
                 // General Info kontrolü
+                // General Info kontrolü
                 let generalInfo = document.getElementById('general_info').value;
                 if (!generalInfo || generalInfo.trim() === "") {
-                    generalInfo = "NO ADDITIONAL INFO"; // Eğer boşsa otomatik olarak "NO ADDITIONAL INFO"
+                    // Eğer boşsa "NO ADDITIONAL INFO" olarak güncelle
+                    generalInfo = "NO ADDITIONAL INFO";
+                    document.getElementById('general_info').value = generalInfo;
                 }
 
                 let observations = "";
