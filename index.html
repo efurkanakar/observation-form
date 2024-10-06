@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Observation Info</title>
+    <title>Observation Report</title>
     <style>
         body {
             font-family: "Gill Sans", sans-serif;
@@ -13,7 +13,7 @@
         }
 
         .container {
-            width: 90%;
+            width: 70%;
             max-width: 1200px;
             min-width: 300px;
             margin: 0 auto;
@@ -21,18 +21,16 @@
         }
 
         h1 {
-            color: #0056b3; /* Başlık için mavi renk */
-            font-family: "Georgia", serif; /* Serif bir font kullanımı */
-            font-size: 36px; /* Daha büyük boyut */
+            color: #333;
+            font-family: "Georgia", serif;
+            font-size: 28px;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
-            background-color: #e9ecef;
-            border-bottom: 3px solid #007bff; /* Daha kalın alt sınır */
-            text-transform: uppercase; /* Metni büyük harfe çevirme */
-            letter-spacing: 2px; /* Harfler arası boşluk */
+            text-transform: capitalize;
+            letter-spacing: normal;
+            border-bottom: none;
         }
-
 
         .section {
             padding: 30px;
@@ -100,33 +98,64 @@
             margin-top: 20px;
         }
 
-        .date-observation-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-        }
+.date-observation-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+.date-column, .observation-column, .telescope-column {
+    flex: 1;
+    max-width: 250px; /* Kolonların genişliklerini dengeler */
+}
 
-        .date-column, .observation-column, .telescope-column {
-            width: 30%;
-        }
+.observation-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start; /* Bu, soruyu sola yaslayacaktır */
+}
 
-        .observation-column {
-            display: flex;
-            flex-direction: column;
-        }
 
-        .radio-group {
-            display: inline-flex;
-            gap: 10px;
-            align-items: center;
-        }
+.date-observation-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Elemanları dikey olarak merkezler */
+    gap: 10px;
+}
 
-        .radio-group label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+.observation-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Yatayda ortalanmış halde soruyu hizalar */
+    align-items: center; /* Elemanları merkezler */
+}
+
+.observation-column label {
+    margin-bottom: 12px; /* Soru ile radyo butonları arasındaki boşluğu azaltır */
+}
+
+.radio-group {
+    display: flex;
+    gap: 50px; /* "Yes" ve "No" arasındaki boşluk */
+    align-items: center; /* Butonları ve etiketleri yukarı kaydırır */
+}
+
+
+.radio-group label {
+    display: inline-flex;
+    flex-direction: flex;
+    align-items: center;
+    gap: 5px; /* Buton ve etiket arasındaki boşluk */
+}
+
+input[type="radio"] {
+    vertical-align: middle;
+    margin: 0;
+}
+
+
+
 
         .row {
             display: flex;
@@ -366,7 +395,7 @@
 <body>
 
     <div class="container">
-        <h1>Observation Info</h1>
+        <h1>Observation Report</h1>
 
         <form id="observationForm">
             <div class="section">
@@ -374,15 +403,6 @@
                     <div class="date-column">
                         <label for="observation_date">Date</label>
                         <input type="date" id="observation_date" name="observation_date">
-                    </div>
-
-                    <div class="telescope-column">
-                        <label for="telescope_used">Telescope Used</label>
-                        <select name="telescope_used">
-                            <option value="T35">T35</option>
-                            <option value="T80">T80</option>
-                            <option value="T100">T100</option>
-                        </select>
                     </div>
 
                     <div class="observation-column">
@@ -395,6 +415,15 @@
                                 <input type="radio" id="observation_done_no" name="observation_done" value="no"> No
                             </label>
                         </div>
+                    </div>
+
+                    <div class="telescope-column">
+                        <label for="telescope_used">Telescope Used</label>
+                        <select name="telescope_used">
+                            <option value="T35">T35</option>
+                            <option value="T80">T80</option>
+                            <option value="T100">T100</option>
+                        </select>
                     </div>
                 </div>
             </div>
