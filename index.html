@@ -162,44 +162,44 @@
 
         let firstTimeYesClicked = false;
 
-window.onload = function() {
-    var now = new Date();
-    var formattedDate = now.toISOString().slice(0, 10); 
-    document.getElementById('observation_date').value = formattedDate;
-
-    document.getElementById('observation_done_yes').addEventListener('change', function() {
-        document.getElementById('yes_fields').classList.remove('hidden');
-        document.getElementById('no_fields').classList.add('hidden');
-        document.getElementById('submit_button').classList.remove('hidden');
-        document.getElementById('general_info_section').classList.remove('hidden');
-    });
-
-    document.getElementById('observation_done_no').addEventListener('change', function() {
-        document.getElementById('yes_fields').classList.add('hidden');
-        document.getElementById('no_fields').classList.remove('hidden');
-        document.getElementById('submit_button').classList.remove('hidden');
-        document.getElementById('general_info_section').classList.remove('hidden');
-    });
-
-    document.getElementById('observationForm').addEventListener('submit', function(event) {
-        event.preventDefault(); 
-
-        const generalInfoField = document.getElementById('general_info');
-        let generalInfo = generalInfoField.value.trim();
-        if (!generalInfo) {
-            generalInfo = "-";  // Eğer kullanıcı bilgi girmezse '-' olarak ayarla
-        }
-
-        document.getElementById('general_info_hidden').value = generalInfo;
-
-        emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', this)
-            .then(function(response) {
-                alert('Form successfully submitted and email sent!');
-            }, function(error) {
-                alert('Failed to send email. Please try again.');
+        window.onload = function() {
+            var now = new Date();
+            var formattedDate = now.toISOString().slice(0, 10); 
+            document.getElementById('observation_date').value = formattedDate;
+        
+            document.getElementById('observation_done_yes').addEventListener('change', function() {
+                document.getElementById('yes_fields').classList.remove('hidden');
+                document.getElementById('no_fields').classList.add('hidden');
+                document.getElementById('submit_button').classList.remove('hidden');
+                document.getElementById('general_info_section').classList.remove('hidden');
             });
-    });
-};
+        
+            document.getElementById('observation_done_no').addEventListener('change', function() {
+                document.getElementById('yes_fields').classList.add('hidden');
+                document.getElementById('no_fields').classList.remove('hidden');
+                document.getElementById('submit_button').classList.remove('hidden');
+                document.getElementById('general_info_section').classList.remove('hidden');
+            });
+        
+            document.getElementById('observationForm').addEventListener('submit', function(event) {
+                event.preventDefault(); 
+        
+                const generalInfoField = document.getElementById('general_info');
+                let generalInfo = generalInfoField.value.trim();
+                if (!generalInfo) {
+                    generalInfo = "-";  // Eğer kullanıcı bilgi girmezse '-' olarak ayarla
+                }
+        
+                document.getElementById('general_info_hidden').value = generalInfo;
+        
+                emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', this)
+                    .then(function(response) {
+                        alert('Form successfully submitted and email sent!');
+                    }, function(error) {
+                        alert('Failed to send email. Please try again.');
+                    });
+            });
+        };
 
 
         // Yıldız bilgilerini eklemek için fonksiyon
