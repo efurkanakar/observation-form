@@ -121,7 +121,6 @@
             border-color: #1e7e34;
         }
 
-
         #submit_button {
             background-color: #007bff; /* Mavi renk */
             color: white;
@@ -183,21 +182,6 @@
             align-items: flex-start; /* Bu, soruyu sola yaslayacaktır */
         }
 
-
-        .date-observation-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center; /* Elemanları dikey olarak merkezler */
-            gap: 10px;
-        }
-
-        .observation-column {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start; /* Soru grubunu yukarı kaydırır */
-            align-items: center; 
-        }
-
         .observation-column label {
             margin-bottom: 12px; /* Soru ile radyo butonları arasındaki boşluğu azaltır */
         }
@@ -251,7 +235,7 @@
 		.required-star {
     		color: red;
     		margin-left: 2px;
-}
+        }
 
     </style>
     
@@ -290,7 +274,6 @@
             }
             return phase;
         }
-
 
         function updateSunTimes() {
             const today = new Date();
@@ -332,8 +315,6 @@
         let firstTimeYesClicked = false;
 
         window.onload = function() {
-
-    
 
     		updateSunTimes(); // Güneş doğuş ve batış zamanlarını güncelle
     		updateTime(); // JD ve zamanları güncelle
@@ -438,80 +419,78 @@
 
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
-            if (starContainer.children.length === 0) { // Yıldız alanı yoksa bir tane ekle
-                const newStarField = document.createElement('div');
-                newStarField.classList.add('section');
-                newStarField.innerHTML = `
-                    <div class="row">
-                        <div class="input-container-wide">
-                            <label for="observed_stars">Object Name<span class="required-star">*</span></label>
-                            <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star">
-                        </div>
-
-                        <div class="input-container-special">
-                            <label for="filter">Filter<span class="required-star">*</span></label>
-                            <input list="filters" name="filter" placeholder="Enter filter">
-                            <datalist id="filters">
-                                <option value="SDSS-u'">
-                                <option value="SDSS-g'">
-                                <option value="SDSS-r'">
-                                <option value="SDSS-i'">
-                                <option value="SDSS-z'">
-                                <option value="Clear">
-                                <option value="Bessel-B">
-                                <option value="Bessel-V">
-                                <option value="Bessel-R">
-                                <option value="Bessel-I">
-                            </datalist>
-                        </div>
-
-                        <div class="input-container-special">
-                            <label for="exposure_time">Exposure Time<span class="required-star">*</span></label>
-                            <input list="exposure_times" name="exposure_time" placeholder="Enter exposure time">
-                            <datalist id="exposure_times">
-                                <option value="10">
-                                <option value="20">
-                                <option value="30">
-                                <option value="40">
-                                <option value="50">
-                                <option value="60">
-                            </datalist>
-                        </div>
-
-                        <div class="input-container-special">
-                            <label for="binning">Binning<span class="required-star">*</span></label>
-                            <input list="binnings" name="binning" placeholder="Enter binning">
-                            <datalist id="binnings">
-                                <option value="1x1">
-                                <option value="2x2">
-                                <option value="3x3">
-                                <option value="4x4">
-                            </datalist>
-                        </div>
-
-                        <div class="input-container-special">
-                            <label for="sky_condition">Sky Condition<span class="required-star">*</span></label>
-                            <input list="sky_conditions" name="sky_condition" placeholder="Enter sky condition">
-                            <datalist id="sky_conditions">
-                                <option value="Wispy Cloudy">
-                                <option value="Partly Cloudy">
-                                <option value="Clear">
-                                <option value="Transparent">
-                            </datalist>
-                        </div>
-
-                        <div class="input-container-wide"> 
-                            <label for="file_link">Preliminary Result</label>
-                            <input type="text" name="file_link[]" class="small-input" placeholder="Paste file link here">
-                        </div>
+            const newStarField = document.createElement('div');
+            newStarField.classList.add('section');
+            newStarField.innerHTML = `
+                <div class="row">
+                    <div class="input-container-wide">
+                        <label for="observed_stars">Object Name<span class="required-star">*</span></label>
+                        <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star">
                     </div>
-                    <div class="input-container-large">
-                        <label for="extra_info">Additional Info</label>
-                        <input type="text" name="extra_info[]" class="small-input" placeholder="Enter any issues during the observation">
+
+                    <div class="input-container-special">
+                        <label for="filter">Filter<span class="required-star">*</span></label>
+                        <input list="filters" name="filter" placeholder="Enter filter">
+                        <datalist id="filters">
+                            <option value="SDSS-u'">
+                            <option value="SDSS-g'">
+                            <option value="SDSS-r'">
+                            <option value="SDSS-i'">
+                            <option value="SDSS-z'">
+                            <option value="Clear">
+                            <option value="Bessel-B">
+                            <option value="Bessel-V">
+                            <option value="Bessel-R">
+                            <option value="Bessel-I">
+                        </datalist>
                     </div>
-                `;
-                starContainer.appendChild(newStarField);
-            }
+
+                    <div class="input-container-special">
+                        <label for="exposure_time">Exposure Time<span class="required-star">*</span></label>
+                        <input list="exposure_times" name="exposure_time" placeholder="Enter exposure time">
+                        <datalist id="exposure_times">
+                            <option value="10">
+                            <option value="20">
+                            <option value="30">
+                            <option value="40">
+                            <option value="50">
+                            <option value="60">
+                        </datalist>
+                    </div>
+
+                    <div class="input-container-special">
+                        <label for="binning">Binning<span class="required-star">*</span></label>
+                        <input list="binnings" name="binning" placeholder="Enter binning">
+                        <datalist id="binnings">
+                            <option value="1x1">
+                            <option value="2x2">
+                            <option value="3x3">
+                            <option value="4x4">
+                        </datalist>
+                    </div>
+
+                    <div class="input-container-special">
+                        <label for="sky_condition">Sky Condition<span class="required-star">*</span></label>
+                        <input list="sky_conditions" name="sky_condition" placeholder="Enter sky condition">
+                        <datalist id="sky_conditions">
+                            <option value="Wispy Cloudy">
+                            <option value="Partly Cloudy">
+                            <option value="Clear">
+                            <option value="Transparent">
+                        </datalist>
+                    </div>
+
+                    <div class="input-container-wide"> 
+                        <label for="file_link">Preliminary Result</label>
+                        <input type="text" name="file_link[]" class="small-input" placeholder="Paste file link here">
+                    </div>
+                </div>
+                <div class="input-container-large">
+                    <label for="extra_info">Additional Info</label>
+                    <input type="text" name="extra_info[]" class="small-input" placeholder="Enter any issues during the observation">
+                </div>
+            `;
+            starContainer.appendChild(newStarField);
             toggleRemoveButton();
         }
 
@@ -565,8 +544,6 @@
             </div>
         </div>
 
-
-
         <form id="observationForm">
             <div class="section">
                 <div class="date-observation-row">
@@ -576,7 +553,7 @@
                     </div>
 
                     <div class="observation-column">
-                        <label for="observation_done">Was observation carried out?<span class="required-star">*</span></label></label>
+                        <label for="observation_done">Was observation carried out?<span class="required-star">*</span></label>
                         <div class="radio-group">
                             <label>
                                 <input type="radio" id="observation_done_yes" name="observation_done" value="yes"> Yes
