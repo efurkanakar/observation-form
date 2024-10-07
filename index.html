@@ -16,8 +16,8 @@
         }
 
         .container {
-            width: 85%;
-            max-width: 1200px;
+            width: 90%;
+            max-width: 1100px;
             min-width: 300px;
             margin: 0 auto;
             padding: 20px;
@@ -72,10 +72,10 @@
             
         }
 
-.center-info h1 {
-    font-size: 35px;
-    margin: 5px 0 -12px 0; /* Alt boşluk 10px yapıldı */
-}
+        .center-info h1 {
+            font-size: 35px;
+            margin: 5px 0 -12px 0; /* Alt boşluk 10px yapıldı */
+        }
 
         .time-info {
             text-align: center;
@@ -91,7 +91,7 @@
         label {
             font-weight: bold;
             margin-bottom: 5px;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         input, select {
@@ -240,6 +240,7 @@
 
         .hidden {
             display: none;
+            
         }
 
         .error {
@@ -247,6 +248,10 @@
             font-size: 12px;
             margin-bottom: 10px;
         }
+		.required-star {
+    		color: red;
+    		margin-left: 2px;
+}
 
     </style>
     
@@ -313,7 +318,7 @@
             document.getElementById('local').textContent = now.toLocaleTimeString(); // Local time
         }
 
-	setInterval(updateTime, 1000);
+			setInterval(updateTime, 1000);
     </script>
 </head>
 <body>
@@ -396,13 +401,13 @@
 
                 for (let i = 0; i < starNames.length; i++) {
                     if (starNames[i].value) {
-                        observations += `- **Object Name**: ${starNames[i].value || "-"}\n`;
-                        observations += `  - **Filter**: ${filters[i].value || "-"}\n`;
-                        observations += `  - **Exposure Time**: ${exposureTimes[i].value || "-"}\n`;
-                        observations += `  - **Binning**: ${binnings[i].value || "-"}\n`;
-                        observations += `  - **Sky Condition**: ${skyConditions[i].value || "-"}\n`;
-                        observations += `  - **Preliminary Result Link**: ${resultLinks[i].value || "-"}\n`;
-                        observations += `  - **Additional Info**: ${extraInfos[i].value || "-"}\n`;
+                        observations += `- Object Name: ${starNames[i].value || "-"}\n`;
+                        observations += `  - Filter: ${filters[i].value || "-"}\n`;
+                        observations += `  - Exposure Time: ${exposureTimes[i].value || "-"}\n`;
+                        observations += `  - Binning: ${binnings[i].value || "-"}\n`;
+                        observations += `  - Sky Condition: ${skyConditions[i].value || "-"}\n`;
+                        observations += `  - Preliminary Result Link: ${resultLinks[i].value || "-"}\n`;
+                        observations += `  - Additional Info: ${extraInfos[i].value || "-"}\n`;
                     }
                 }
 
@@ -439,12 +444,12 @@
                 newStarField.innerHTML = `
                     <div class="row">
                         <div class="input-container-wide">
-                            <label for="observed_stars">Object Name</label>
+                            <label for="observed_stars">Object Name<span class="required-star">*</span></label>
                             <input type="text" name="observed_stars[]" class="small-input" placeholder="Enter star">
                         </div>
 
                         <div class="input-container-special">
-                            <label for="filter">Filter</label>
+                            <label for="filter">Filter<span class="required-star">*</span></label>
                             <input list="filters" name="filter" placeholder="Enter filter">
                             <datalist id="filters">
                                 <option value="SDSS-u'">
@@ -461,7 +466,7 @@
                         </div>
 
                         <div class="input-container-special">
-                            <label for="exposure_time">Exposure Time</label>
+                            <label for="exposure_time">Exposure Time<span class="required-star">*</span></label>
                             <input list="exposure_times" name="exposure_time" placeholder="Enter exposure time">
                             <datalist id="exposure_times">
                                 <option value="10">
@@ -474,7 +479,7 @@
                         </div>
 
                         <div class="input-container-special">
-                            <label for="binning">Binning</label>
+                            <label for="binning">Binning<span class="required-star">*</span></label>
                             <input list="binnings" name="binning" placeholder="Enter binning">
                             <datalist id="binnings">
                                 <option value="1x1">
@@ -485,7 +490,7 @@
                         </div>
 
                         <div class="input-container-special">
-                            <label for="sky_condition">Sky Condition</label>
+                            <label for="sky_condition">Sky Condition<span class="required-star">*</span></label>
                             <input list="sky_conditions" name="sky_condition" placeholder="Enter sky condition">
                             <datalist id="sky_conditions">
                                 <option value="Wispy Cloudy">
@@ -502,7 +507,7 @@
                     </div>
                     <div class="input-container-large">
                         <label for="extra_info">Additional Info</label>
-                        <input type="text" name="extra_info[]" class="small-input" placeholder="Enter any issues during the observation (if any)">
+                        <input type="text" name="extra_info[]" class="small-input" placeholder="Enter any issues during the observation">
                     </div>
                 `;
                 starContainer.appendChild(newStarField);
@@ -548,7 +553,7 @@
                 <div class="time-info">
                     <p>JD: <span id="jd"></span></p>
                     <p>UT: <span id="ut"></span></p>
-                    <p>Local: <span id="local"></span></p>
+                    <p>LT: <span id="local"></span></p>
                      <p>Moon Phase: <span id="moon_phase"></span></p>
                 </div>
             </div>
@@ -566,12 +571,12 @@
             <div class="section">
                 <div class="date-observation-row">
                     <div class="date-column">
-                        <label for="observation_date">Date</label>
+                        <label for="observation_date">Date<span class="required-star">*</span></label>
                         <input type="date" id="observation_date" name="observation_date">
                     </div>
 
                     <div class="observation-column">
-                        <label for="observation_done">Was observation carried out?</label>
+                        <label for="observation_done">Was observation carried out?<span class="required-star">*</span></label></label>
                         <div class="radio-group">
                             <label>
                                 <input type="radio" id="observation_done_yes" name="observation_done" value="yes"> Yes
@@ -583,7 +588,7 @@
                     </div>
 
                     <div class="telescope-column">
-                        <label for="telescope_used">Telescope</label>
+                        <label for="telescope_used">Telescope<span class="required-star">*</span></label>
                         <select name="telescope_used">
                             <option value="T35">T35</option>
                             <option value="T80">T80</option>
@@ -595,7 +600,7 @@
 
             <div id="yes_fields" class="hidden">
                 <div class="section">
-                    <label for="observer_name">Observer</label>
+                    <label for="observer_name">Observer<span class="required-star">*</span></label>
                     <input type="text" id="observer_name" name="observer_name" placeholder="Enter observer name(s)">
 
                     <div id="stars_container"></div>
@@ -608,10 +613,10 @@
             </div>
 
             <div id="no_fields" class="hidden section">
-                <label for="observer_name_no">Observer</label>
+                <label for="observer_name_no">Observer<span class="required-star">*</span></label>
                 <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
                 
-                <label style="margin-bottom: 10px;">Please select the reason for not doing the observation</label>
+                <label style="margin-bottom: 10px;">Please select the reason for not doing the observation<span class="required-star">*</span></label>
                 
                 <div class="section" style="padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
                     <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; width: 100%;">
@@ -640,14 +645,14 @@
             </div>
 
             <div id="general_info_section" class="hidden section">
-                <label for="general_info">General Info</label>
+               <label for="general_info" class="label">General Info</label>
                 <small style="display: block; font-size: 14px; font-style: italic; margin-bottom: 5px;">You can edit this information if needed</small>
-                <input type="text" id="general_info" name="general_info" value="No additional info">
+                <input type="text" id="general_info" name="general_info" value="No additional information">
 
                 <!-- BCC Email Section -->
-                <label for="bcc_email">BCC Email</label>
-                <small style="display: block; font-size: 14px; font-style: italic; margin-bottom: 5px;">Enter BCC email if you want to send a copy</small>
-                <input type="email" id="bcc_email" name="bcc_email" placeholder="Enter BCC email here">
+                <label for="bcc_email" class="label">Additional Recipient</label>
+		<small style="display: block; font-size: 14px; font-style: italic; margin-bottom: 5px;">You can add an email address to receive a copy of this report</small>
+                <input type="email" id="bcc_email" name="bcc_email" placeholder="Enter email here">
             </div>
 
             <div class="button-row">
