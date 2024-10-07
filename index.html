@@ -17,7 +17,7 @@
 
         .container {
             width: 85%;
-            max-width: 1100px;
+            max-width: 1200px;
             min-width: 300px;
             margin: 0 auto;
             padding: 20px;
@@ -34,13 +34,58 @@
             letter-spacing: normal;
             border-bottom: none;
         }
-
         .section {
             padding: 30px;
             margin: 20px 0;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: "Georgia", serif;
+        }
+
+        .location-box {
+            flex: 1;
+            padding: 10px;
+            margin-top: 20px; /* Yukarıdan boşluk ekledik */
+        }
+
+        .location-box h2 {
+            font-size: 18px;
+            margin: 5px 0;
+        }
+
+        .location-box p {
+            margin: 5px 0;
+        }
+
+        .center-info {
+            flex: 2;
+            padding: 10px;
+            
+        }
+
+.center-info h1 {
+    font-size: 35px;
+    margin: 5px 0 -12px 0; /* Alt boşluk 10px yapıldı */
+}
+
+        .time-info {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .time-info p {
+            display: inline-block;
+            margin: 0 10px;
+            font-size: 16px;
         }
 
         label {
@@ -204,6 +249,75 @@
         }
 
     </style>
+    
+   <script src="https://unpkg.com/suncalc"></script>
+    <script type="text/javascript">
+        function formatTime(date) {
+            return date.toTimeString().split(' ')[0].slice(0, 5);
+        }
+
+        function calculateJD(date) {
+            const jd = (date.getTime() / 86400000.0) + 2440587.5;
+            return jd.toFixed(5);
+        }
+
+        function getMoonPhase() {
+            const today = new Date();
+            const moonData = SunCalc.getMoonIllumination(today);
+            let phase = '';
+
+            if (moonData.phase === 0) {
+                phase = "New Moon";
+            } else if (moonData.phase < 0.25) {
+                phase = "Waxing Crescent";
+            } else if (moonData.phase === 0.25) {
+                phase = "First Quarter";
+            } else if (moonData.phase < 0.5) {
+                phase = "Waxing Gibbous";
+            } else if (moonData.phase === 0.5) {
+                phase = "Full Moon";
+            } else if (moonData.phase < 0.75) {
+                phase = "Waning Gibbous";
+            } else if (moonData.phase === 0.75) {
+                phase = "Last Quarter";
+            } else {
+                phase = "Waning Crescent";
+            }
+            return phase;
+        }
+
+
+        function updateSunTimes() {
+            const today = new Date();
+
+            // Coordinates for Ankara and Antalya
+            const ankaraCoords = { lat: 39.9334, lon: 32.8597 };
+            const antalyaCoords = { lat: 36.8969, lon: 30.7133 };
+
+            const ankaraTimes = SunCalc.getTimes(today, ankaraCoords.lat, ankaraCoords.lon);
+            const antalyaTimes = SunCalc.getTimes(today, antalyaCoords.lat, antalyaCoords.lon);
+
+            document.getElementById('sunrise_ankara').textContent = formatTime(ankaraTimes.sunrise);
+            document.getElementById('sunset_ankara').textContent = formatTime(ankaraTimes.sunset);
+
+            document.getElementById('sunrise_antalya').textContent = formatTime(antalyaTimes.sunrise);
+            document.getElementById('sunset_antalya').textContent = formatTime(antalyaTimes.sunset);
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const jd = calculateJD(now);
+
+            document.getElementById('jd').textContent = jd;  // Julian Date
+            document.getElementById('ut').textContent = now.toUTCString().split(' ')[4]; // UT time
+            document.getElementById('local').textContent = now.toLocaleTimeString(); // Local time
+        }
+
+	setInterval(updateTime, 1000);
+    </script>
+</head>
+<body>
+
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
@@ -213,6 +327,12 @@
         let firstTimeYesClicked = false;
 
         window.onload = function() {
+
+    
+
+    		updateSunTimes(); // Güneş doğuş ve batış zamanlarını güncelle
+    		updateTime(); // JD ve zamanları güncelle
+            document.getElementById('moon_phase').textContent = getMoonPhase();
             var now = new Date();
             var formattedDate = now.toISOString().slice(0, 10); 
             document.getElementById('observation_date').value = formattedDate;
@@ -416,7 +536,31 @@
 <body>
 
     <div class="container">
-        <h1>Observation Report</h1>
+        <div class="header-section">
+            <div class="location-box">
+                <h2>Ankara</h2>
+                <p>Sunrise: <span id="sunrise_ankara"></span></p>
+                <p>Sunset: <span id="sunset_ankara"></span></p>
+            </div>
+
+            <div class="center-info">
+                <h1>Observation Report</h1>
+                <div class="time-info">
+                    <p>JD: <span id="jd"></span></p>
+                    <p>UT: <span id="ut"></span></p>
+                    <p>Local: <span id="local"></span></p>
+                     <p>Moon Phase: <span id="moon_phase"></span></p>
+                </div>
+            </div>
+
+            <div class="location-box">
+                <h2>Antalya</h2>
+                <p>Sunrise: <span id="sunrise_antalya"></span></p>
+                <p>Sunset: <span id="sunset_antalya"></span></p>
+            </div>
+        </div>
+
+
 
         <form id="observationForm">
             <div class="section">
