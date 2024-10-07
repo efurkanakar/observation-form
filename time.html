@@ -1,0 +1,41 @@
+puntolar büyümeli
+mail istenilen kişiye bcc olarak gitmeli
+s<!-- time.html -->
+<div class="time-info">
+    <p>Date: <span id="date"></span></p>
+    <p>JD: <span id="julianDay"></span></p>
+    <p>UT: <span id="universalTime"></span></p>
+    <p>Local Time: <span id="localTime"></span></p>
+</div>
+
+<script>
+    function formatTime(date) {
+        return date.toTimeString().split(' ')[0].slice(0, 5);  // HH:MM format
+    }
+
+    function calculateJD(date) {
+        const jd = (date.getTime() / 86400000.0) + 2440587.5;
+        return jd.toFixed(4);
+    }
+
+    function updateTime() {
+        const now = new Date();
+        const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+        document.getElementById('date').innerText = now.toLocaleDateString('en-GB', options);
+        document.getElementById('julianDay').innerText = calculateJD(now);
+        document.getElementById('universalTime').innerText = now.toUTCString().split(' ')[4];
+
+        const localTime = new Date(now.getTime() + (3 * 60 * 60 * 1000)); // Türkiye için GMT+3 farkı
+        document.getElementById('localTime').innerText = localTime.toTimeString().split(' ')[0];
+    }
+
+    // Sayfa yüklendiğinde ve her saniyede bir zamanı güncelle
+    setInterval(updateTime, 1000);
+    updateTime();
+</script>
+ekme logosu ekle
+create by FA ve here yazan kısma github page'i koy. 
+submit butouna bastıktan sonra sayfa sıfırlansın.
+enter meselesini çöz.
+best regards silinecek
+yeni mail adresi açılacak
