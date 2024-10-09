@@ -366,6 +366,15 @@
 
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault();
+		        // Tarihi güncelleyip 12 saat geri alınmış tarihi form verilerine ekleyelim
+   		var now = new Date();
+    		now.setHours(now.getHours() - 12);
+    		var year = now.getFullYear();
+    		var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    		var day = ("0" + now.getDate()).slice(-2);
+    		var formattedDate = `${year}-${month}-${day}`;
+    		document.getElementById('observation_date').value = formattedDate;
+
 
                 const reasons = [];
                 if (document.querySelector('input[name="reason_weather"]').checked) {
