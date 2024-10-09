@@ -336,6 +336,7 @@
     		updateTime(); // JD ve zamanları güncelle
             document.getElementById('moon_phase').textContent = getMoonPhase();
             var now = new Date();
+		now.setHours(now.getHours() - 12);
             var formattedDate = now.toISOString().slice(0, 10); 
             document.getElementById('observation_date').value = formattedDate;
 
