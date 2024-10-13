@@ -366,7 +366,8 @@
 
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault();
-		        // Tarihi güncelleyip 12 saat geri alınmış tarihi form verilerine ekleyelim
+		let observerName = document.getElementById('observer_name').value;
+		let firstObserverName = observerName.split(',')[0].trim();
    		var now = new Date();
     		now.setHours(now.getHours() - 12);
     		var year = now.getFullYear();
@@ -659,7 +660,7 @@
             </div>
 
             <div class="button-row">
-                <input type="submit" class="button small-button hidden" id="submit_button" value="Submit">
+                <input type="" class="button small-button hidden" id="submit_button" value="Submit">
             </div>
 
             <input type="hidden" id="star_observations_text" name="star_observations_text">
