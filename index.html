@@ -427,7 +427,15 @@
                 document.getElementById('star_observations_text').value = observations;
 
                 const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
-
+		    if (observationDone === 'yes') {
+		        let observerName = document.getElementById('observer_name').value;
+		        let firstObserverName = observerName.split(',')[0].trim();
+		        document.getElementById('first_observer_name').value = firstObserverName;
+		    } else if (observationDone === 'no') {
+		        let observerNameNo = document.getElementById('observer_name_no').value;
+		        let firstObserverNameNo = observerNameNo.split(',')[0].trim();
+		        document.getElementById('first_observer_name_no').value = firstObserverNameNo;
+		    }
                 const bccEmail = document.getElementById('bcc_email').value;
                 const emailParams = {
                     bcc: bccEmail || "",
