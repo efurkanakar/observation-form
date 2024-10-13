@@ -366,8 +366,12 @@
 
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault();
+
+		    
 		let observerName = document.getElementById('observer_name').value;
 		let firstObserverName = observerName.split(',')[0].trim();
+
+		    
 		document.getElementById('first_observer_name').value = firstObserverName;
    		var now = new Date();
     		now.setHours(now.getHours() - 12);
@@ -578,6 +582,8 @@
                     <div class="date-column">
                         <label for="observation_date">Date<span class="required-star">*</span></label>
                         <input type="date" id="observation_date" name="observation_date">
+			<input type="hidden" id="first_observer_name" name="first_observer_name">
+
                     </div>
 
                     <div class="observation-column">
@@ -620,7 +626,8 @@
             <div id="no_fields" class="hidden section">
                 <label for="observer_name_no">Observer<span class="required-star">*</span></label>
                 <input type="text" id="observer_name_no" name="observer_name_no" placeholder="Enter observer name(s)">
-                
+                <input type="hidden" id="first_observer_name_no" name="first_observer_name_no">
+
                 <label style="margin-bottom: 10px;">Please select the reason for not doing the observation<span class="required-star">*</span></label>
                 
                 <div class="section" style="padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
