@@ -34,6 +34,7 @@
             letter-spacing: normal;
             border-bottom: none;
         }
+
         .section {
             padding: 30px;
             margin: 20px 0;
@@ -54,7 +55,7 @@
         .location-box {
             flex: 1;
             padding: 10px;
-            margin-top: 20px; /* Yukarıdan boşluk ekledik */
+            margin-top: 20px;
         }
 
         .location-box h2 {
@@ -69,12 +70,11 @@
         .center-info {
             flex: 2;
             padding: 10px;
-            
         }
 
         .center-info h1 {
             font-size: 35px;
-            margin: 5px 0 -12px 0; /* Alt boşluk 10px yapıldı */
+            margin: 5px 0 -12px 0;
         }
 
         .time-info {
@@ -96,21 +96,21 @@
 
         input, select {
             width: 100%;
-            padding: 8px;
+            padding: 12px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            font-size: 12px;
+            font-size: 14px;
         }
 
         .button.small-button {
             background-color: #28a745;
             color: white;
             padding: 12px 12px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: normal;
-            width: 80px;
-            max-width: 80px;
+            width: 100px;
+            max-width: 100px;
             border-radius: 5px;
             border: 0px solid #28a745;
             transition: background-color 0.2s ease;
@@ -121,22 +121,21 @@
             border-color: #1e7e34;
         }
 
-
         #submit_button {
-            background-color: #007bff; /* Mavi renk */
+            background-color: #007bff;
             color: white;
-            padding: 16px 16px; /* Butonu biraz daha büyük yapmak için padding artırıldı */
-            font-size: 14px; /* Font boyutu artırıldı */
+            padding: 16px 16px;
+            font-size: 16px;
             font-weight: bold;
-            width: 100px; /* Genişliği artırıldı */
-            max-width: 100px;
+            width: 120px;
+            max-width: 120px;
             border-radius: 5px;
             border: 0px solid #007bff;
             transition: background-color 0.2s ease;
         }
-        
+
         #submit_button:hover {
-            background-color: #0056b3; /* Hover sırasında koyu mavi */
+            background-color: #0056b3;
             border-color: #004085;
         }
 
@@ -144,10 +143,10 @@
             background-color: #dc3545;
             color: white;
             padding: 12px 12px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: normal;
-            width: 80px;
-            max-width: 80px;
+            width: 100px;
+            max-width: 100px;
             border-radius: 5px;
             border: 0px solid #dc3545;
             transition: background-color 0.2s ease;
@@ -171,49 +170,32 @@
             align-items: center;
             gap: 10px;
         }
+
         .date-column, .observation-column, .telescope-column {
             flex: 1;
-            max-width: 250px; /* Kolonların genişliklerini dengeler */
+            max-width: 250px;
         }
 
         .observation-column {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: flex-start; /* Bu, soruyu sola yaslayacaktır */
-        }
-
-
-        .date-observation-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center; /* Elemanları dikey olarak merkezler */
-            gap: 10px;
-        }
-
-        .observation-column {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start; /* Soru grubunu yukarı kaydırır */
-            align-items: center; 
-        }
-
-        .observation-column label {
-            margin-bottom: 12px; /* Soru ile radyo butonları arasındaki boşluğu azaltır */
+            align-items: flex-start;
         }
 
         .radio-group {
             display: flex;
-            gap: 50px; /* "Yes" ve "No" arasındaki boşluğu ayarlamak için */
-            align-items: flex-start; /* Radyo butonlarını yukarı kaydırır */
+            gap: 50px;
+            align-items: flex-start;
         }
 
         .radio-group label {
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            margin-top: 0px; /* Butonları daha yukarı kaydırmak için negatif margin eklenebilir */
+            margin-top: 0px;
         }
+
         input[type="radio"] {
             vertical-align: middle;
             margin: 0;
@@ -231,7 +213,7 @@
         }
 
         .input-container-wide {
-            flex: 1 1 20%; 
+            flex: 1 1 20%;
         }
 
         .input-container-large {
@@ -240,7 +222,6 @@
 
         .hidden {
             display: none;
-            
         }
 
         .error {
@@ -248,11 +229,55 @@
             font-size: 12px;
             margin-bottom: 10px;
         }
-		.required-star {
-    		color: red;
-    		margin-left: 2px;
+
+        .required-star {
+            color: red;
+            margin-left: 2px;
         }
 
+        /* Ekstra boşluk eklemek için */
+        .star-field-row {
+            margin-bottom: 15px;
+        }
+
+        /* Mobil Cihazlar için Responsive Tasarım */
+        @media (max-width: 768px) {
+            .header-section {
+                flex-direction: column;
+            }
+
+            .time-info p {
+                display: block;
+                margin: 5px 0;
+            }
+
+            .location-box {
+                text-align: center;
+            }
+
+            .date-observation-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .button-row {
+                flex-direction: column;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            input, select {
+                font-size: 16px;
+                padding: 10px;
+            }
+
+            .button.small-button, #submit_button, .button.remove-button {
+                width: 100%;
+            }
+        }
     </style>
     
    <script src="https://unpkg.com/suncalc"></script>
@@ -317,7 +342,7 @@
             document.getElementById('local').textContent = now.toLocaleTimeString(); // Local time
         }
 
-			setInterval(updateTime, 1000);
+		setInterval(updateTime, 1000);
     </script>
 </head>
 <body>
@@ -328,12 +353,9 @@
             emailjs.init("SPZ4gMRCG9sHemlE7");
         })();
 
-        let firstTimeYesClicked = false;
-
         window.onload = function() {
-
-    		updateSunTimes(); // Güneş doğuş ve batış zamanlarını güncelle
-    		updateTime(); // JD ve zamanları güncelle
+            updateSunTimes();
+            updateTime();
             document.getElementById('moon_phase').textContent = getMoonPhase();
             var now = new Date();
 		    now.setHours(now.getHours() - 12);
@@ -345,10 +367,7 @@
                 document.getElementById('no_fields').classList.add('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
                 document.getElementById('general_info_section').classList.remove('hidden');
-                if (!firstTimeYesClicked) {
-                    addStarField();
-                    firstTimeYesClicked = true;
-                }
+                addStarField(); // Otomatik olarak bir yıldız alanı ekle
             });
 
             document.getElementById('observation_done_no').addEventListener('change', function() {
@@ -367,17 +386,10 @@
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault();
 
-		        const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
-
-		        if (observationDone === 'yes') {
-		            let observerName = document.getElementById('observer_name').value;
-		            let firstObserverName = observerName.split(',')[0].trim();
-		            document.getElementById('first_observer_name').value = firstObserverName;
-		        } else if (observationDone === 'no') {
-		            let observerNameNo = document.getElementById('observer_name_no').value;
-		            let firstObserverNameNo = observerNameNo.split(',')[0].trim();
-		            document.getElementById('first_observer_name_no').value = firstObserverNameNo;
-		        }
+                const observerInput = document.querySelector('input[name="observation_done"]:checked').value === 'yes' ? 'observer_name' : 'observer_name_no';
+                const observerName = document.getElementById(observerInput).value;
+                const firstObserverName = observerName.split(',')[0].trim();
+                document.getElementById('first_observer_name').value = firstObserverName;
 
                 const reasons = [];
                 if (document.querySelector('input[name="reason_weather"]').checked) {
@@ -417,19 +429,13 @@
                         observations += `  - Binning: ${binnings[i].value || "-"}\n`;
                         observations += `  - Sky Condition: ${skyConditions[i].value || "-"}\n`;
                         observations += `  - Preliminary Result Link: ${resultLinks[i].value || "-"}\n`;
-                        observations += `  - Additional Info: ${extraInfos[i].value || "-"}\n`;
+                        observations += `  - Additional Info: ${extraInfos[i].value || "-"}\n\n`;
                     }
                 }
 
                 document.getElementById('star_observations_text').value = observations;
 
-                const bccEmail = document.getElementById('bcc_email').value;
-                const emailParams = {
-                    bcc: bccEmail || "",
-                    ...this
-                };
-
-                emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
+                emailjs.sendForm('service_r7cv4z9', 'template_ah4hbac', this)
                     .then(function(response) {
                         alert('Form successfully submitted and email sent!');
                         document.getElementById('observationForm').reset();
@@ -437,7 +443,6 @@
                         document.getElementById('no_fields').classList.add('hidden');
                         document.getElementById('general_info_section').classList.add('hidden');
                         document.getElementById('submit_button').classList.add('hidden');
-                        firstTimeYesClicked = false;
                     }, function(error) {
                         alert('Failed to send email. Please try again.');
                     });
@@ -447,7 +452,7 @@
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
             const newStarField = document.createElement('div');
-            newStarField.classList.add('section');
+            newStarField.classList.add('section', 'star-field-row');
             newStarField.innerHTML = `
                 <div class="row">
                     <div class="input-container-wide">
@@ -523,7 +528,7 @@
 
         function removeLastStarField() {
             const starContainer = document.getElementById('stars_container');
-            const starFields = starContainer.querySelectorAll('.section');
+            const starFields = starContainer.querySelectorAll('.star-field-row');
 
             if (starFields.length > 1) {
                 starContainer.removeChild(starFields[starFields.length - 1]);
@@ -534,7 +539,7 @@
         function toggleRemoveButton() {
             const starContainer = document.getElementById('stars_container');
             const removeButton = document.getElementById('remove_button');
-            const starFields = starContainer.querySelectorAll('.section');
+            const starFields = starContainer.querySelectorAll('.star-field-row');
 
             if (starFields.length > 1) {
                 removeButton.classList.remove('hidden');
