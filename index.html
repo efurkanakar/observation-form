@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://raw.githubusercontent.com/efurkanakar/obervation-form/refs/heads/main/icon.ico" type="image/x-icon">
-
     <title>Observation Report</title>
     <style>
         body {
@@ -178,12 +176,12 @@
         .observation-column {
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Soru grubunu yukarı kaydırır */
+            justify-content: flex-start;
             align-items: center; 
         }
 
         .observation-column label {
-            margin-bottom: 12px; /* Soru ile radyo butonları arasındaki boşluğu azaltır */
+            margin-bottom: 12px;
         }
 
         .radio-group {
@@ -238,6 +236,51 @@
             margin-left: 2px;
         }
 
+        /* Mobil cihazlar için stil */
+        @media only screen and (max-width: 768px) {
+            .header-section {
+                flex-direction: column;
+            }
+
+            .date-observation-row {
+                flex-direction: column;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .row {
+                flex-direction: column;
+            }
+
+            .input-container-wide, .input-container-special, .input-container-large {
+                width: 100%;
+            }
+
+            .location-box {
+                text-align: center;
+            }
+
+            .center-info h1 {
+                font-size: 28px;
+            }
+
+            .time-info p {
+                font-size: 14px;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .button-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
     </style>
     
     <script src="https://unpkg.com/suncalc"></script>
@@ -279,7 +322,6 @@
         function updateSunTimes() {
             const today = new Date();
 
-            // Coordinates for Ankara and Antalya
             const ankaraCoords = { lat: 39.9334, lon: 32.8597 };
             const antalyaCoords = { lat: 36.8969, lon: 30.7133 };
 
@@ -297,9 +339,9 @@
             const now = new Date();
             const jd = calculateJD(now);
 
-            document.getElementById('jd').textContent = jd;  // Julian Date
-            document.getElementById('ut').textContent = now.toUTCString().split(' ')[4]; // UT time
-            document.getElementById('local').textContent = now.toLocaleTimeString(); // Local time
+            document.getElementById('jd').textContent = jd;
+            document.getElementById('ut').textContent = now.toUTCString().split(' ')[4];
+            document.getElementById('local').textContent = now.toLocaleTimeString();
         }
 
 		setInterval(updateTime, 1000);
@@ -313,12 +355,11 @@
             emailjs.init("SPZ4gMRCG9sHemlE7");
         })();
 
-        let firstTimeYesClicked = false;  // Bu değişken yeni bir yıldız eklemenin tekrarını önleyecek.
+        let firstTimeYesClicked = false; 
 
         window.onload = function() {
-
-    		updateSunTimes();
-    		updateTime();
+            updateSunTimes();
+            updateTime();
             document.getElementById('moon_phase').textContent = getMoonPhase();
             var now = new Date();
 		    now.setHours(now.getHours() - 12);
@@ -331,10 +372,9 @@
                 document.getElementById('submit_button').classList.remove('hidden');
                 document.getElementById('general_info_section').classList.remove('hidden');
                 
-                // İlk kez Yes tıklanıyorsa yeni yıldız bilgisi ekle
                 if (!firstTimeYesClicked) {
                     addStarField(); 
-                    firstTimeYesClicked = true; // Bir daha eklemeyi önlemek için true yapıyoruz.
+                    firstTimeYesClicked = true;
                 }
             });
 
@@ -424,7 +464,7 @@
                         document.getElementById('no_fields').classList.add('hidden');
                         document.getElementById('general_info_section').classList.add('hidden');
                         document.getElementById('submit_button').classList.add('hidden');
-                        firstTimeYesClicked = false; // Form sıfırlandığında tekrar ilk yes tıklaması için.
+                        firstTimeYesClicked = false;
                     }, function(error) {
                         alert('Failed to send email. Please try again.');
                     });
@@ -547,7 +587,7 @@
                     <p>JD: <span id="jd"></span></p>
                     <p>UT: <span id="ut"></span></p>
                     <p>LT: <span id="local"></span></p>
-                     <p>Moon Phase: <span id="moon_phase"></span></p>
+                    <p>Moon Phase: <span id="moon_phase"></span></p>
                 </div>
             </div>
 
