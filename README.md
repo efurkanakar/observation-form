@@ -26,7 +26,7 @@ This is a simple web-based observation report form that allows astronomers to su
 
 ## License
 
-This project is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/). You are free to use, share, and adapt the material for non-commercial purposes, provided that appropriate credit is given.
+This project is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). You are free to use, modify, and distribute the code, provided that you comply with the terms of the license, including providing proper attribution and including a copy of the license in any distributions of your code.
 
 ## Contact
 
