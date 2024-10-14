@@ -34,6 +34,7 @@
             letter-spacing: normal;
             border-bottom: none;
         }
+
         .section {
             padding: 30px;
             margin: 20px 0;
@@ -54,7 +55,7 @@
         .location-box {
             flex: 1;
             padding: 10px;
-            margin-top: 20px; /* Yukarıdan boşluk ekledik */
+            margin-top: 20px;
         }
 
         .location-box h2 {
@@ -69,12 +70,11 @@
         .center-info {
             flex: 2;
             padding: 10px;
-            
         }
 
         .center-info h1 {
             font-size: 35px;
-            margin: 5px 0 -12px 0; /* Alt boşluk 10px yapıldı */
+            margin: 5px 0 -12px 0;
         }
 
         .time-info {
@@ -121,14 +121,13 @@
             border-color: #1e7e34;
         }
 
-
         #submit_button {
-            background-color: #007bff; /* Mavi renk */
+            background-color: #007bff;
             color: white;
-            padding: 16px 16px; /* Butonu biraz daha büyük yapmak için padding artırıldı */
-            font-size: 14px; /* Font boyutu artırıldı */
+            padding: 16px 16px;
+            font-size: 14px;
             font-weight: bold;
-            width: 100px; /* Genişliği artırıldı */
+            width: 100px;
             max-width: 100px;
             border-radius: 5px;
             border: 0px solid #007bff;
@@ -136,7 +135,7 @@
         }
         
         #submit_button:hover {
-            background-color: #0056b3; /* Hover sırasında koyu mavi */
+            background-color: #0056b3;
             border-color: #004085;
         }
 
@@ -173,22 +172,7 @@
         }
         .date-column, .observation-column, .telescope-column {
             flex: 1;
-            max-width: 250px; /* Kolonların genişliklerini dengeler */
-        }
-
-        .observation-column {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start; /* Bu, soruyu sola yaslayacaktır */
-        }
-
-
-        .date-observation-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center; /* Elemanları dikey olarak merkezler */
-            gap: 10px;
+            max-width: 250px;
         }
 
         .observation-column {
@@ -204,16 +188,17 @@
 
         .radio-group {
             display: flex;
-            gap: 50px; /* "Yes" ve "No" arasındaki boşluğu ayarlamak için */
-            align-items: flex-start; /* Radyo butonlarını yukarı kaydırır */
+            gap: 50px;
+            align-items: flex-start;
         }
 
         .radio-group label {
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            margin-top: 0px; /* Butonları daha yukarı kaydırmak için negatif margin eklenebilir */
+            margin-top: 0px;
         }
+
         input[type="radio"] {
             vertical-align: middle;
             margin: 0;
@@ -240,7 +225,6 @@
 
         .hidden {
             display: none;
-            
         }
 
         .error {
@@ -248,14 +232,15 @@
             font-size: 12px;
             margin-bottom: 10px;
         }
-		.required-star {
-    		color: red;
-    		margin-left: 2px;
+
+        .required-star {
+            color: red;
+            margin-left: 2px;
         }
 
     </style>
     
-   <script src="https://unpkg.com/suncalc"></script>
+    <script src="https://unpkg.com/suncalc"></script>
     <script type="text/javascript">
         function formatTime(date) {
             return date.toTimeString().split(' ')[0].slice(0, 5);
@@ -317,7 +302,7 @@
             document.getElementById('local').textContent = now.toLocaleTimeString(); // Local time
         }
 
-			setInterval(updateTime, 1000);
+		setInterval(updateTime, 1000);
     </script>
 </head>
 <body>
@@ -328,12 +313,12 @@
             emailjs.init("SPZ4gMRCG9sHemlE7");
         })();
 
-        let firstTimeYesClicked = false;
+        let firstTimeYesClicked = false;  // Bu değişken yeni bir yıldız eklemenin tekrarını önleyecek.
 
         window.onload = function() {
 
-    		updateSunTimes(); // Güneş doğuş ve batış zamanlarını güncelle
-    		updateTime(); // JD ve zamanları güncelle
+    		updateSunTimes();
+    		updateTime();
             document.getElementById('moon_phase').textContent = getMoonPhase();
             var now = new Date();
 		    now.setHours(now.getHours() - 12);
@@ -345,9 +330,11 @@
                 document.getElementById('no_fields').classList.add('hidden');
                 document.getElementById('submit_button').classList.remove('hidden');
                 document.getElementById('general_info_section').classList.remove('hidden');
+                
+                // İlk kez Yes tıklanıyorsa yeni yıldız bilgisi ekle
                 if (!firstTimeYesClicked) {
-                    addStarField();
-                    firstTimeYesClicked = true;
+                    addStarField(); 
+                    firstTimeYesClicked = true; // Bir daha eklemeyi önlemek için true yapıyoruz.
                 }
             });
 
@@ -437,7 +424,7 @@
                         document.getElementById('no_fields').classList.add('hidden');
                         document.getElementById('general_info_section').classList.add('hidden');
                         document.getElementById('submit_button').classList.add('hidden');
-                        firstTimeYesClicked = false;
+                        firstTimeYesClicked = false; // Form sıfırlandığında tekrar ilk yes tıklaması için.
                     }, function(error) {
                         alert('Failed to send email. Please try again.');
                     });
@@ -673,8 +660,6 @@
 <p style="position: fixed; bottom: 0; left: 0; right: 0; width: 100%; text-align: center; font-size: 14px; color: #555; background-color: #f4f4f4; padding: 2px; border-top: 1px solid #ccc; z-index: 1000; margin: 0;">
     Created by Furkan Akar. If you encounter any issues, please reach out <a href="https://github.com/efurkanakar" style="color: #007bff; text-decoration: none;">here</a>.
 </p>
-
-</head>
 
 </body>
 </html>
