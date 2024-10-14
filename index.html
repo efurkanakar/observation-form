@@ -251,7 +251,7 @@
 		.required-star {
     		color: red;
     		margin-left: 2px;
-}
+        }
 
     </style>
     
@@ -336,7 +336,7 @@
     		updateTime(); // JD ve zamanları güncelle
             document.getElementById('moon_phase').textContent = getMoonPhase();
             var now = new Date();
-		now.setHours(now.getHours() - 12);
+		    now.setHours(now.getHours() - 12);
             var formattedDate = now.toISOString().slice(0, 10); 
             document.getElementById('observation_date').value = formattedDate;
 
@@ -364,93 +364,85 @@
                 }
             });
 
-	document.getElementById('observationForm').addEventListener('submit', function(event) {
-	    event.preventDefault();
-	
-	    const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
-	    
-	    if (observationDone === 'yes') {
-	        let observerName = document.getElementById('observer_name').value;
-	        let firstObserverName = observerName.split(',')[0].trim();
-	        document.getElementById('first_observer_name').value = firstObserverName;
-	    } else if (observationDone === 'no') {
-	        let observerNameNo = document.getElementById('observer_name_no').value;
-	        let firstObserverNameNo = observerNameNo.split(',')[0].trim();
-	        document.getElementById('first_observer_name').value = firstObserverNameNo;  // Burada first_observer_name_no yerine first_observer_name kullandık
-	    }
-	
-	    var now = new Date();
-	    now.setHours(now.getHours() - 12);
-	    var year = now.getFullYear();
-	    var month = ("0" + (now.getMonth() + 1)).slice(-2);
-	    var day = ("0" + now.getDate()).slice(-2);
-	    var formattedDate = `${year}-${month}-${day}`;
-	    document.getElementById('observation_date').value = formattedDate;
-	
-	    const reasons = [];
-	    if (document.querySelector('input[name="reason_weather"]').checked) {
-	        reasons.push('Cloudy weather');
-	    }
-	    if (document.querySelector('input[name="reason_wind"]').checked) {
-	        reasons.push('Strong Wind');
-	    }
-	    if (document.querySelector('input[name="reason_humidity"]').checked) {
-	        reasons.push('High Humidity');
-	    }
-	    if (document.querySelector('input[name="reason_technical"]').checked) {
-	        reasons.push('Technical Issue');
-	    }
-	    const otherReason = document.querySelector('input[name="other_reason_text"]').value;
-	    if (otherReason) {
-	        reasons.push('Other: ' + otherReason);
-	    }
-	
-	    document.getElementById('selected_reasons').value = reasons.join(', ') || "-";
-	
-	    const starNames = document.querySelectorAll('input[name="observed_stars[]"]');
-	    const filters = document.querySelectorAll('input[name="filter"]');
-	    const exposureTimes = document.querySelectorAll('input[name="exposure_time"]');
-	    const binnings = document.querySelectorAll('input[name="binning"]');
-	    const skyConditions = document.querySelectorAll('input[name="sky_condition"]');
-	    const resultLinks = document.querySelectorAll('input[name="file_link[]"]');
-	    const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
-	
-	    let observations = "";
-	
-	    for (let i = 0; i < starNames.length; i++) {
-	        if (starNames[i].value) {
-	            observations += `- Object Name: ${starNames[i].value || "-"}\n`;
-	            observations += `  - Filter: ${filters[i].value || "-"}\n`;
-	            observations += `  - Exposure Time: ${exposureTimes[i].value || "-"}\n`;
-	            observations += `  - Binning: ${binnings[i].value || "-"}\n`;
-	            observations += `  - Sky Condition: ${skyConditions[i].value || "-"}\n`;
-	            observations += `  - Preliminary Result Link: ${resultLinks[i].value || "-"}\n`;
-	            observations += `  - Additional Info: ${extraInfos[i].value || "-"}\n`;
-	        }
-	    }
-	
-	    document.getElementById('star_observations_text').value = observations;
-	
-	    const bccEmail = document.getElementById('bcc_email').value;
-	    const emailParams = {
-	        bcc: bccEmail || "",
-	        ...this
-	    };
-	
-	    emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
-	        .then(function(response) {
-	            alert('Form successfully submitted and email sent!');
-	            document.getElementById('observationForm').reset();
-	            document.getElementById('yes_fields').classList.add('hidden');
-	            document.getElementById('no_fields').classList.add('hidden');
-	            document.getElementById('general_info_section').classList.add('hidden');
-	            document.getElementById('submit_button').classList.add('hidden');
-	            firstTimeYesClicked = false;
-	        }, function(error) {
-	            alert('Failed to send email. Please try again.');
-	        });
-	});
+            document.getElementById('observationForm').addEventListener('submit', function(event) {
+                event.preventDefault();
 
+		        const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
+
+		        if (observationDone === 'yes') {
+		            let observerName = document.getElementById('observer_name').value;
+		            let firstObserverName = observerName.split(',')[0].trim();
+		            document.getElementById('first_observer_name').value = firstObserverName;
+		        } else if (observationDone === 'no') {
+		            let observerNameNo = document.getElementById('observer_name_no').value;
+		            let firstObserverNameNo = observerNameNo.split(',')[0].trim();
+		            document.getElementById('first_observer_name_no').value = firstObserverNameNo;
+		        }
+
+                const reasons = [];
+                if (document.querySelector('input[name="reason_weather"]').checked) {
+                    reasons.push('Cloudy weather');
+                }
+                if (document.querySelector('input[name="reason_wind"]').checked) {
+                    reasons.push('Strong Wind');
+                }
+                if (document.querySelector('input[name="reason_humidity"]').checked) {
+                    reasons.push('High Humidity');
+                }
+                if (document.querySelector('input[name="reason_technical"]').checked) {
+                    reasons.push('Technical Issue');
+                }
+                const otherReason = document.querySelector('input[name="other_reason_text"]').value;
+                if (otherReason) {
+                    reasons.push('Other: ' + otherReason);
+                }
+
+                document.getElementById('selected_reasons').value = reasons.join(', ') || "-";
+
+                const starNames = document.querySelectorAll('input[name="observed_stars[]"]');
+                const filters = document.querySelectorAll('input[name="filter"]');
+                const exposureTimes = document.querySelectorAll('input[name="exposure_time"]');
+                const binnings = document.querySelectorAll('input[name="binning"]');
+                const skyConditions = document.querySelectorAll('input[name="sky_condition"]');
+                const resultLinks = document.querySelectorAll('input[name="file_link[]"]');
+                const extraInfos = document.querySelectorAll('input[name="extra_info[]"]');
+
+                let observations = "";
+
+                for (let i = 0; i < starNames.length; i++) {
+                    if (starNames[i].value) {
+                        observations += `- Object Name: ${starNames[i].value || "-"}\n`;
+                        observations += `  - Filter: ${filters[i].value || "-"}\n`;
+                        observations += `  - Exposure Time: ${exposureTimes[i].value || "-"}\n`;
+                        observations += `  - Binning: ${binnings[i].value || "-"}\n`;
+                        observations += `  - Sky Condition: ${skyConditions[i].value || "-"}\n`;
+                        observations += `  - Preliminary Result Link: ${resultLinks[i].value || "-"}\n`;
+                        observations += `  - Additional Info: ${extraInfos[i].value || "-"}\n`;
+                    }
+                }
+
+                document.getElementById('star_observations_text').value = observations;
+
+                const bccEmail = document.getElementById('bcc_email').value;
+                const emailParams = {
+                    bcc: bccEmail || "",
+                    ...this
+                };
+
+                emailjs.sendForm('service_r7cv4z9', observationDone === 'yes' ? 'template_ah4hbac' : 'template_ej607me', this)
+                    .then(function(response) {
+                        alert('Form successfully submitted and email sent!');
+                        document.getElementById('observationForm').reset();
+                        document.getElementById('yes_fields').classList.add('hidden');
+                        document.getElementById('no_fields').classList.add('hidden');
+                        document.getElementById('general_info_section').classList.add('hidden');
+                        document.getElementById('submit_button').classList.add('hidden');
+                        firstTimeYesClicked = false;
+                    }, function(error) {
+                        alert('Failed to send email. Please try again.');
+                    });
+            });
+        };
 
         function addStarField() {
             const starContainer = document.getElementById('stars_container');
@@ -585,7 +577,7 @@
                     <div class="date-column">
                         <label for="observation_date">Date<span class="required-star">*</span></label>
                         <input type="date" id="observation_date" name="observation_date">
-			<input type="hidden" id="first_observer_name" name="first_observer_name">
+			            <input type="hidden" id="first_observer_name" name="first_observer_name">
 
                     </div>
 
@@ -666,7 +658,7 @@
 
                 <!-- BCC Email Section -->
                 <label for="bcc_email" class="label">Additional Recipient</label>
-		<small style="display: block; font-size: 14px; font-style: italic; margin-bottom: 5px;">You can add an email address to receive a copy of this report</small>
+		        <small style="display: block; font-size: 14px; font-style: italic; margin-bottom: 5px;">You can add an email address to receive a copy of this report</small>
                 <input type="email" id="bcc_email" name="bcc_email" placeholder="Enter email here">
             </div>
 
