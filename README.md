@@ -26,8 +26,10 @@ This is a simple web-based observation report form that allows astronomers to su
 
 ## License
 
-This project is licensed under the MIT License. Feel free to modify and use it as needed.
+This project is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/). You are free to use, share, and adapt the material for non-commercial purposes, provided that appropriate credit is given.
 
 ## Contact
 
-For any issues, suggestions, or feedback, feel free to reach out to me at my email address.
+For any issues, suggestions, or feedback, feel free to reach out:
+
+- GitHub: [Furkan Akar](https://github.com/efurkanakar)
