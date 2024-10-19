@@ -440,20 +440,17 @@
 
                 let observations = "";
 
-		let observations = "";
-		
-		for (let i = 0; i < starNames.length; i++) {
-		    if (starNames[i].value) {
-		        observations += `<strong>- Object Name: ${starNames[i].value || "-"}</strong><br>`;
-		        observations += `  - Filter: ${filters[i].value || "-"}<br>`;
-		        observations += `  - Exposure Time: ${exposureTimes[i].value || "-"}<br>`;
-		        observations += `  - Binning: ${binnings[i].value || "-"}<br>`;
-		        observations += `  - Sky Condition: ${skyConditions[i].value || "-"}<br>`;
-		        observations += `  - Preliminary Result Link: ${resultLinks[i].value || "-"}<br>`;
-		        observations += `  - Additional Info: ${extraInfos[i].value || "-"}<br><br>`;
-		    }
-		}
-
+                for (let i = 0; i < starNames.length; i++) {
+                    if (starNames[i].value) {
+                        observations += - Object Name: ${starNames[i].value || "-"}\n;
+                        observations +=   - Filter: ${filters[i].value || "-"}\n;
+                        observations +=   - Exposure Time: ${exposureTimes[i].value || "-"}\n;
+                        observations +=   - Binning: ${binnings[i].value || "-"}\n;
+                        observations +=   - Sky Condition: ${skyConditions[i].value || "-"}\n;
+                        observations +=   - Preliminary Result Link: ${resultLinks[i].value || "-"}\n;
+                        observations +=   - Additional Info: ${extraInfos[i].value || "-"}\n;
+                    }
+                }
 
                 document.getElementById('star_observations_text').value = observations;
 
@@ -482,7 +479,7 @@
             const starContainer = document.getElementById('stars_container');
             const newStarField = document.createElement('div');
             newStarField.classList.add('section');
-            newStarField.innerHTML = `
+            newStarField.innerHTML = 
                 <div class="row">
                     <div class="input-container-wide">
                         <label for="observed_stars">Object Name<span class="required-star">*</span></label>
@@ -550,7 +547,7 @@
                     <label for="extra_info">Additional Info</label>
                     <input type="text" name="extra_info[]" class="small-input" placeholder="Enter any issues during the observation">
                 </div>
-            `;
+            ;
             starContainer.appendChild(newStarField);
             toggleRemoveButton();
         }
