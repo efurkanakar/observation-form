@@ -160,7 +160,7 @@
             justify-content: center;
             gap: 10px;
             margin-top: 20px;
-            text-align: center; 
+	    text-align: center; 
         }
 
         .date-observation-row {
@@ -254,7 +254,7 @@
 
             .row {
                 flex-direction: column;
-                gap: 10px;
+		gap: 10px;
             }
 
             .input-container-wide, .input-container-special, .input-container-large {
@@ -280,8 +280,8 @@
             .button-row {
                 flex-direction: column;
                 gap: 10px;
-                justify-content: center;
-                align-items: center;
+		justify-content: center;
+		align-items: center;
             }
         }
 
@@ -348,7 +348,7 @@
             document.getElementById('local').textContent = now.toLocaleTimeString();
         }
 
-        setInterval(updateTime, 1000);
+		setInterval(updateTime, 1000);
     </script>
 </head>
 <body>
@@ -366,7 +366,7 @@
             updateTime();
             document.getElementById('moon_phase').textContent = getMoonPhase();
             var now = new Date();
-            now.setHours(now.getHours() - 12);
+		    now.setHours(now.getHours() - 12);
             var formattedDate = now.toISOString().slice(0, 10); 
             document.getElementById('observation_date').value = formattedDate;
 
@@ -398,17 +398,17 @@
             document.getElementById('observationForm').addEventListener('submit', function(event) {
                 event.preventDefault();
 
-                const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
+		        const observationDone = document.querySelector('input[name="observation_done"]:checked').value;
 
-                if (observationDone === 'yes') {
-                    let observerName = document.getElementById('observer_name').value;
-                    let firstObserverName = observerName.split(',')[0].trim();
-                    document.getElementById('first_observer_name').value = firstObserverName;
-                } else if (observationDone === 'no') {
-                    let observerNameNo = document.getElementById('observer_name_no').value;
-                    let firstObserverNameNo = observerNameNo.split(',')[0].trim();
-                    document.getElementById('first_observer_name_no').value = firstObserverNameNo;
-                }
+		        if (observationDone === 'yes') {
+		            let observerName = document.getElementById('observer_name').value;
+		            let firstObserverName = observerName.split(',')[0].trim();
+		            document.getElementById('first_observer_name').value = firstObserverName;
+		        } else if (observationDone === 'no') {
+		            let observerNameNo = document.getElementById('observer_name_no').value;
+		            let firstObserverNameNo = observerNameNo.split(',')[0].trim();
+		            document.getElementById('first_observer_name_no').value = firstObserverNameNo;
+		        }
 
                 const reasons = [];
                 if (document.querySelector('input[name="reason_weather"]').checked) {
@@ -442,16 +442,16 @@
 
                 for (let i = 0; i < starNames.length; i++) {
                     if (starNames[i].value) {
-                        observations += - Object Name: ${starNames[i].value || "-"}\n;
-                        observations +=   - Filter: ${filters[i].value || "-"}\n;
-                        observations +=   - Exposure Time: ${exposureTimes[i].value || "-"}\n;
-                        observations +=   - Binning: ${binnings[i].value || "-"}\n;
-                        observations +=   - Sky Condition: ${skyConditions[i].value || "-"}\n;
-                        observations +=   - Preliminary Result Link: ${resultLinks[i].value || "-"}\n;
-                        observations +=   - Additional Info: ${extraInfos[i].value || "-"}\n;
+                        observations += `- Object Name: ${starNames[i].value || "-"}\n`;
+                        observations += `  - Filter: ${filters[i].value || "-"}\n`;
+                        observations += `  - Exposure Time: ${exposureTimes[i].value || "-"}\n`;
+                        observations += `  - Binning: ${binnings[i].value || "-"}\n`;
+                        observations += `  - Sky Condition: ${skyConditions[i].value || "-"}\n`;
+                        observations += `  - Preliminary Result Link: ${resultLinks[i].value || "-"}\n`;
+                        observations += `  - Additional Info: ${extraInfos[i].value || "-"}\n`;
                     }
                 }
-                
+
                 document.getElementById('star_observations_text').value = observations;
 
                 const bccEmail = document.getElementById('bcc_email').value;
@@ -608,7 +608,8 @@
                     <div class="date-column">
                         <label for="observation_date">Date<span class="required-star">*</span></label>
                         <input type="date" id="observation_date" name="observation_date">
-                        <input type="hidden" id="first_observer_name" name="first_observer_name">
+			            <input type="hidden" id="first_observer_name" name="first_observer_name">
+
                     </div>
 
                     <div class="observation-column">
@@ -638,7 +639,9 @@
                 <div class="section">
                     <label for="observer_name">Observer<span class="required-star">*</span></label>
                     <input type="text" id="observer_name" name="observer_name" placeholder="Enter observer name(s)">
+
                     <div id="stars_container"></div>
+
                     <div class="button-row">
                         <button type="button" class="button small-button" onclick="addStarField()">Add</button>
                         <button type="button" class="button remove-button hidden" id="remove_button" onclick="removeLastStarField()">Remove</button>
@@ -680,12 +683,13 @@
             </div>
 
             <div id="general_info_section" class="hidden section">
-                <label for="general_info" class="label">General Info</label>
+               <label for="general_info" class="label">General Info</label>
                 <small style="display: block; font-size: 14px; font-style: italic; margin-bottom: 5px;">You can edit this information if needed</small>
                 <input type="text" id="general_info" name="general_info" value="No additional information">
 
+                <!-- BCC Email Section -->
                 <label for="bcc_email" class="label">Additional Recipient</label>
-                <small style="display: block; font-size: 14px; font-style: italic; margin-bottom: 5px;">You can add an email address to receive a copy of this report</small>
+		        <small style="display: block; font-size: 14px; font-style: italic; margin-bottom: 5px;">You can add an email address to receive a copy of this report</small>
                 <input type="email" id="bcc_email" name="bcc_email" placeholder="Enter email here">
             </div>
 
