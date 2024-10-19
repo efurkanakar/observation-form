@@ -442,15 +442,16 @@
 
                 for (let i = 0; i < starNames.length; i++) {
                     if (starNames[i].value) {
-                        observations += `<strong>- Object Name: ${starNames[i].value || "-"}</strong><br>`;
-                        observations += `  - Filter: ${filters[i].value || "-"}<br>`;
-                        observations += `  - Exposure Time: ${exposureTimes[i].value || "-"}<br>`;
-                        observations += `  - Binning: ${binnings[i].value || "-"}<br>`;
-                        observations += `  - Sky Condition: ${skyConditions[i].value || "-"}<br>`;
-                        observations += `  - Preliminary Result Link: ${resultLinks[i].value || "-"}<br>`;
-                        observations += `  - Additional Info: ${extraInfos[i].value || "-"}<br><br>`;
+                        observations += `<strong>- Object Name: ${starNames[i].value || "-"}</strong><br>`;\n;
+                        observations +=   - Filter: ${filters[i].value || "-"}\n;
+                        observations +=   - Exposure Time: ${exposureTimes[i].value || "-"}\n;
+                        observations +=   - Binning: ${binnings[i].value || "-"}\n;
+                        observations +=   - Sky Condition: ${skyConditions[i].value || "-"}\n;
+                        observations +=   - Preliminary Result Link: ${resultLinks[i].value || "-"}\n;
+                        observations +=   - Additional Info: ${extraInfos[i].value || "-"}\n;
                     }
                 }
+
 
                 document.getElementById('star_observations_text').value = observations;
 
