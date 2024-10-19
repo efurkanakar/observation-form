@@ -442,17 +442,16 @@
 
                 for (let i = 0; i < starNames.length; i++) {
                     if (starNames[i].value) {
-                        observations +=  - Object Name: ${starNames[i].value || "-"};\n;
-                        observations +=  - Filter: ${filters[i].value || "-"}\n;
-                        observations +=  - Exposure Time: ${exposureTimes[i].value || "-"}\n;
-                        observations +=  - Binning: ${binnings[i].value || "-"}\n;
-                        observations +=  - Sky Condition: ${skyConditions[i].value || "-"}\n;
-                        observations +=  - Preliminary Result Link: ${resultLinks[i].value || "-"}\n;
-                        observations +=  - Additional Info: ${extraInfos[i].value || "-"}\n;
+                        observations += - Object Name: ${starNames[i].value || "-"}\n;
+                        observations +=   - Filter: ${filters[i].value || "-"}\n;
+                        observations +=   - Exposure Time: ${exposureTimes[i].value || "-"}\n;
+                        observations +=   - Binning: ${binnings[i].value || "-"}\n;
+                        observations +=   - Sky Condition: ${skyConditions[i].value || "-"}\n;
+                        observations +=   - Preliminary Result Link: ${resultLinks[i].value || "-"}\n;
+                        observations +=   - Additional Info: ${extraInfos[i].value || "-"}\n;
                     }
                 }
-
-
+                
                 document.getElementById('star_observations_text').value = observations;
 
                 const bccEmail = document.getElementById('bcc_email').value;
