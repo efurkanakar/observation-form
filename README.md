@@ -30,6 +30,5 @@ This project is licensed under the [Apache License 2.0](https://www.apache.org/l
 
 ## Contact
 
-For any issues, suggestions, or feedback, feel free to reach out:
+For any issues, suggestions, or feedback, feel free to reach out.
 
-- GitHub: [Furkan Akar](https://github.com/efurkanakar)
